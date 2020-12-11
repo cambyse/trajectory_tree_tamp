@@ -36,7 +36,7 @@ public:
   std::array<std::pair<double, double>, N> bounds() const { return bounds_; }
 
 public:
-  static constexpr uint dim = N;
+  static constexpr uint dim{N};
 
 private:
   std::array<std::pair<double, double>, N> bounds_;

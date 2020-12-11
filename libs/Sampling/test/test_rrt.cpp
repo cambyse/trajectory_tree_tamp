@@ -80,7 +80,7 @@ TEST(RRTPlanner, PlanOnMap)
   drawer.draw_tree(rrt.rrt_tree());
   drawer.draw_path(path);
 
-  drawer.save("rrt_raod_map.pgm");
+  drawer.save("rrt_road_map.pgm");
 }
 
 int main(int argc, char **argv)

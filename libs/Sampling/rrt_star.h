@@ -18,6 +18,7 @@ struct RRTStarNode
   std::list<std::shared_ptr<RRTStarNode<N>>> children;
   double cost{0}; // form root
   uint id{0};
+  static constexpr uint dim{N};
 };
 
 template<uint N>
@@ -83,23 +84,6 @@ public:
   void set_transition_checker(const std::function<bool(const std::array<double, S::dim> &, const std::array<double, S::dim> &)> & transition_checker)
   {
     transition_checker_ = transition_checker;
-  }
-
-  std::deque<std::array<double, S::dim>> get_path_to(const std::shared_ptr<RRTStarNode<S::dim>> & to)
-  {
-    std::deque<std::array<double, S::dim>> path;
-
-    auto current = to;
-    path.push_front(to->state);
-    auto parent = current->parent.lock();
-
-    while(parent)
-    {
-      path.push_front(parent->state);
-      parent = parent->parent.lock();
-    }
-
-    return path;
   }
 
   std::deque<std::array<double, S::dim>> plan(const std::array<double, S::dim> & start,

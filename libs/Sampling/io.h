@@ -148,8 +148,16 @@ public:
         auto to = child->state;
         auto to_ij = get_ij(to);
 
-        draw_line(from_ij, to_ij, 5);
+        draw_line(from_ij, to_ij, 6);
       }
+    }
+
+    for(const auto& node: tree->nodes())
+    {
+      auto n = node->state;
+      auto n_ij = get_ij(n);
+
+      buffer_[n_ij[0]][n_ij[1]] = 3;
     }
   }
 

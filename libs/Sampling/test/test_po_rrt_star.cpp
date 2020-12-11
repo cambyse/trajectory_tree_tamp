@@ -1,27 +1,28 @@
-#include <rrt_star.h>
+#include <po_rrt_star.h>
 #include <io.h>
 #include <iostream>
 #include <gtest/gtest.h>
 
-TEST(RRTStarPlanner, Creation)
+TEST(PORRTStarPlanner, Creation)
 {
   SampleSpace<2> space(std::array<std::pair<double, double>, 2>{std::pair<double, double>{-1.0, 1.0},
                                                                 std::pair<double, double>{-1.0, 1.0}});
 
-  RRTStar<SampleSpace<2>> rrt(space);
+  PORRTStar<SampleSpace<2>, 2> rrt(space);
 }
 
-TEST(RRTStarPlanner, PlanOnMap)
+TEST(PORRTStarPlanner, PlanOnMap)
 {
   SampleSpace<2> space(std::array<std::pair<double, double>, 2>{std::pair<double, double>{-1.0, 1.0},
                                                                 std::pair<double, double>{-1.0, 1.0}});
 
-  RRTStar<SampleSpace<2>> rrt(space, 0.1, 0.1);
+  PORRTStar<SampleSpace<2>, 2> rrt(space, 0.1, 0.125);
 
-  MapLoader map("data/map0.pgm", space.bounds());
+  MultiMap<3> map({"data/map0.pgm", "data/map1.pgm", "data/map2.pgm"}, space.bounds());
+
   auto state_checker = [&map](const std::array<double, 2> & state) -> bool
   {
-    return map.is_state_valid(state);
+    return map.is_state_valid(state)[2];
   };
 
   auto goal_cnd = [](const std::array<double, 2> & state) -> bool
@@ -37,14 +38,14 @@ TEST(RRTStarPlanner, PlanOnMap)
   rrt.set_state_checker(state_checker);
   rrt.set_transition_checker(transition);
 
-  auto path = rrt.plan({0.0, 0.0}, goal_cnd, 3000);
+  auto path = rrt.plan({0.0, 0.0}, goal_cnd, 5000);
 
-  Drawer drawer(space.bounds(), 100);
+  Drawer drawer(space.bounds(), 200);
 
   drawer.draw_tree(rrt.rrt_tree());
   drawer.draw_path(path);
 
-  drawer.save("rrt_star_road_map.pgm");
+  drawer.save("po_rrt_star_road_map.pgm");
 }
 
 //

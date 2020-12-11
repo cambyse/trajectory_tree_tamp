@@ -2,7 +2,7 @@
 #include <array>
 #include <deque>
 #include <cmath>
-#include <common.h>
+#include <memory>
 
 template<std::size_t N>
 double norm2(const std::array<double, N> & a, const std::array<double, N> & b)
@@ -56,4 +56,22 @@ void backtrack(const std::array<double, N>& from, std::array<double, N>& to, dou
       to[i] = from[i] + (to[i] - from[i]) * lambda;
     }
   }
+}
+
+template <typename T>
+std::deque<std::array<double, T::dim>> get_path_to(const std::shared_ptr<T> & to)
+{
+  std::deque<std::array<double, T::dim>> path;
+
+  auto current = to;
+  path.push_front(to->state);
+  auto parent = current->parent.lock();
+
+  while(parent)
+  {
+    path.push_front(parent->state);
+    parent = parent->parent.lock();
+  }
+
+  return path;
 }
