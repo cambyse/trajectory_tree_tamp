@@ -11,18 +11,18 @@ TEST(PORRTStarPlanner, Creation)
   PORRTStar<SampleSpace<2>, 2> rrt(space);
 }
 
-TEST(PORRTStarPlanner, PlanOnMap)
+TEST(PORRTStarPlanner, PlanOnMapWithAStar)
 {
   SampleSpace<2> space(std::array<std::pair<double, double>, 2>{std::pair<double, double>{-1.0, 1.0},
                                                                 std::pair<double, double>{-1.0, 1.0}});
 
-  PORRTStar<SampleSpace<2>, 2> rrt(space, 0.1, 0.125);
+  PORRTStar<SampleSpace<2>, 3> rrt(space, 0.1, 0.125);
 
   MultiMap<3> map({"data/map0.pgm", "data/map1.pgm", "data/map2.pgm"}, space.bounds());
 
-  auto state_checker = [&map](const std::array<double, 2> & state) -> bool
+  auto state_checker = [&map](const std::array<double, 2> & state) -> std::array<bool, 3>
   {
-    return map.is_state_valid(state)[2];
+    return map.is_state_valid(state);
   };
 
   auto goal_cnd = [](const std::array<double, 2> & state) -> bool

@@ -85,11 +85,11 @@ public:
     w_ = maps_[0].buffer()[0].size();
 
     // create fuse map, speed up!
-    occupancies_ =   std::vector<std::vector<std::array<double, W>>>(h_);
+    occupancies_ =   std::vector<std::vector<std::array<bool, W>>>(h_);
 
     for(auto & line: occupancies_)
     {
-      line = std::vector<std::array<double, W>>(w_);
+      line = std::vector<std::array<bool, W>>(w_);
     }
 
     for(auto i = 0; i < h_; ++i)
@@ -98,13 +98,13 @@ public:
       {
         for(auto w = 0; w < W; ++w)
         {
-          occupancies_[i][j][w] = maps_[w].buffer()[i][j] == 255 ? 1 : 0;
+          occupancies_[i][j][w] = maps_[w].buffer()[i][j] == 255 ? true : false;
         }
       }
     }
   }
 
-  std::array<double, W> is_state_valid(const std::array<double, 2> & xy) const
+  std::array<bool, W> is_state_valid(const std::array<double, 2> & xy) const
   {
     const auto ij = maps_[0].get_ij(xy);
     return occupancies_[ij[0]][ij[1]];
@@ -112,7 +112,7 @@ public:
 
 private:
   std::vector<MapLoader> maps_;
-  std::vector<std::vector<std::array<double, W>>> occupancies_;
+  std::vector<std::vector<std::array<bool, W>>> occupancies_;
   uint w_;
   uint h_;
 };

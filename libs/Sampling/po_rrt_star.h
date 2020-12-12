@@ -19,7 +19,7 @@ struct PORRTStarNode
 {
   std::weak_ptr<PORRTStarNode<N, W>> parent;
   std::array<double, N> state; // continuous state
-  std::array<double, W> mask; // discrete state mask
+  std::array<double, W> validities; // discrete state mask
   std::vector<std::shared_ptr<PORRTStarNode<N, W>>> children;
   uint id{0};
 
@@ -82,7 +82,7 @@ public:
 
   }
 
-  void set_state_checker(const std::function<bool(const std::array<double, S::dim> &)> & state_checker)
+  void set_state_checker(const std::function<std::array<bool, W>(const std::array<double, S::dim> &)> & state_checker)
   {
     state_checker_ = state_checker;
   }
@@ -125,7 +125,8 @@ private:
 
       backtrack(node->state, s, max_step_);
 
-      if(state_checker_(s))
+      auto validities = state_checker_(s);
+      if(validities[0])
       {
         auto neighbors = kdtree_->radius_neighbors(s, radius_);
 
@@ -144,7 +145,7 @@ private:
             }
 
             rrttree_->add_edge(neighbor, new_rrt_node);
-            rrttree_->add_edge(new_rrt_node, neighbor);
+            //rrttree_->add_edge(new_rrt_node, neighbor);
           }
         }
 
@@ -169,7 +170,7 @@ private:
   const double radius_;
   std::shared_ptr<PORRTStarTree<S::dim, W>> rrttree_;
   std::unique_ptr<KDTree<S::dim>> kdtree_;
-  std::function<bool(const std::array<double, S::dim> &)> state_checker_;
+  std::function<std::array<bool, W>(const std::array<double, S::dim> &)> state_checker_; // indicates in which discrete state the sample is valid
   std::function<bool(const std::array<double, S::dim> &, const std::array<double, S::dim> &)> transition_checker_;
   std::list<std::shared_ptr<PORRTStarNode<S::dim, W>>> final_nodes_;
 };
