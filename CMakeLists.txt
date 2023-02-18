@@ -24,6 +24,7 @@ add_subdirectory("libs/MultiAgentTaskPlanning")
 add_subdirectory("libs/MotionPlanning")
 add_subdirectory("libs/POMTP_interfaces")
 add_subdirectory("libs/POMTP_controllers")
+add_subdirectory("libs/Sampling")
 add_subdirectory("apps")
 
 #add_subdirectory("libs/TaskPlanning")

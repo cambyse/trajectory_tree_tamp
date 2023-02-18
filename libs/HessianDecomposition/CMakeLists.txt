@@ -25,6 +25,8 @@ target_link_libraries(
  Core
  pthread
  dlib
+ lapack
+ blas
 )
 
 add_subdirectory(test)

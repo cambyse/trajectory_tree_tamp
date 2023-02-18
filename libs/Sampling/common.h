@@ -63,9 +63,8 @@ std::deque<std::array<double, T::dim>> get_path_to(const std::shared_ptr<T> & to
 {
   std::deque<std::array<double, T::dim>> path;
 
-  auto current = to;
   path.push_front(to->state);
-  auto parent = current->parent.lock();
+  auto parent = to->parent.lock();
 
   while(parent)
   {

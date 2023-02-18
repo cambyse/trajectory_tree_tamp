@@ -18,7 +18,8 @@ link_directories(    ${MLR_LIBRARIES_DIR} )
 #find_package(fcl REQUIRED)
 
 #find OpenCV
-find_package(OpenCV 3.3.1 REQUIRED)
+#find_package(OpenCV 3.3.1 REQUIRED)
+find_package(OpenCV 4.2.0 REQUIRED)
 
 #message(STATUS "OpenCV library status:")
 #message(STATUS "    version: ${OpenCV_VERSION}")

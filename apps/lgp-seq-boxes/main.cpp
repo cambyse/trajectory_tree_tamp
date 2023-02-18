@@ -1,7 +1,7 @@
 #include <KOMO/komo.h>
 
 #include <observation_tasks.h>
-#include <approx_point_to_shape.h>
+#include <approx_shape_to_sphere.h>
 #include <over_plane.h>
 #include <axis_alignment.h>
 
