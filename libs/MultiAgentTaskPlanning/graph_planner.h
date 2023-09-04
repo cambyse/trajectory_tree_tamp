@@ -35,10 +35,10 @@ public:
   virtual bool terminated() const override;
   Policy getPolicy() const override;
   double reward( uint from, uint to  ) const; // exposed for testing purpose only
-  double R0() const { return r0_; }
+  double R0() const { return rewards_.R0(); }
 
   // other modifiers
-  void setR0( double r0 ) { r0_ = r0; }
+  void setR0( double r0 ) { rewards_.setR0(r0); }
   void setMaxDepth( uint d ) { maxDepth_ = d; }
   void buildGraph( bool graph = false );
   void initializeRewards();
@@ -69,7 +69,6 @@ private:
   uint maxDepth_ = 3;
 
   // value iteration
-  double r0_ = -1;
   mutable Rewards rewards_;//std::vector< double > rewards_; // current state of rewards
   std::vector< double > values_;
   DecisionGraph decidedGraph_;

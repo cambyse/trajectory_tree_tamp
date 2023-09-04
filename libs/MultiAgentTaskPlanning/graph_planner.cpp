@@ -158,7 +158,7 @@ PolicyNodeData GraphPlanner::decisionGraphtoPolicyData( const NodeData & dData, 
   PolicyNodeData pData;
 
   pData.beliefState = dData.beliefState;
-  pData.markovianReturn = r0_;
+  pData.markovianReturn = rewards_.R0();
   pData.decisionGraphNodeId = id;
 
   return pData;
