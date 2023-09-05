@@ -155,29 +155,29 @@ void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr<
   using W = KomoWrapper;
 
   // build tree
-  auto tree = buildTree(policy);
+  const auto tree = buildTree(policy);
 
   // prepare komo
   auto komo = intializeKOMO(tree, startKinematics.front());
 
   // ground policy actions
   komo->groundInit(tree);
-  auto allVars = getSubProblems(tree, policy);
+  const auto allVars = getSubProblems(tree, policy);
   groundPolicyActionsJoint(tree, policy, komo);
 
   // run optimization
   komo->verbose = 1;
   W(komo.get()).reset(allVars);
 
-  auto start = std::chrono::high_resolution_clock::now();
+  const auto start = std::chrono::high_resolution_clock::now();
 
   komo->run();
 
-  auto elapsed = std::chrono::high_resolution_clock::now() - start;
-  double optimizationTime=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  const auto optimizationTime = std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
 
   // LOGS
-  auto log = true;
+  const auto log = true;
 //  if(log) {
 //    cout <<"** Hessian size.[" << komo->opt->newton.Hx.d0 << "] sparsity=" << sparsity(komo->opt->newton.Hx);
 //    cout <<endl;
@@ -297,7 +297,7 @@ void ADMMCompressedPlanner::groundPolicyActionsCompressed( const TreeBuilder & f
 {
   komo->groundInit(compressed);
 
-  auto edges = interactingEdges(fullTree, uncompressed); // interacting edges and the closest edge on subtree
+  const auto edges = interactingEdges(fullTree, uncompressed); // interacting edges and the closest edge on subtree
   // interating edges are all the edges on which groundings have an influence on the subtree
 
   // traverse tree and ground symbols
@@ -349,15 +349,15 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   using W = KomoWrapper;
 
   // build tree
-  auto tree = buildTree(policy);
+  const auto tree = buildTree(policy);
 
   // 0 - SPLIT INTO SUBTREES
-  auto gen = generatorFactory_.create(decompositionStrategy_, nJobs_, tree);
-  auto subproblems = get_subproblems(gen); // uncompressed pb, compressed pb, mapping
-  auto allVars = get_all_vars(subproblems, config_.microSteps_);   // get subproblem vars (local)
+  const auto gen = generatorFactory_.create(decompositionStrategy_, nJobs_, tree);
+  const auto subproblems = get_subproblems(gen); // uncompressed pb, compressed pb, mapping
+  const auto allVars = get_all_vars(subproblems, config_.microSteps_);   // get subproblem vars (local)
 
   // 1 - PREPARE KOMOS
-  auto witness = intializeKOMO(tree, startKinematics.front());
+  const auto witness = intializeKOMO(tree, startKinematics.front());
   groundPolicyActionsJoint(tree, policy, witness);
 
   // 1.1 - init and ground each komo

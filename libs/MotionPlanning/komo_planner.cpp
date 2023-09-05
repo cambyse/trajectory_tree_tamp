@@ -129,20 +129,20 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   //po.getParam( "type" );
   clearLastNonMarkovianResults();
 
-  // solve on pose level
-  optimizePoses( policy );
-
-  /// EARLY STOPPING, detect if pose level not possible
-  bool poseOptimizationFailed = false;
-  // if a node has a constraint which is not satisfied, we set the node to infeasible i.e. infinite cost!
-  savePoseOptimizationResults(policy, poseOptimizationFailed);
-
-  if( poseOptimizationFailed )  // early stopping
-    return;
-
   /// PATH OPTI
   if( po.getParam( "type" ) == "markovJointPath" )
   {
+    /// EARLY STOPPING, detect if pose level not possible
+    // solve on pose level
+    optimizePoses( policy );
+
+    bool poseOptimizationFailed = false;
+    // if a node has a constraint which is not satisfied, we set the node to infeasible i.e. infinite cost!
+    savePoseOptimizationResults(policy, poseOptimizationFailed);
+
+    if( poseOptimizationFailed )  // early stopping
+      return;
+
     optimizeMarkovianPath( policy );
     saveMarkovianPathOptimizationResults( policy );
   }
@@ -163,13 +163,11 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   {
     JointPlanner planner(config_, komoFactory_);
     planner.optimize(policy, startKinematics_);
-    //optimizeJointSparse( policy );
   }
   else if( po.getParam( "type" ) == "ADMMSparse" )
   {
     ADMMSParsePlanner planner(config_, komoFactory_);
     planner.optimize(policy, startKinematics_);
-    //optimizeADMMSparse( policy );
   }
   else if( po.getParam( "type" ) == "ADMMCompressed" )
   {
@@ -225,6 +223,7 @@ void KOMOPlanner::display( const Policy & policy, double sec )
     rai::wait( sec, true );
   }
 }
+
 std::pair< double, double > KOMOPlanner::evaluateLastSolution()
 {
   // retrieve trajectories
@@ -250,6 +249,8 @@ std::pair< double, double > KOMOPlanner::evaluateLastSolution()
       return std::make_pair( length, acc_cost );
     }
   }
+
+  return {}; // should we end up here at all?
 }
 
 void KOMOPlanner::registerInit( const TreeInitGrounder & grounder )
@@ -446,7 +447,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
     {
       if( node->data().beliefState[ w ] > eps )
       {
-        if(!node->isRoot()) CHECK( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId ) != effMarkovianPathKinematics_.end(),"no parent effective kinematic!" );
+        if(!node->isRoot()) CHECK( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId ) != effMarkovianPathKinematics_.end(), "no parent effective kinematic!" );
 
         rai::KinematicWorld kin = node->isRoot() ? *( startKinematics_( w ) ) : ( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId )->second( w ) );
 
@@ -483,7 +484,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
 
         Graph result = komo->getReport();
 
-        double cost = result.get<double>( { "total","sqrCosts" } );
+        double cost = result.get<double>( { "total", "sqrCosts" } );
         double constraints = result.get<double>( { "total","constraints" } );
 
         markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;
@@ -593,8 +594,7 @@ void KOMOPlanner::optimizePath( Policy & policy )
   bsToLeafs_             = rai::Array< PolicyNodePtr > ( policy.N() );
 
   std::list<std::future<void>> futures;
-  auto leaves = policy.leaves();
-  for( const auto& l : leaves )
+  for( const auto& l : policy.leaves() )
   {
      auto future = std::async(config_.executionPolicy_,
                               [&]{

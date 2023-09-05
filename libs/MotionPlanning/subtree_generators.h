@@ -44,6 +44,31 @@ struct BranchGen : public SubTreeGen
   uint index = 0;
 };
 
+struct Identity : public SubTreeGen // common trunk
+{
+  Identity(const TreeBuilder& tree)
+    : tree(tree)
+  {
+  }
+
+  bool finished() const override
+  {
+    return is_finished;
+  }
+
+  TreeBuilder next() override
+  {
+    CHECK(!finished(), "finished generator");
+
+    is_finished = true;
+
+    return tree;
+  }
+
+  const TreeBuilder& tree;
+  bool is_finished{false};
+};
+
 struct SubTreesAfterFirstBranching : public SubTreeGen // common trunk
 {
   SubTreesAfterFirstBranching(const TreeBuilder& tree);
@@ -83,6 +108,10 @@ struct GeneratorFactory
    */
   std::shared_ptr<SubTreeGen> create(const std::string& name, uint n, const TreeBuilder& tree) const
   {
+    if(name == "Identity")
+    {
+      return std::make_shared<Identity>(tree);
+    }
     if(name == "BranchGen")
     {
       return std::make_shared<BranchGen>(tree);
@@ -95,6 +124,8 @@ struct GeneratorFactory
     {
       return std::make_shared<LinearSplit>(tree, n);
     }
+
+    return nullptr;
   }
 };
 

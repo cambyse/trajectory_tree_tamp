@@ -6,7 +6,22 @@
 using namespace std;
 using namespace mp;
 
-TEST(TreeBuilder, BranchGenerator)
+TEST(TreeBuilder, Identity_Next)
+{
+  auto tree = build_simple_path_builder();
+
+  auto gen = Identity(tree);
+
+  auto b1 = gen.next();
+
+  EXPECT_EQ(1.0, b1.p());
+
+  EXPECT_EQ(std::vector<uint>({0, 1, 2, 3, 4}), b1.get_nodes());
+
+  EXPECT_TRUE(gen.finished());
+}
+
+TEST(TreeBuilder, BranchGen_Next)
 {
   auto tree = build_simple_path_builder();
 
@@ -26,7 +41,7 @@ TEST(TreeBuilder, BranchGenerator)
   EXPECT_TRUE(gen.finished());
 }
 
-TEST(TreeBuilder, SubTreesAfterFirstBranching)
+TEST(TreeBuilder, SubTreesAfterFirstBranching_Next)
 {
   auto tree = build_5_edges_2_branchings();
 
@@ -47,7 +62,7 @@ TEST(TreeBuilder, SubTreesAfterFirstBranching)
   EXPECT_TRUE(gen.finished());
 }
 
-TEST(TreeBuilder, SubTreesAfterFirstBranchingSpecs)
+TEST(TreeBuilder, SubTreesAfterFirstBranching_GetSpecs)
 {
   auto steps = 5;
 
@@ -69,7 +84,7 @@ TEST(TreeBuilder, SubTreesAfterFirstBranchingSpecs)
   std::cout << s2c.adjacency_matrix() << std::endl;
 }
 
-TEST(TreeBuilder, LinearSplit)
+TEST(TreeBuilder, LinearSplit_Next)
 {
   auto steps = 5;
   auto tree = build_2_linear_edges();

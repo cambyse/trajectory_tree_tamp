@@ -293,6 +293,82 @@ void komo_tree_dev()
   //mp.display(policy, 200);
 }
 
+void plan_3_methods()
+{
+  matp::GraphPlanner tp;
+  mp::KOMOPlanner mp;
+
+  // set planner specific parameters
+  tp.setR0( -0.25 ); //-0.25//-0.1//-0.015 );
+  tp.setMaxDepth( 20 );
+  mp.setNSteps( 20 );
+  mp.setMinMarkovianCost( 0.00 );
+
+  // register symbols
+  mp.registerInit( groundTreeInit );
+  mp.registerTask( "pick-up"      , groundTreePickUp );
+  mp.registerTask( "put-down"     , groundTreePutDown );
+  mp.registerTask( "check"        , groundTreeCheck );
+  mp.registerTask( "stack"        , groundTreeStack );
+  mp.registerTask( "unstack"      , groundTreeUnStack );
+
+  tp.setFol( "LGP-blocks-fol-one-table.g" );
+  mp.setKin( "LGP-blocks-kin-one-table.g" );
+
+  /// GRAPH BUILDING
+  tp.buildGraph(true);
+
+  /// POLICY SEARCH
+  Policy policy, lastPolicy;
+  tp.solve();
+  policy = tp.getPolicy();
+
+  uint nIt = 0;
+  const uint maxIt = 1000;
+  do
+  {
+    nIt++;
+    lastPolicy = policy;
+
+    {
+    /// PIECEWISE MOTION PLANNING
+    auto po     = MotionPlanningParameters( policy.id() );
+    po.setParam( "type", "markovJointPath" );
+    mp.solveAndInform( po, policy );
+    }
+    {
+    /// TASK PLANNING
+    tp.integrate( policy );
+    tp.solve();
+    }
+    policy = tp.getPolicy();
+
+  } while( lastPolicy != policy && nIt != maxIt );
+
+  std::cout << "Policy found after " << nIt << " iterations." << std::endl;
+
+  /// JOINT OPTIMIZATION
+  // default method
+  //mp.display(policy, 200);
+
+  // single joint optimization
+  {
+  auto po     = MotionPlanningParameters( policy.id() );
+  po.setParam( "type", "jointSparse" );
+  mp.solveAndInform( po, policy ); // it displays
+  }
+
+  // adsm
+  {
+  auto po     = MotionPlanningParameters( policy.id() );
+  po.setParam( "type", "ADMMCompressed" );
+  po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+  po.setParam( "nJobs", "8" );
+  mp.solveAndInform( po, policy ); // it displays
+  }
+}
+
+
 //===========================================================================
 
 int main(int argc,char **argv)
@@ -301,10 +377,11 @@ int main(int argc,char **argv)
 
   rnd.clockSeed();
 
-  komo_tree_dev();
+  //komo_tree_dev();
 
   //plan_graph_search();
 
+  plan_3_methods();
   //baxter();
 
   return 0;

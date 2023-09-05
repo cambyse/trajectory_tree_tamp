@@ -17,6 +17,7 @@ class Rewards
 {
 public:
   void setR0(double r0) { r0_ = r0; }
+  double R0() const { return r0_; }
 
   double get(uint key)
   {
