@@ -1,0 +1,11 @@
+body base { mass=1.0  }
+shape visual (base){ type=3 size=[1 1 1 1] rel=<T 0 0 0 1 0 0 0 >  mesh='meshes/link0.ply'  color=[ 0.9 0.9 0.9 1 ]}
+
+body panda_body_1 { mass=1.0 }
+shape panda_visual_1 (panda_body_1){ type=3 size=[1 1 1 1] rel=<T 0 0 0.333 1 0 0 0 >  mesh='meshes/link1.ply'  color=[ 0.9 0.9 0.9 1 ] }
+joint panda_link_1 (base panda_body_1){ type=2 from=<T 0.0 0.0 0.0 1 0 0.0 0 >  limits=[ -1.57 1.57 ]  ctrl_limits=[ 10000 50000 1 ]  }
+
+body panda_body_2 { mass=1.0 }
+shape panda_visual_2 (panda_body_2){ type=3 size=[1 1 1 1] rel=<T t(0 0 0.333)  d(-90 1 0 0)>  mesh='meshes/link2.ply'  color=[ 0.9 0.9 0.9 1 ] }
+joint panda_link_2 (panda_body_1 panda_body_2){ type=2 from=<T 0.0 0.0 0.0 1 0 0 0 >  limits=[ -1.57 1.57 ]  ctrl_limits=[ 10000 50000 1 ]  }
+
