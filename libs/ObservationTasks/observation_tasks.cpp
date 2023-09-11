@@ -200,7 +200,7 @@ ActiveGetSight::ActiveGetSight( rai::String const& headName,
   , headName_     ( headName )
   , containerName_( containerName )
   , pivotPoint_   ( pivotPoint )
-  , aimingDir_    ( aimingDir )
+  , aimingDir_    ( aimingDir / norm2( aimingDir ) )
   , preferedDistance_( preferedDistance )
 {
 
@@ -233,7 +233,7 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   G.kinematicsQuat( headQuat, JheadQuat, head ); // get function to minimize and its jacobian in state G
 
   // intermediary computations
-  // build w1
+  // build w1 : (normalized vector from pivot position to object center)
   arr w = aimPosition - pivotPosition;
   const double normW = norm2( w );
   //std::cout << "normW:" << normW << std::endl;
@@ -258,32 +258,25 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
 
   // build v : aiming direction of the sensor
   arr v, Jv;
-
-  auto aimingDirBody = head->X.rot * ( aimingDir_ );
-
-  G.kinematicsVec( v, Jv, head, aimingDirBody ); // get function to minimize and its jacobian in state G
-  const double normV = norm2( v );
-  arr JnormV = Jnorm2( v );  // get Jacobian of the norm operator
-  arr v1 = v / normV;
-  arr Jv1 = ( Jv * normV - v * JnormV * Jv ) / ( normV * normV ); // jacobian of u normalized
+  G.kinematicsVec( v, Jv, head, aimingDir_ ); // get function to minimize and its jacobian in state G
 
   // instantiate a temporary vector for cost and its Jacobian
   arr tmp_y = zeros( dim_ );
   arr tmp_J = zeros( dim_, headJPosition.dim(1) );
 
-  // head orientation
-  tmp_y.setVectorBlock( ( u1  - v1 )     , 0 );    // cost
-  tmp_J.setMatrixBlock( ( Ju1 - Jv1 ), 0 , 0 );    // jacobian
+  // head orientation (gradient failure)
+  tmp_y.setVectorBlock( ( u1  - v )     , 0 );    // cost
+  tmp_J.setMatrixBlock( ( Ju1 - Jv ), 0 , 0 );    // jacobian
 
   // head alignment
   tmp_y.setVectorBlock( u1 -  w1,   u1.d0  );                    // cost
   tmp_J.setMatrixBlock( Ju1 -  Jw1, Ju1.d0, 0 );                 // jacobian
 
   // head distance
-  double d = normU - preferedDistance_;
+  const double d = normU - preferedDistance_;
   tmp_y( 2*u1.d0 ) = d;
   tmp_J.setMatrixBlock( JnormU * Ju, 2 * Ju1.d0, 0 );            // jacobian
-  ///////
+
 //  for( auto p : G.proxies )
 //  {
 //    std::cout << G.shapes( p->a )->name << "-" << G.shapes( p->b )->name << std::endl;
