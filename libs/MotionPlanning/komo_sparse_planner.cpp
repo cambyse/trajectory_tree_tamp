@@ -149,11 +149,45 @@ void KOMOSparsePlanner::watch( const std::shared_ptr< ExtensibleKOMO > & komo ) 
   rai::wait();
 }
 
+void KOMOSparsePlanner::watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const
+{
+  rai::Array< rai::Array< rai::Array< rai::KinematicWorld > > > frames;
+  frames.resize(1);
+  const auto leaves = tree.get_leaves();
+
+  frames(0).resize(leaves.size());
+
+  for(auto l = 0; l < leaves.size(); ++l)
+  {
+    const auto leaf = leaves[l];
+
+    const auto branch = tree.get_branch(leaf);
+
+    const auto vars0 = branch.get_vars0({0.0, branch.n_nodes() - 1}, tree._get_branch(leaf), komo->stepsPerPhase);
+
+    frames(0)(l).resize(vars0.size());
+
+    for(auto s{0}; s < vars0.size(); ++s)
+    {
+      auto global = vars0(s);
+      frames(0)(l)(s) = *komo->configurations(global + komo->k_order);
+    }
+  }
+
+  TrajectoryTreeVisualizer viz( frames, "policy", komo->stepsPerPhase * 0.5);
+
+  rai::wait();
+}
+
 /// JOINT
 void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
 {
   using W = KomoWrapper;
 
+  arr x;
+
+  //for(auto i{0}; i < 2; ++i)
+  {
   // build tree
   const auto tree = buildTree(policy);
 
@@ -168,6 +202,12 @@ void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr<
   // run optimization
   komo->verbose = 1;
   W(komo.get()).reset(allVars);
+
+  // initialize
+  if(x.d0)
+  {
+    komo->set_x( x );
+  }
 
   const auto start = std::chrono::high_resolution_clock::now();
 
@@ -190,10 +230,13 @@ void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr<
   }
 
   //
-  //komo->getReport(true);
+  komo->getReport(true);
   //for(auto c: komo->configurations) std::cout << c->q.N << std::endl;
 
-  watch(komo);
+  x = komo->x;
+
+  watch(komo, tree);
+  }
 }
 
 /// ADMM SPARSE
@@ -270,7 +313,7 @@ void ADMMSParsePlanner::optimize( Policy & policy, const rai::Array< std::shared
 
   auto & komo = komos.back();
   komo->set_x(x);
-  watch(komo);
+  watch(komo, tree);
 }
 
 /// ADMM COMPRESSED
@@ -447,7 +490,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   DecOptConstrained<T, U> opt(x, constrained_problems, xmasks, U(), decOptConfig);
   opt.run();
 
-  auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
   double optimizationTime=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
 
   //4 - LOGS + PRINTS
@@ -465,7 +508,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
-  watch(witness);
+  watch(witness, tree);
 
   //watch(komos.back());
   //witness->plotVelocity();

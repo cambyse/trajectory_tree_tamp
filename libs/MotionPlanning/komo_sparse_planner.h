@@ -31,6 +31,7 @@ public:
                                  Policy & policy,
                                  const std::shared_ptr< ExtensibleKOMO > & komo ) const;
   void watch( const std::shared_ptr< ExtensibleKOMO > & komo ) const;
+  void watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const;
 
   virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const = 0;
 
