@@ -222,7 +222,7 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   //std::cout << "world aimPosition:" << aimPosition << std::endl;
   //std::cout << "world pivotPosition:" << pivotPosition << std::endl;
 
-  // get Head position
+  // get sensor position
   rai::Frame * head = G.getFrameByName( headName_ );
   arr headPosition, headJPosition;
   G.kinematicsPos( headPosition, headJPosition, head );
@@ -242,10 +242,6 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
 
   arr Jw = aimJPosition - pivotJPosition;
   arr Jw1 = ( Jw * normW - w * JnormW * Jw ) / ( normW * normW );
-  //std::cout << "w1:" << w1 << std::endl;
-  //rai::Quaternion _targetQuat;
-  //_targetQuat.setDiff( rai::Vector( 0, -1.0, 0 ), w1 );
-  //arr targetQuat = conv_quat2arr( _targetQuat );
 
   // build u : vector between aiming point and head
   arr u = aimPosition - headPosition;
@@ -254,7 +250,6 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   arr JnormU = Jnorm2( u );  // get Jacobian of the norm operator
   arr u1 = u / normU;
   arr Ju1 = ( Ju * normU - u * JnormU * Ju ) / ( normU * normU ); // jacobian of u normalized
-  //std::cout << "u1:" << u1 << std::endl;
 
   // build v : aiming direction of the sensor
   arr v, Jv;

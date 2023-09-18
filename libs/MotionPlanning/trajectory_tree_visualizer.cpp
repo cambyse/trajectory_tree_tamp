@@ -24,7 +24,7 @@ TrajectoryTreeVisualizer::TrajectoryTreeVisualizer( const rai::Array< rai::Array
   uint n = 0;
   for( auto leaf = frames.begin(); leaf != frames.end(); ++leaf )
   {
-    for( auto x : *leaf )
+    for( const auto& x : *leaf )
     {
       if( x.N > 0 )
       {
@@ -44,7 +44,7 @@ TrajectoryTreeVisualizer::TrajectoryTreeVisualizer( const rai::Array< rai::Array
       rai::Array< rai::KinematicWorld > & traj = (*leaf)( w );
       if( traj.N > 0 )
       {
-        std::string windowName = name + std::string( "-world-" ) + std::to_string( w ) + " - " + std::to_string( index ) ;
+        const std::string windowName = name + std::string( "-world-" ) + std::to_string( w ) + " - " + std::to_string( index ) ;
 
         Var<WorldL> configs;
         configs.name() = windowName.c_str();

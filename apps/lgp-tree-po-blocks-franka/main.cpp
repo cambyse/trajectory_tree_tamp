@@ -49,7 +49,7 @@ void display_robot()
 {
     rai::KinematicWorld kin;
 
-    kin.init( "LGP-franka-kin.g" );
+    kin.init( "LGP-1-block-6-sides-kin.g" );
     //kin.setJointState({0.0, 3.0, 0.0, 0.65, 0.0, -1.0, -0.78});
 
     std::cout << "q:" << kin.q << std::endl;
@@ -79,17 +79,20 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -0.25 ); //-0.25//-0.1//-0.015 );
+  tp.setR0( -0.25 ); //-0.25//-0.1//-0.015 ); for blocks one side
   tp.setMaxDepth( 20 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
 
   // set problem
-  //tp.setFol( "LGP-blocks-fol-1w.g" );
-  //mp.setKin( "LGP-franka-kin-1w.g" );
+  //tp.setFol( "LGP-1-block-1-side-fol.g" );
+  //mp.setKin( "LGP-1-block-1-side-kin.g" );
 
-  tp.setFol( "LGP-blocks-fol-2w.g" );
-  mp.setKin( "LGP-franka-kin-2w.g" );
+  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
+
+  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );
@@ -101,10 +104,10 @@ void plan()
 
   /// BUILD DECISION GRAPH
   tp.buildGraph(true);
-  tp.saveGraphToFile( "decision_graph.gv" );
-  generatePngImage( "decision_graph.gv" );
+  //tp.saveGraphToFile( "decision_graph.gv" );
+  //generatePngImage( "decision_graph.gv" );
 
-#if 1
+#if 0
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
@@ -131,10 +134,10 @@ void plan()
   savePolicyToFile( policy, "-final" );
 #else
   Policy policy;
-  policy.load("policy-check_pickup_stack_linear");
+  policy.load("policy-0");
 #endif
   // default method
-//  mp.display(policy, 200);
+  //mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization
@@ -149,7 +152,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "BranchGen" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }

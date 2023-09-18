@@ -32,8 +32,6 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
 {
   // grasp one side (can be decided here heuristically)
 
-  //return;
-
   const auto& eff = "franka_hand";
   const auto& object = facts[0].c_str();
 
@@ -47,8 +45,7 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
-
-  W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_quatBall, eff, object, komo->world, SWInit_zero, 0, {}));
+  W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_quatBall, eff, object, komo->world, SWInit_zero, 0));//, rel));
 
   // after
   mp::Interval future{{it.time.to, it.time.to + 1.0}, it.edge}; // fix for at least one step
@@ -70,8 +67,6 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
 
 void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const std::vector<std::string>& facts, KOMO_ext* komo, int verbose)
 {
-  //return;
-
   const auto& object = facts[0].c_str();
   const auto& place = facts[1].c_str();
 
@@ -85,11 +80,12 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
+  rel.rot.setRadZ(0.5 * 3.1415);
   rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_transXYPhi, place, object, komo->world, SWInit_zero, 0, rel));
 
   // after (stay stable)
-  mp::Interval future{{it.time.to, it.time.to + 1.0}, it.edge}; // how to improve it? ground until the end sounds inefficient!
+  mp::Interval future{{it.time.to, -1.0}, it.edge}; // how to improve it? ground until the end sounds inefficient!
   W(komo).addObjective(future, tb, new TM_ZeroQVel(komo->world, object), OT_eq, NoArr, 3e1, 1, +1, -1);
   if(komo->k_order > 1)
   {
@@ -104,10 +100,8 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
 
 void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const std::vector<std::string>& facts, KOMO_ext* komo, int verbose)
 {
-  //return;
-
   mp::Interval end{{it.time.to - 0.2, it.time.to}, it.edge};
-  W(komo).addObjective(end, tb, new ActiveGetSight( "franka_hand", facts[0].c_str(), ARR( 0.05, 0, 0.02 ), ARR( 0, 0, -1 ), 0.3 ), OT_eq, NoArr, 1e2, 0 );
+  W(komo).addObjective(end, tb, new ActiveGetSight( "franka_hand", facts[0].c_str(), ARR( 0.05, 0, 0.02 ), ARR( 0, 0, -1 ), 0.2 ), OT_eq, NoArr, 1e2, 0 );
 
   if(verbose > 0)
   {

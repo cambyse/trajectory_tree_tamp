@@ -72,9 +72,7 @@ std::vector<std::string> LogicEngine::getPossibleActions( uint agentId )
 
 void LogicEngine::transition( const std::string & action )
 {
-  auto actions = engine_->get_actions();
-
-  for( const auto& a : actions )
+  for( const auto& a : engine_->get_actions() )
   {
     if( actionToString( a ) == action )
     {

@@ -16,6 +16,7 @@ add_subdirectory("lgp-tree-po-blocks-baxter")
 add_subdirectory("lgp-tree-po-blocks-explo-baxter")
 
 add_subdirectory("lgp-tree-po-blocks-franka")
+add_subdirectory("lgp-tree-po-blocks-explo-franka")
 
 add_subdirectory("lgp-seq-self-driving")
 add_subdirectory("lgp-tree-po-self-driving")

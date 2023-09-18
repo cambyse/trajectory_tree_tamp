@@ -379,6 +379,9 @@ std::vector< std::tuple< double, NodeData, std::string > > DecisionGraph::getPos
       auto startState = states[ w ];
       engine.setState( startState );
 
+      //std::cout << "start state:" << startState << std::endl; // tmp camille
+      //std::cout << "action:" << action << std::endl; // tmp camille
+
       engine.transition( action );
 
       const auto _result          = engine.getState();
@@ -387,7 +390,7 @@ std::vector< std::tuple< double, NodeData, std::string > > DecisionGraph::getPos
       const auto observableFacts  = getObservableFacts( facts );
       const auto terminal         = engine.isTerminal();
 
-      //std::cout << result << std::endl; // tmp camille
+      //std::cout << "result:" << result << std::endl; // tmp camille
 
       std::set< std::string > newIntersection;
 
