@@ -96,7 +96,7 @@ void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const st
 
   //mp::W(komo).addObjective(start, end, branch, new ActiveGetSight( "head", facts[0].c_str(), ARR( 0.05, 0.01, 0 ), ARR( -1, 0, 0 ), 0.65 ), OT_sos, NoArr, 1e2,0 ); // slight offset (0.01) to break symmetry and avoid quternion normalization problem
   mp::Interval end{{it.time.to-0.1, it.time.to}, it.edge};
-  if(activateObjectives)  W(komo).addObjective(end, tb, new ActiveGetSight( "head", facts[0].c_str(), ARR( 0.05, 0.01, 0 ), ARR( -1, 0, 0 ), 0.65 ), OT_eq, NoArr, 1e2, 0 );
+  if(activateObjectives)  W(komo).addObjective(end, tb, new ActiveGetSight( "head", facts[0].c_str(), ARR( 0.05, 0.01, 0 ), ARR( -0.3, 0, -1.0 ), 0.65 ), OT_eq, NoArr, 1e2, 0 );
 
   if(verbose > 0)
   {

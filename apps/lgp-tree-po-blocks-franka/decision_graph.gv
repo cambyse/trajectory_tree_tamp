@@ -1,0 +1,4058 @@
+digraph g{
+bgcolor="transparent"{
+0 [style=filled, fillcolor=blue]
+0 [shape=square, style=filled, fillcolor=blue]
+1 [shape=square, style=filled, fillcolor=cyan]
+1 [shape=diamond]
+2 [shape=square, style=filled, fillcolor=cyan]
+3 [shape=square, style=filled, fillcolor=cyan]
+3 [shape=diamond]
+4 [shape=square, style=filled, fillcolor=cyan]
+5 [shape=square, style=filled, fillcolor=cyan]
+6 [shape=square, style=filled, fillcolor=cyan]
+6 [shape=diamond]
+7 [shape=square, style=filled, fillcolor=cyan]
+8 [shape=square, style=filled, fillcolor=cyan]
+9 [shape=square, style=filled, fillcolor=cyan]
+9 [shape=diamond]
+10 [shape=square, style=filled, fillcolor=cyan]
+11 [shape=square, style=filled, fillcolor=cyan]
+12 [shape=square, style=filled, fillcolor=cyan]
+12 [shape=diamond]
+13 [shape=square, style=filled, fillcolor=cyan]
+14 [shape=square, style=filled, fillcolor=cyan]
+15 [shape=square, style=filled, fillcolor=cyan]
+15 [shape=diamond]
+16 [shape=square, style=filled, fillcolor=cyan]
+17 [shape=square, style=filled, fillcolor=cyan]
+18 [shape=square, style=filled, fillcolor=cyan]
+18 [shape=diamond]
+19 [shape=square, style=filled, fillcolor=cyan]
+20 [shape=square, style=filled, fillcolor=cyan]
+21 [shape=square, style=filled, fillcolor=cyan]
+21 [shape=diamond]
+22 [shape=square, style=filled, fillcolor=cyan]
+23 [shape=square, style=filled, fillcolor=cyan]
+23 [shape=diamond]
+24 [shape=square, style=filled, fillcolor=cyan]
+24 [shape=diamond]
+25 [shape=square, style=filled, fillcolor=cyan]
+26 [shape=square, style=filled, fillcolor=cyan]
+27 [shape=square, style=filled, fillcolor=cyan]
+27 [shape=diamond]
+28 [shape=square, style=filled, fillcolor=cyan]
+29 [shape=square, style=filled, fillcolor=cyan]
+30 [shape=square, style=filled, fillcolor=cyan]
+30 [shape=diamond]
+31 [shape=square, style=filled, fillcolor=cyan]
+32 [shape=square, style=filled, fillcolor=cyan]
+33 [shape=square, style=filled, fillcolor=cyan]
+33 [shape=diamond]
+34 [shape=square, style=filled, fillcolor=cyan]
+35 [shape=square, style=filled, fillcolor=cyan]
+36 [shape=square, style=filled, fillcolor=cyan]
+36 [shape=diamond]
+37 [shape=square, style=filled, fillcolor=cyan]
+38 [shape=square, style=filled, fillcolor=cyan]
+39 [shape=square, style=filled, fillcolor=cyan]
+39 [shape=diamond]
+40 [shape=square, style=filled, fillcolor=cyan]
+41 [shape=square, style=filled, fillcolor=cyan]
+41 [shape=diamond]
+42 [shape=square, style=filled, fillcolor=cyan]
+43 [shape=square, style=filled, fillcolor=cyan]
+43 [shape=diamond]
+44 [shape=square, style=filled, fillcolor=cyan]
+44 [shape=diamond]
+45 [shape=square, style=filled, fillcolor=cyan]
+46 [shape=square, style=filled, fillcolor=cyan]
+47 [shape=square, style=filled, fillcolor=cyan]
+47 [shape=diamond]
+48 [shape=square, style=filled, fillcolor=cyan]
+49 [shape=square, style=filled, fillcolor=cyan]
+50 [shape=square, style=filled, fillcolor=cyan]
+50 [shape=diamond]
+51 [shape=square, style=filled, fillcolor=cyan]
+52 [shape=square, style=filled, fillcolor=cyan]
+53 [shape=square, style=filled, fillcolor=cyan]
+53 [shape=diamond]
+54 [shape=square, style=filled, fillcolor=cyan]
+55 [shape=square, style=filled, fillcolor=cyan]
+56 [shape=square, style=filled, fillcolor=cyan]
+56 [shape=diamond]
+57 [shape=square, style=filled, fillcolor=cyan]
+58 [shape=square, style=filled, fillcolor=cyan]
+58 [shape=diamond]
+59 [shape=square, style=filled, fillcolor=cyan]
+60 [shape=square, style=filled, fillcolor=cyan]
+60 [shape=diamond]
+61 [shape=square, style=filled, fillcolor=cyan]
+62 [shape=square, style=filled, fillcolor=cyan]
+62 [shape=diamond]
+63 [shape=square, style=filled, fillcolor=cyan]
+63 [shape=diamond]
+64 [shape=square, style=filled, fillcolor=cyan]
+65 [shape=square, style=filled, fillcolor=cyan]
+66 [shape=square, style=filled, fillcolor=cyan]
+66 [shape=diamond]
+67 [shape=square, style=filled, fillcolor=cyan]
+68 [shape=square, style=filled, fillcolor=cyan]
+69 [shape=square, style=filled, fillcolor=cyan]
+69 [shape=diamond]
+70 [shape=square, style=filled, fillcolor=cyan]
+71 [shape=square, style=filled, fillcolor=cyan]
+72 [shape=square, style=filled, fillcolor=cyan]
+72 [shape=diamond]
+73 [shape=square, style=filled, fillcolor=cyan]
+74 [shape=square, style=filled, fillcolor=cyan]
+74 [shape=diamond]
+75 [shape=square, style=filled, fillcolor=cyan]
+76 [shape=square, style=filled, fillcolor=cyan]
+76 [shape=diamond]
+77 [shape=square, style=filled, fillcolor=cyan]
+78 [shape=square, style=filled, fillcolor=cyan]
+78 [shape=diamond]
+79 [shape=square, style=filled, fillcolor=cyan]
+80 [shape=square, style=filled, fillcolor=cyan]
+80 [shape=diamond]
+81 [shape=square, style=filled, fillcolor=cyan]
+81 [shape=diamond]
+82 [shape=square, style=filled, fillcolor=cyan]
+83 [shape=square, style=filled, fillcolor=cyan]
+84 [shape=square, style=filled, fillcolor=cyan]
+84 [shape=diamond]
+85 [shape=square, style=filled, fillcolor=cyan]
+86 [shape=square, style=filled, fillcolor=cyan]
+87 [shape=square, style=filled, fillcolor=cyan]
+87 [shape=diamond]
+88 [shape=square, style=filled, fillcolor=cyan]
+89 [shape=square, style=filled, fillcolor=cyan]
+89 [shape=diamond]
+90 [shape=square, style=filled, fillcolor=cyan]
+91 [shape=square, style=filled, fillcolor=cyan]
+91 [shape=diamond]
+92 [shape=square, style=filled, fillcolor=cyan]
+93 [shape=square, style=filled, fillcolor=cyan]
+93 [shape=diamond]
+94 [shape=square, style=filled, fillcolor=cyan]
+95 [shape=square, style=filled, fillcolor=cyan]
+95 [shape=diamond]
+96 [shape=square, style=filled, fillcolor=cyan]
+97 [shape=square, style=filled, fillcolor=cyan]
+97 [shape=diamond]
+98 [shape=square, style=filled, fillcolor=cyan]
+98 [shape=diamond]
+99 [shape=square, style=filled, fillcolor=cyan]
+100 [shape=square, style=filled, fillcolor=cyan]
+101 [shape=square, style=filled, fillcolor=cyan]
+101 [shape=diamond]
+102 [shape=square, style=filled, fillcolor=cyan]
+103 [shape=square, style=filled, fillcolor=cyan]
+103 [shape=diamond]
+104 [shape=square, style=filled, fillcolor=cyan]
+105 [shape=square, style=filled, fillcolor=cyan]
+105 [shape=diamond]
+106 [shape=square, style=filled, fillcolor=cyan]
+107 [shape=square, style=filled, fillcolor=cyan]
+107 [shape=diamond]
+108 [shape=square, style=filled, fillcolor=cyan]
+109 [shape=square, style=filled, fillcolor=cyan]
+109 [shape=diamond]
+110 [shape=square, style=filled, fillcolor=cyan]
+111 [shape=square, style=filled, fillcolor=cyan]
+111 [shape=diamond]
+112 [shape=square, style=filled, fillcolor=cyan]
+113 [shape=square, style=filled, fillcolor=cyan]
+113 [shape=diamond]
+114 [shape=square, style=filled, fillcolor=cyan]
+114 [shape=diamond]
+115 [shape=square, style=filled, fillcolor=cyan]
+116 [shape=square, style=filled, fillcolor=cyan]
+116 [shape=diamond]
+117 [shape=square, style=filled, fillcolor=cyan]
+117 [shape=diamond]
+118 [shape=square, style=filled, fillcolor=cyan]
+118 [shape=diamond]
+119 [shape=square, style=filled, fillcolor=cyan]
+120 [shape=square, style=filled, fillcolor=cyan]
+121 [shape=square, style=filled, fillcolor=cyan]
+121 [shape=diamond]
+122 [shape=square, style=filled, fillcolor=cyan]
+123 [shape=square, style=filled, fillcolor=cyan]
+124 [shape=square, style=filled, fillcolor=cyan]
+124 [shape=diamond]
+125 [shape=square, style=filled, fillcolor=cyan]
+126 [shape=square, style=filled, fillcolor=cyan]
+127 [shape=square, style=filled, fillcolor=cyan]
+127 [shape=diamond]
+128 [shape=square, style=filled, fillcolor=cyan]
+129 [shape=square, style=filled, fillcolor=cyan]
+130 [shape=square, style=filled, fillcolor=cyan]
+130 [shape=diamond]
+131 [shape=square, style=filled, fillcolor=cyan]
+132 [shape=square, style=filled, fillcolor=cyan]
+132 [shape=diamond]
+133 [shape=square, style=filled, fillcolor=cyan]
+133 [shape=diamond]
+134 [shape=square, style=filled, fillcolor=cyan]
+135 [shape=square, style=filled, fillcolor=cyan]
+135 [shape=diamond]
+136 [shape=square, style=filled, fillcolor=cyan]
+136 [shape=diamond]
+137 [shape=square, style=filled, fillcolor=cyan]
+138 [shape=square, style=filled, fillcolor=cyan]
+139 [shape=square, style=filled, fillcolor=cyan]
+139 [shape=diamond]
+140 [shape=square, style=filled, fillcolor=cyan]
+141 [shape=square, style=filled, fillcolor=cyan]
+142 [shape=square, style=filled, fillcolor=cyan]
+142 [shape=diamond]
+143 [shape=square, style=filled, fillcolor=cyan]
+144 [shape=square, style=filled, fillcolor=cyan]
+145 [shape=square, style=filled, fillcolor=cyan]
+145 [shape=diamond]
+146 [shape=square, style=filled, fillcolor=cyan]
+147 [shape=square, style=filled, fillcolor=cyan]
+147 [shape=diamond]
+148 [shape=square, style=filled, fillcolor=cyan]
+148 [shape=diamond]
+149 [shape=square, style=filled, fillcolor=cyan]
+150 [shape=square, style=filled, fillcolor=cyan]
+150 [shape=diamond]
+151 [shape=square, style=filled, fillcolor=cyan]
+152 [shape=square, style=filled, fillcolor=cyan]
+152 [shape=diamond]
+153 [shape=square, style=filled, fillcolor=cyan]
+153 [shape=diamond]
+154 [shape=square, style=filled, fillcolor=cyan]
+155 [shape=square, style=filled, fillcolor=cyan]
+156 [shape=square, style=filled, fillcolor=cyan]
+156 [shape=diamond]
+157 [shape=square, style=filled, fillcolor=cyan]
+158 [shape=square, style=filled, fillcolor=cyan]
+159 [shape=square, style=filled, fillcolor=cyan]
+159 [shape=diamond]
+160 [shape=square, style=filled, fillcolor=cyan]
+161 [shape=square, style=filled, fillcolor=cyan]
+161 [shape=diamond]
+162 [shape=square, style=filled, fillcolor=cyan]
+162 [shape=diamond]
+163 [shape=square, style=filled, fillcolor=cyan]
+164 [shape=square, style=filled, fillcolor=cyan]
+164 [shape=diamond]
+165 [shape=square, style=filled, fillcolor=cyan]
+166 [shape=square, style=filled, fillcolor=cyan]
+166 [shape=diamond]
+167 [shape=square, style=filled, fillcolor=cyan]
+168 [shape=square, style=filled, fillcolor=cyan]
+168 [shape=diamond]
+169 [shape=square, style=filled, fillcolor=cyan]
+169 [shape=diamond]
+170 [shape=square, style=filled, fillcolor=cyan]
+171 [shape=square, style=filled, fillcolor=cyan]
+172 [shape=square, style=filled, fillcolor=cyan]
+172 [shape=diamond]
+173 [shape=square, style=filled, fillcolor=cyan]
+174 [shape=square, style=filled, fillcolor=cyan]
+174 [shape=diamond]
+175 [shape=square, style=filled, fillcolor=cyan]
+175 [shape=diamond]
+176 [shape=square, style=filled, fillcolor=cyan]
+177 [shape=square, style=filled, fillcolor=cyan]
+177 [shape=diamond]
+178 [shape=square, style=filled, fillcolor=cyan]
+179 [shape=square, style=filled, fillcolor=cyan]
+179 [shape=diamond]
+180 [shape=square, style=filled, fillcolor=cyan]
+181 [shape=square, style=filled, fillcolor=cyan]
+181 [shape=diamond]
+182 [shape=square, style=filled, fillcolor=cyan]
+183 [shape=square, style=filled, fillcolor=cyan]
+183 [shape=diamond]
+184 [shape=square, style=filled, fillcolor=cyan]
+184 [shape=diamond]
+185 [shape=square, style=filled, fillcolor=cyan]
+186 [shape=square, style=filled, fillcolor=cyan]
+186 [shape=diamond]
+187 [shape=square, style=filled, fillcolor=cyan]
+188 [shape=square, style=filled, fillcolor=cyan]
+188 [shape=diamond]
+189 [shape=square, style=filled, fillcolor=cyan]
+190 [shape=square, style=filled, fillcolor=cyan]
+190 [shape=diamond]
+191 [shape=square, style=filled, fillcolor=cyan]
+191 [shape=diamond]
+192 [shape=square, style=filled, fillcolor=cyan]
+192 [shape=diamond]
+193 [shape=square, style=filled, fillcolor=cyan]
+194 [shape=square, style=filled, fillcolor=cyan]
+195 [shape=square, style=filled, fillcolor=cyan]
+195 [shape=diamond]
+196 [shape=square, style=filled, fillcolor=cyan]
+197 [shape=square, style=filled, fillcolor=cyan]
+198 [shape=square, style=filled, fillcolor=cyan]
+198 [shape=diamond]
+199 [shape=square, style=filled, fillcolor=cyan]
+200 [shape=square, style=filled, fillcolor=cyan]
+201 [shape=square, style=filled, fillcolor=cyan]
+201 [shape=diamond]
+202 [shape=square, style=filled, fillcolor=cyan]
+203 [shape=square, style=filled, fillcolor=cyan]
+203 [shape=diamond]
+204 [shape=square, style=filled, fillcolor=cyan]
+205 [shape=square, style=filled, fillcolor=cyan]
+205 [shape=diamond]
+206 [shape=square, style=filled, fillcolor=cyan]
+206 [shape=diamond]
+207 [shape=square, style=filled, fillcolor=cyan]
+208 [shape=square, style=filled, fillcolor=cyan]
+208 [shape=diamond]
+209 [shape=square, style=filled, fillcolor=cyan]
+209 [shape=diamond]
+210 [shape=square, style=filled, fillcolor=cyan]
+211 [shape=square, style=filled, fillcolor=cyan]
+212 [shape=square, style=filled, fillcolor=cyan]
+212 [shape=diamond]
+213 [shape=square, style=filled, fillcolor=cyan]
+214 [shape=square, style=filled, fillcolor=cyan]
+215 [shape=square, style=filled, fillcolor=cyan]
+215 [shape=diamond]
+216 [shape=square, style=filled, fillcolor=cyan]
+217 [shape=square, style=filled, fillcolor=cyan]
+217 [shape=diamond]
+218 [shape=square, style=filled, fillcolor=cyan]
+219 [shape=square, style=filled, fillcolor=cyan]
+219 [shape=diamond]
+220 [shape=square, style=filled, fillcolor=cyan]
+220 [shape=diamond]
+221 [shape=square, style=filled, fillcolor=cyan]
+222 [shape=square, style=filled, fillcolor=cyan]
+222 [shape=diamond]
+223 [shape=square, style=filled, fillcolor=cyan]
+224 [shape=square, style=filled, fillcolor=cyan]
+224 [shape=diamond]
+225 [shape=square, style=filled, fillcolor=cyan]
+225 [shape=diamond]
+226 [shape=square, style=filled, fillcolor=cyan]
+227 [shape=square, style=filled, fillcolor=cyan]
+228 [shape=square, style=filled, fillcolor=cyan]
+228 [shape=diamond]
+229 [shape=square, style=filled, fillcolor=cyan]
+230 [shape=square, style=filled, fillcolor=cyan]
+230 [shape=diamond]
+231 [shape=square, style=filled, fillcolor=cyan]
+232 [shape=square, style=filled, fillcolor=cyan]
+232 [shape=diamond]
+233 [shape=square, style=filled, fillcolor=cyan]
+233 [shape=diamond]
+234 [shape=square, style=filled, fillcolor=cyan]
+235 [shape=square, style=filled, fillcolor=cyan]
+235 [shape=diamond]
+236 [shape=square, style=filled, fillcolor=cyan]
+237 [shape=square, style=filled, fillcolor=cyan]
+237 [shape=diamond]
+238 [shape=square, style=filled, fillcolor=cyan]
+239 [shape=square, style=filled, fillcolor=cyan]
+239 [shape=diamond]
+240 [shape=square, style=filled, fillcolor=cyan]
+240 [shape=diamond]
+241 [shape=square, style=filled, fillcolor=cyan]
+242 [shape=square, style=filled, fillcolor=cyan]
+242 [shape=diamond]
+243 [shape=square, style=filled, fillcolor=cyan]
+244 [shape=square, style=filled, fillcolor=cyan]
+244 [shape=diamond]
+245 [shape=square, style=filled, fillcolor=cyan]
+246 [shape=square, style=filled, fillcolor=cyan]
+246 [shape=diamond]
+247 [shape=square, style=filled, fillcolor=cyan]
+248 [shape=square, style=filled, fillcolor=cyan]
+248 [shape=diamond]
+249 [shape=square, style=filled, fillcolor=cyan]
+250 [shape=square, style=filled, fillcolor=cyan]
+250 [shape=diamond]
+251 [shape=square, style=filled, fillcolor=cyan]
+251 [shape=diamond]
+252 [shape=square, style=filled, fillcolor=cyan]
+252 [shape=diamond]
+253 [shape=square, style=filled, fillcolor=cyan]
+254 [shape=square, style=filled, fillcolor=cyan]
+255 [shape=square, style=filled, fillcolor=cyan]
+255 [shape=diamond]
+256 [shape=square, style=filled, fillcolor=cyan]
+257 [shape=square, style=filled, fillcolor=cyan]
+258 [shape=square, style=filled, fillcolor=cyan]
+258 [shape=diamond]
+259 [shape=square, style=filled, fillcolor=cyan]
+260 [shape=square, style=filled, fillcolor=cyan]
+260 [shape=diamond]
+261 [shape=square, style=filled, fillcolor=cyan]
+262 [shape=square, style=filled, fillcolor=cyan]
+262 [shape=diamond]
+263 [shape=square, style=filled, fillcolor=cyan]
+264 [shape=square, style=filled, fillcolor=cyan]
+264 [shape=diamond]
+265 [shape=square, style=filled, fillcolor=cyan]
+265 [shape=diamond]
+266 [shape=square, style=filled, fillcolor=cyan]
+267 [shape=square, style=filled, fillcolor=cyan]
+267 [shape=diamond]
+268 [shape=square, style=filled, fillcolor=cyan]
+268 [shape=diamond]
+269 [shape=square, style=filled, fillcolor=cyan]
+270 [shape=square, style=filled, fillcolor=cyan]
+271 [shape=square, style=filled, fillcolor=cyan]
+271 [shape=diamond]
+272 [shape=square, style=filled, fillcolor=cyan]
+273 [shape=square, style=filled, fillcolor=cyan]
+273 [shape=diamond]
+274 [shape=square, style=filled, fillcolor=cyan]
+275 [shape=square, style=filled, fillcolor=cyan]
+275 [shape=diamond]
+276 [shape=square, style=filled, fillcolor=cyan]
+277 [shape=square, style=filled, fillcolor=cyan]
+277 [shape=diamond]
+278 [shape=square, style=filled, fillcolor=cyan]
+278 [shape=diamond]
+279 [shape=square, style=filled, fillcolor=cyan]
+280 [shape=square, style=filled, fillcolor=cyan]
+280 [shape=diamond]
+281 [shape=square, style=filled, fillcolor=cyan]
+282 [shape=square, style=filled, fillcolor=cyan]
+282 [shape=diamond]
+283 [shape=square, style=filled, fillcolor=cyan]
+283 [shape=diamond]
+284 [shape=square, style=filled, fillcolor=cyan]
+285 [shape=square, style=filled, fillcolor=cyan]
+285 [shape=diamond]
+286 [shape=square, style=filled, fillcolor=cyan]
+287 [shape=square, style=filled, fillcolor=cyan]
+287 [shape=diamond]
+288 [shape=square, style=filled, fillcolor=cyan]
+289 [shape=square, style=filled, fillcolor=cyan]
+289 [shape=diamond]
+290 [shape=square, style=filled, fillcolor=cyan]
+291 [shape=square, style=filled, fillcolor=cyan]
+291 [shape=diamond]
+292 [shape=square, style=filled, fillcolor=cyan]
+293 [shape=square, style=filled, fillcolor=cyan]
+293 [shape=diamond]
+294 [shape=square, style=filled, fillcolor=cyan]
+295 [shape=square, style=filled, fillcolor=cyan]
+295 [shape=diamond]
+296 [shape=square, style=filled, fillcolor=cyan]
+297 [shape=square, style=filled, fillcolor=cyan]
+297 [shape=diamond]
+298 [shape=square, style=filled, fillcolor=cyan]
+298 [shape=diamond]
+299 [shape=square, style=filled, fillcolor=cyan]
+299 [shape=diamond]
+300 [shape=square, style=filled, fillcolor=cyan]
+301 [shape=square, style=filled, fillcolor=cyan]
+302 [shape=square, style=filled, fillcolor=cyan]
+302 [shape=diamond]
+303 [shape=square, style=filled, fillcolor=cyan]
+304 [shape=square, style=filled, fillcolor=cyan]
+304 [shape=diamond]
+305 [shape=square, style=filled, fillcolor=cyan]
+306 [shape=square, style=filled, fillcolor=cyan]
+306 [shape=diamond]
+307 [shape=square, style=filled, fillcolor=cyan]
+308 [shape=square, style=filled, fillcolor=cyan]
+308 [shape=diamond]
+309 [shape=square, style=filled, fillcolor=cyan]
+310 [shape=square, style=filled, fillcolor=cyan]
+310 [shape=diamond]
+311 [shape=square, style=filled, fillcolor=cyan]
+311 [shape=diamond]
+312 [shape=square, style=filled, fillcolor=cyan]
+313 [shape=square, style=filled, fillcolor=cyan]
+313 [shape=diamond]
+314 [shape=square, style=filled, fillcolor=cyan]
+314 [shape=diamond]
+315 [shape=square, style=filled, fillcolor=cyan]
+316 [shape=square, style=filled, fillcolor=cyan]
+316 [shape=diamond]
+317 [shape=square, style=filled, fillcolor=cyan]
+318 [shape=square, style=filled, fillcolor=cyan]
+318 [shape=diamond]
+319 [shape=square, style=filled, fillcolor=cyan]
+320 [shape=square, style=filled, fillcolor=cyan]
+320 [shape=diamond]
+321 [shape=square, style=filled, fillcolor=cyan]
+322 [shape=square, style=filled, fillcolor=cyan]
+322 [shape=diamond]
+323 [shape=square, style=filled, fillcolor=cyan]
+324 [shape=square, style=filled, fillcolor=cyan]
+324 [shape=diamond]
+325 [shape=square, style=filled, fillcolor=cyan]
+326 [shape=square, style=filled, fillcolor=cyan]
+326 [shape=diamond]
+327 [shape=square, style=filled, fillcolor=cyan]
+328 [shape=square, style=filled, fillcolor=cyan]
+328 [shape=diamond]
+329 [shape=square, style=filled, fillcolor=cyan]
+330 [shape=square, style=filled, fillcolor=cyan]
+330 [shape=diamond]
+331 [shape=square, style=filled, fillcolor=cyan]
+332 [shape=square, style=filled, fillcolor=cyan]
+332 [shape=diamond]
+333 [shape=square, style=filled, fillcolor=cyan]
+333 [shape=diamond]
+334 [shape=square, style=filled, fillcolor=cyan]
+334 [shape=diamond]
+335 [shape=square, style=filled, fillcolor=cyan]
+336 [shape=square, style=filled, fillcolor=cyan]
+336 [shape=diamond]
+337 [shape=square, style=filled, fillcolor=cyan]
+338 [shape=square, style=filled, fillcolor=cyan]
+338 [shape=diamond]
+339 [shape=square, style=filled, fillcolor=cyan]
+340 [shape=square, style=filled, fillcolor=cyan]
+340 [shape=diamond]
+341 [shape=square, style=filled, fillcolor=cyan]
+342 [shape=square, style=filled, fillcolor=cyan]
+342 [shape=diamond]
+343 [shape=square, style=filled, fillcolor=cyan]
+344 [shape=square, style=filled, fillcolor=cyan]
+344 [shape=diamond]
+345 [shape=square, style=filled, fillcolor=cyan]
+346 [shape=square, style=filled, fillcolor=cyan]
+346 [shape=diamond]
+347 [shape=square, style=filled, fillcolor=cyan]
+347 [shape=diamond]
+348 [shape=square, style=filled, fillcolor=cyan]
+348 [shape=diamond]
+349 [shape=square, style=filled, fillcolor=cyan]
+349 [shape=diamond]
+350 [shape=square, style=filled, fillcolor=cyan]
+351 [shape=square, style=filled, fillcolor=cyan]
+352 [shape=square, style=filled, fillcolor=cyan]
+352 [shape=diamond]
+353 [shape=square, style=filled, fillcolor=cyan]
+354 [shape=square, style=filled, fillcolor=cyan]
+355 [shape=square, style=filled, fillcolor=cyan]
+355 [shape=diamond]
+356 [shape=square, style=filled, fillcolor=cyan]
+357 [shape=square, style=filled, fillcolor=cyan]
+358 [shape=square, style=filled, fillcolor=cyan]
+358 [shape=diamond]
+359 [shape=square, style=filled, fillcolor=cyan]
+360 [shape=square, style=filled, fillcolor=cyan]
+360 [shape=diamond]
+361 [shape=square, style=filled, fillcolor=cyan]
+361 [shape=diamond]
+362 [shape=square, style=filled, fillcolor=cyan]
+362 [shape=diamond]
+363 [shape=square, style=filled, fillcolor=cyan]
+364 [shape=square, style=filled, fillcolor=cyan]
+364 [shape=diamond]
+365 [shape=square, style=filled, fillcolor=cyan]
+365 [shape=diamond]
+366 [shape=square, style=filled, fillcolor=cyan]
+367 [shape=square, style=filled, fillcolor=cyan]
+368 [shape=square, style=filled, fillcolor=cyan]
+368 [shape=diamond]
+369 [shape=square, style=filled, fillcolor=cyan]
+370 [shape=square, style=filled, fillcolor=cyan]
+371 [shape=square, style=filled, fillcolor=cyan]
+371 [shape=diamond]
+372 [shape=square, style=filled, fillcolor=cyan]
+373 [shape=square, style=filled, fillcolor=cyan]
+373 [shape=diamond]
+374 [shape=square, style=filled, fillcolor=cyan]
+374 [shape=diamond]
+375 [shape=square, style=filled, fillcolor=cyan]
+375 [shape=diamond]
+376 [shape=square, style=filled, fillcolor=cyan]
+377 [shape=square, style=filled, fillcolor=cyan]
+377 [shape=diamond]
+378 [shape=square, style=filled, fillcolor=cyan]
+379 [shape=square, style=filled, fillcolor=cyan]
+379 [shape=diamond]
+380 [shape=square, style=filled, fillcolor=cyan]
+380 [shape=diamond]
+381 [shape=square, style=filled, fillcolor=cyan]
+382 [shape=square, style=filled, fillcolor=cyan]
+383 [shape=square, style=filled, fillcolor=cyan]
+383 [shape=diamond]
+384 [shape=square, style=filled, fillcolor=cyan]
+385 [shape=square, style=filled, fillcolor=cyan]
+385 [shape=diamond]
+386 [shape=square, style=filled, fillcolor=cyan]
+386 [shape=diamond]
+387 [shape=square, style=filled, fillcolor=cyan]
+387 [shape=diamond]
+388 [shape=square, style=filled, fillcolor=cyan]
+389 [shape=square, style=filled, fillcolor=cyan]
+389 [shape=diamond]
+390 [shape=square, style=filled, fillcolor=cyan]
+391 [shape=square, style=filled, fillcolor=cyan]
+391 [shape=diamond]
+392 [shape=square, style=filled, fillcolor=cyan]
+393 [shape=square, style=filled, fillcolor=cyan]
+393 [shape=diamond]
+394 [shape=square, style=filled, fillcolor=cyan]
+394 [shape=diamond]
+395 [shape=square, style=filled, fillcolor=cyan]
+396 [shape=square, style=filled, fillcolor=cyan]
+396 [shape=diamond]
+397 [shape=square, style=filled, fillcolor=cyan]
+398 [shape=square, style=filled, fillcolor=cyan]
+398 [shape=diamond]
+399 [shape=square, style=filled, fillcolor=cyan]
+399 [shape=diamond]
+400 [shape=square, style=filled, fillcolor=cyan]
+401 [shape=square, style=filled, fillcolor=cyan]
+401 [shape=diamond]
+402 [shape=square, style=filled, fillcolor=cyan]
+402 [shape=diamond]
+403 [shape=square, style=filled, fillcolor=cyan]
+403 [shape=diamond]
+404 [shape=square, style=filled, fillcolor=cyan]
+405 [shape=square, style=filled, fillcolor=cyan]
+406 [shape=square, style=filled, fillcolor=cyan]
+406 [shape=diamond]
+407 [shape=square, style=filled, fillcolor=cyan]
+408 [shape=square, style=filled, fillcolor=cyan]
+409 [shape=square, style=filled, fillcolor=cyan]
+409 [shape=diamond]
+410 [shape=square, style=filled, fillcolor=cyan]
+411 [shape=square, style=filled, fillcolor=cyan]
+411 [shape=diamond]
+412 [shape=square, style=filled, fillcolor=cyan]
+412 [shape=diamond]
+413 [shape=square, style=filled, fillcolor=cyan]
+414 [shape=square, style=filled, fillcolor=cyan]
+414 [shape=diamond]
+415 [shape=square, style=filled, fillcolor=cyan]
+415 [shape=diamond]
+416 [shape=square, style=filled, fillcolor=cyan]
+417 [shape=square, style=filled, fillcolor=cyan]
+417 [shape=diamond]
+418 [shape=square, style=filled, fillcolor=cyan]
+418 [shape=diamond]
+419 [shape=square, style=filled, fillcolor=cyan]
+420 [shape=square, style=filled, fillcolor=cyan]
+421 [shape=square, style=filled, fillcolor=cyan]
+421 [shape=diamond]
+422 [shape=square, style=filled, fillcolor=cyan]
+423 [shape=square, style=filled, fillcolor=cyan]
+423 [shape=diamond]
+424 [shape=square, style=filled, fillcolor=cyan]
+424 [shape=diamond]
+425 [shape=square, style=filled, fillcolor=cyan]
+426 [shape=square, style=filled, fillcolor=cyan]
+426 [shape=diamond]
+427 [shape=square, style=filled, fillcolor=cyan]
+427 [shape=diamond]
+428 [shape=square, style=filled, fillcolor=cyan]
+429 [shape=square, style=filled, fillcolor=cyan]
+429 [shape=diamond]
+430 [shape=square, style=filled, fillcolor=cyan]
+431 [shape=square, style=filled, fillcolor=cyan]
+431 [shape=diamond]
+432 [shape=square, style=filled, fillcolor=cyan]
+432 [shape=diamond]
+433 [shape=square, style=filled, fillcolor=cyan]
+434 [shape=square, style=filled, fillcolor=cyan]
+434 [shape=diamond]
+435 [shape=square, style=filled, fillcolor=cyan]
+436 [shape=square, style=filled, fillcolor=cyan]
+436 [shape=diamond]
+437 [shape=square, style=filled, fillcolor=cyan]
+438 [shape=square, style=filled, fillcolor=cyan]
+438 [shape=diamond]
+439 [shape=square, style=filled, fillcolor=cyan]
+439 [shape=diamond]
+440 [shape=square, style=filled, fillcolor=cyan]
+441 [shape=square, style=filled, fillcolor=cyan]
+441 [shape=diamond]
+442 [shape=square, style=filled, fillcolor=cyan]
+443 [shape=square, style=filled, fillcolor=cyan]
+443 [shape=diamond]
+444 [shape=square, style=filled, fillcolor=cyan]
+444 [shape=diamond]
+445 [shape=square, style=filled, fillcolor=cyan]
+445 [shape=diamond]
+446 [shape=square, style=filled, fillcolor=cyan]
+447 [shape=square, style=filled, fillcolor=cyan]
+448 [shape=square, style=filled, fillcolor=cyan]
+448 [shape=diamond]
+449 [shape=square, style=filled, fillcolor=cyan]
+450 [shape=square, style=filled, fillcolor=cyan]
+450 [shape=diamond]
+451 [shape=square, style=filled, fillcolor=cyan]
+451 [shape=diamond]
+452 [shape=square, style=filled, fillcolor=cyan]
+453 [shape=square, style=filled, fillcolor=cyan]
+453 [shape=diamond]
+454 [shape=square, style=filled, fillcolor=cyan]
+455 [shape=square, style=filled, fillcolor=cyan]
+455 [shape=diamond]
+456 [shape=square, style=filled, fillcolor=cyan]
+456 [shape=diamond]
+457 [shape=square, style=filled, fillcolor=cyan]
+458 [shape=square, style=filled, fillcolor=cyan]
+458 [shape=diamond]
+459 [shape=square, style=filled, fillcolor=cyan]
+459 [shape=diamond]
+460 [shape=square, style=filled, fillcolor=cyan]
+461 [shape=square, style=filled, fillcolor=cyan]
+461 [shape=diamond]
+462 [shape=square, style=filled, fillcolor=cyan]
+463 [shape=square, style=filled, fillcolor=cyan]
+463 [shape=diamond]
+464 [shape=square, style=filled, fillcolor=cyan]
+465 [shape=square, style=filled, fillcolor=cyan]
+465 [shape=diamond]
+466 [shape=square, style=filled, fillcolor=cyan]
+467 [shape=square, style=filled, fillcolor=cyan]
+467 [shape=diamond]
+468 [shape=square, style=filled, fillcolor=cyan]
+468 [shape=diamond]
+469 [shape=square, style=filled, fillcolor=cyan]
+470 [shape=square, style=filled, fillcolor=cyan]
+470 [shape=diamond]
+471 [shape=square, style=filled, fillcolor=cyan]
+472 [shape=square, style=filled, fillcolor=cyan]
+472 [shape=diamond]
+473 [shape=square, style=filled, fillcolor=cyan]
+474 [shape=square, style=filled, fillcolor=cyan]
+474 [shape=diamond]
+475 [shape=square, style=filled, fillcolor=cyan]
+475 [shape=diamond]
+476 [shape=square, style=filled, fillcolor=cyan]
+476 [shape=diamond]
+477 [shape=square, style=filled, fillcolor=cyan]
+478 [shape=square, style=filled, fillcolor=cyan]
+478 [shape=diamond]
+479 [shape=square, style=filled, fillcolor=cyan]
+480 [shape=square, style=filled, fillcolor=cyan]
+480 [shape=diamond]
+481 [shape=square, style=filled, fillcolor=cyan]
+482 [shape=square, style=filled, fillcolor=cyan]
+482 [shape=diamond]
+483 [shape=square, style=filled, fillcolor=cyan]
+484 [shape=square, style=filled, fillcolor=cyan]
+484 [shape=diamond]
+485 [shape=square, style=filled, fillcolor=cyan]
+486 [shape=square, style=filled, fillcolor=cyan]
+486 [shape=diamond]
+487 [shape=square, style=filled, fillcolor=cyan]
+488 [shape=square, style=filled, fillcolor=cyan]
+488 [shape=diamond]
+489 [shape=square, style=filled, fillcolor=cyan]
+490 [shape=square, style=filled, fillcolor=cyan]
+490 [shape=diamond]
+491 [shape=square, style=filled, fillcolor=cyan]
+491 [shape=diamond]
+492 [shape=square, style=filled, fillcolor=cyan]
+492 [shape=diamond]
+493 [shape=square, style=filled, fillcolor=cyan]
+493 [shape=diamond]
+494 [shape=square, style=filled, fillcolor=cyan]
+495 [shape=square, style=filled, fillcolor=cyan]
+496 [shape=square, style=filled, fillcolor=cyan]
+496 [shape=diamond]
+497 [shape=square, style=filled, fillcolor=cyan]
+498 [shape=square, style=filled, fillcolor=cyan]
+499 [shape=square, style=filled, fillcolor=cyan]
+499 [shape=diamond]
+500 [shape=square, style=filled, fillcolor=cyan]
+501 [shape=square, style=filled, fillcolor=cyan]
+501 [shape=diamond]
+502 [shape=square, style=filled, fillcolor=cyan]
+503 [shape=square, style=filled, fillcolor=cyan]
+503 [shape=diamond]
+504 [shape=square, style=filled, fillcolor=cyan]
+504 [shape=diamond]
+505 [shape=square, style=filled, fillcolor=cyan]
+505 [shape=diamond]
+506 [shape=square, style=filled, fillcolor=cyan]
+507 [shape=square, style=filled, fillcolor=cyan]
+507 [shape=diamond]
+508 [shape=square, style=filled, fillcolor=cyan]
+508 [shape=diamond]
+509 [shape=square, style=filled, fillcolor=cyan]
+510 [shape=square, style=filled, fillcolor=cyan]
+511 [shape=square, style=filled, fillcolor=cyan]
+511 [shape=diamond]
+512 [shape=square, style=filled, fillcolor=cyan]
+513 [shape=square, style=filled, fillcolor=cyan]
+513 [shape=diamond]
+514 [shape=square, style=filled, fillcolor=cyan]
+515 [shape=square, style=filled, fillcolor=cyan]
+515 [shape=diamond]
+516 [shape=square, style=filled, fillcolor=cyan]
+516 [shape=diamond]
+517 [shape=square, style=filled, fillcolor=cyan]
+517 [shape=diamond]
+518 [shape=square, style=filled, fillcolor=cyan]
+519 [shape=square, style=filled, fillcolor=cyan]
+519 [shape=diamond]
+520 [shape=square, style=filled, fillcolor=cyan]
+521 [shape=square, style=filled, fillcolor=cyan]
+521 [shape=diamond]
+522 [shape=square, style=filled, fillcolor=cyan]
+522 [shape=diamond]
+523 [shape=square, style=filled, fillcolor=cyan]
+524 [shape=square, style=filled, fillcolor=cyan]
+524 [shape=diamond]
+525 [shape=square, style=filled, fillcolor=cyan]
+526 [shape=square, style=filled, fillcolor=cyan]
+526 [shape=diamond]
+527 [shape=square, style=filled, fillcolor=cyan]
+528 [shape=square, style=filled, fillcolor=cyan]
+528 [shape=diamond]
+529 [shape=square, style=filled, fillcolor=cyan]
+530 [shape=square, style=filled, fillcolor=cyan]
+530 [shape=diamond]
+531 [shape=square, style=filled, fillcolor=cyan]
+531 [shape=diamond]
+532 [shape=square, style=filled, fillcolor=cyan]
+533 [shape=square, style=filled, fillcolor=cyan]
+533 [shape=diamond]
+534 [shape=square, style=filled, fillcolor=cyan]
+534 [shape=diamond]
+535 [shape=square, style=filled, fillcolor=cyan]
+535 [shape=diamond]
+536 [shape=square, style=filled, fillcolor=cyan]
+537 [shape=square, style=filled, fillcolor=cyan]
+538 [shape=square, style=filled, fillcolor=cyan]
+538 [shape=diamond]
+539 [shape=square, style=filled, fillcolor=cyan]
+540 [shape=square, style=filled, fillcolor=cyan]
+540 [shape=diamond]
+541 [shape=square, style=filled, fillcolor=cyan]
+542 [shape=square, style=filled, fillcolor=cyan]
+542 [shape=diamond]
+543 [shape=square, style=filled, fillcolor=cyan]
+543 [shape=diamond]
+544 [shape=square, style=filled, fillcolor=cyan]
+545 [shape=square, style=filled, fillcolor=cyan]
+545 [shape=diamond]
+546 [shape=square, style=filled, fillcolor=cyan]
+546 [shape=diamond]
+547 [shape=square, style=filled, fillcolor=cyan]
+548 [shape=square, style=filled, fillcolor=cyan]
+548 [shape=diamond]
+549 [shape=square, style=filled, fillcolor=cyan]
+549 [shape=diamond]
+550 [shape=square, style=filled, fillcolor=cyan]
+551 [shape=square, style=filled, fillcolor=cyan]
+551 [shape=diamond]
+552 [shape=square, style=filled, fillcolor=cyan]
+553 [shape=square, style=filled, fillcolor=cyan]
+553 [shape=diamond]
+554 [shape=square, style=filled, fillcolor=cyan]
+555 [shape=square, style=filled, fillcolor=cyan]
+555 [shape=diamond]
+556 [shape=square, style=filled, fillcolor=cyan]
+557 [shape=square, style=filled, fillcolor=cyan]
+557 [shape=diamond]
+558 [shape=square, style=filled, fillcolor=cyan]
+559 [shape=square, style=filled, fillcolor=cyan]
+559 [shape=diamond]
+560 [shape=square, style=filled, fillcolor=cyan]
+560 [shape=diamond]
+561 [shape=square, style=filled, fillcolor=cyan]
+562 [shape=square, style=filled, fillcolor=cyan]
+562 [shape=diamond]
+563 [shape=square, style=filled, fillcolor=cyan]
+564 [shape=square, style=filled, fillcolor=cyan]
+564 [shape=diamond]
+565 [shape=square, style=filled, fillcolor=cyan]
+565 [shape=diamond]
+566 [shape=square, style=filled, fillcolor=cyan]
+566 [shape=diamond]
+567 [shape=square, style=filled, fillcolor=cyan]
+568 [shape=square, style=filled, fillcolor=cyan]
+568 [shape=diamond]
+569 [shape=square, style=filled, fillcolor=cyan]
+570 [shape=square, style=filled, fillcolor=cyan]
+570 [shape=diamond]
+571 [shape=square, style=filled, fillcolor=cyan]
+572 [shape=square, style=filled, fillcolor=cyan]
+572 [shape=diamond]
+573 [shape=square, style=filled, fillcolor=cyan]
+574 [shape=square, style=filled, fillcolor=cyan]
+574 [shape=diamond]
+575 [shape=square, style=filled, fillcolor=cyan]
+576 [shape=square, style=filled, fillcolor=cyan]
+576 [shape=diamond]
+577 [shape=square, style=filled, fillcolor=cyan]
+578 [shape=square, style=filled, fillcolor=cyan]
+578 [shape=diamond]
+579 [shape=square, style=filled, fillcolor=cyan]
+580 [shape=square, style=filled, fillcolor=cyan]
+580 [shape=diamond]
+581 [shape=square, style=filled, fillcolor=cyan]
+582 [shape=square, style=filled, fillcolor=cyan]
+582 [shape=diamond]
+583 [shape=square, style=filled, fillcolor=cyan]
+584 [shape=square, style=filled, fillcolor=cyan]
+584 [shape=diamond]
+585 [shape=square, style=filled, fillcolor=cyan]
+585 [shape=diamond]
+586 [shape=square, style=filled, fillcolor=cyan]
+586 [shape=diamond]
+587 [shape=square, style=filled, fillcolor=cyan]
+587 [shape=diamond]
+588 [shape=square, style=filled, fillcolor=cyan]
+589 [shape=square, style=filled, fillcolor=cyan]
+590 [shape=square, style=filled, fillcolor=cyan]
+590 [shape=diamond]
+591 [shape=square, style=filled, fillcolor=cyan]
+592 [shape=square, style=filled, fillcolor=cyan]
+592 [shape=diamond]
+593 [shape=square, style=filled, fillcolor=cyan]
+594 [shape=square, style=filled, fillcolor=cyan]
+594 [shape=diamond]
+595 [shape=square, style=filled, fillcolor=cyan]
+596 [shape=square, style=filled, fillcolor=cyan]
+596 [shape=diamond]
+597 [shape=square, style=filled, fillcolor=cyan]
+597 [shape=diamond]
+598 [shape=square, style=filled, fillcolor=cyan]
+598 [shape=diamond]
+599 [shape=square, style=filled, fillcolor=cyan]
+600 [shape=square, style=filled, fillcolor=cyan]
+600 [shape=diamond]
+601 [shape=square, style=filled, fillcolor=cyan]
+601 [shape=diamond]
+602 [shape=square, style=filled, fillcolor=cyan]
+603 [shape=square, style=filled, fillcolor=cyan]
+603 [shape=diamond]
+604 [shape=square, style=filled, fillcolor=cyan]
+605 [shape=square, style=filled, fillcolor=cyan]
+605 [shape=diamond]
+606 [shape=square, style=filled, fillcolor=cyan]
+607 [shape=square, style=filled, fillcolor=cyan]
+607 [shape=diamond]
+608 [shape=square, style=filled, fillcolor=cyan]
+609 [shape=square, style=filled, fillcolor=cyan]
+609 [shape=diamond]
+610 [shape=square, style=filled, fillcolor=cyan]
+611 [shape=square, style=filled, fillcolor=cyan]
+611 [shape=diamond]
+612 [shape=square, style=filled, fillcolor=cyan]
+613 [shape=square, style=filled, fillcolor=cyan]
+613 [shape=diamond]
+614 [shape=square, style=filled, fillcolor=cyan]
+614 [shape=diamond]
+615 [shape=square, style=filled, fillcolor=cyan]
+616 [shape=square, style=filled, fillcolor=cyan]
+616 [shape=diamond]
+617 [shape=square, style=filled, fillcolor=cyan]
+617 [shape=diamond]
+618 [shape=square, style=filled, fillcolor=cyan]
+618 [shape=diamond]
+619 [shape=square, style=filled, fillcolor=cyan]
+620 [shape=square, style=filled, fillcolor=cyan]
+620 [shape=diamond]
+621 [shape=square, style=filled, fillcolor=cyan]
+622 [shape=square, style=filled, fillcolor=cyan]
+622 [shape=diamond]
+623 [shape=square, style=filled, fillcolor=cyan]
+624 [shape=square, style=filled, fillcolor=cyan]
+624 [shape=diamond]
+625 [shape=square, style=filled, fillcolor=cyan]
+626 [shape=square, style=filled, fillcolor=cyan]
+626 [shape=diamond]
+627 [shape=square, style=filled, fillcolor=cyan]
+628 [shape=square, style=filled, fillcolor=cyan]
+628 [shape=diamond]
+629 [shape=square, style=filled, fillcolor=cyan]
+630 [shape=square, style=filled, fillcolor=cyan]
+630 [shape=diamond]
+631 [shape=square, style=filled, fillcolor=cyan]
+632 [shape=square, style=filled, fillcolor=cyan]
+632 [shape=diamond]
+633 [shape=square, style=filled, fillcolor=cyan]
+634 [shape=square, style=filled, fillcolor=cyan]
+634 [shape=diamond]
+635 [shape=square, style=filled, fillcolor=cyan]
+636 [shape=square, style=filled, fillcolor=cyan]
+636 [shape=diamond]
+637 [shape=square, style=filled, fillcolor=cyan]
+638 [shape=square, style=filled, fillcolor=cyan]
+638 [shape=diamond]
+639 [shape=square, style=filled, fillcolor=cyan]
+640 [shape=square, style=filled, fillcolor=cyan]
+640 [shape=diamond]
+641 [shape=square, style=filled, fillcolor=cyan]
+641 [shape=diamond]
+642 [shape=square, style=filled, fillcolor=cyan]
+642 [shape=diamond]
+643 [shape=square, style=filled, fillcolor=cyan]
+643 [shape=diamond]
+644 [shape=square, style=filled, fillcolor=cyan]
+645 [shape=square, style=filled, fillcolor=cyan]
+645 [shape=diamond]
+646 [shape=square, style=filled, fillcolor=cyan]
+647 [shape=square, style=filled, fillcolor=cyan]
+647 [shape=diamond]
+648 [shape=square, style=filled, fillcolor=cyan]
+649 [shape=square, style=filled, fillcolor=cyan]
+649 [shape=diamond]
+650 [shape=square, style=filled, fillcolor=cyan]
+651 [shape=square, style=filled, fillcolor=cyan]
+651 [shape=diamond]
+652 [shape=square, style=filled, fillcolor=cyan]
+653 [shape=square, style=filled, fillcolor=cyan]
+653 [shape=diamond]
+654 [shape=square, style=filled, fillcolor=cyan]
+655 [shape=square, style=filled, fillcolor=cyan]
+655 [shape=diamond]
+656 [shape=square, style=filled, fillcolor=cyan]
+657 [shape=square, style=filled, fillcolor=cyan]
+657 [shape=diamond]
+658 [shape=square, style=filled, fillcolor=cyan]
+659 [shape=square, style=filled, fillcolor=cyan]
+659 [shape=diamond]
+660 [shape=square, style=filled, fillcolor=cyan]
+661 [shape=square, style=filled, fillcolor=cyan]
+661 [shape=diamond]
+662 [shape=square, style=filled, fillcolor=cyan]
+662 [shape=diamond]
+663 [shape=square, style=filled, fillcolor=cyan]
+663 [shape=diamond]
+664 [shape=square, style=filled, fillcolor=cyan]
+664 [shape=diamond]
+665 [shape=square, style=filled, fillcolor=cyan]
+665 [shape=diamond]
+666 [shape=square, style=filled, fillcolor=cyan]
+667 [shape=square, style=filled, fillcolor=cyan]
+668 [shape=square, style=filled, fillcolor=cyan]
+668 [shape=diamond]
+669 [shape=square, style=filled, fillcolor=cyan]
+670 [shape=square, style=filled, fillcolor=cyan]
+671 [shape=square, style=filled, fillcolor=cyan]
+671 [shape=diamond]
+672 [shape=square, style=filled, fillcolor=cyan]
+673 [shape=square, style=filled, fillcolor=cyan]
+673 [shape=diamond]
+674 [shape=square, style=filled, fillcolor=cyan]
+674 [shape=diamond]
+675 [shape=square, style=filled, fillcolor=cyan]
+675 [shape=diamond]
+676 [shape=square, style=filled, fillcolor=cyan]
+676 [shape=diamond]
+677 [shape=square, style=filled, fillcolor=cyan]
+678 [shape=square, style=filled, fillcolor=cyan]
+678 [shape=diamond]
+679 [shape=square, style=filled, fillcolor=cyan]
+679 [shape=diamond]
+680 [shape=square, style=filled, fillcolor=cyan]
+681 [shape=square, style=filled, fillcolor=cyan]
+682 [shape=square, style=filled, fillcolor=cyan]
+682 [shape=diamond]
+683 [shape=square, style=filled, fillcolor=cyan]
+684 [shape=square, style=filled, fillcolor=cyan]
+684 [shape=diamond]
+685 [shape=square, style=filled, fillcolor=cyan]
+685 [shape=diamond]
+686 [shape=square, style=filled, fillcolor=cyan]
+686 [shape=diamond]
+687 [shape=square, style=filled, fillcolor=cyan]
+687 [shape=diamond]
+688 [shape=square, style=filled, fillcolor=cyan]
+689 [shape=square, style=filled, fillcolor=cyan]
+689 [shape=diamond]
+690 [shape=square, style=filled, fillcolor=cyan]
+691 [shape=square, style=filled, fillcolor=cyan]
+691 [shape=diamond]
+692 [shape=square, style=filled, fillcolor=cyan]
+692 [shape=diamond]
+693 [shape=square, style=filled, fillcolor=cyan]
+694 [shape=square, style=filled, fillcolor=cyan]
+694 [shape=diamond]
+695 [shape=square, style=filled, fillcolor=cyan]
+696 [shape=square, style=filled, fillcolor=cyan]
+696 [shape=diamond]
+697 [shape=square, style=filled, fillcolor=cyan]
+697 [shape=diamond]
+698 [shape=square, style=filled, fillcolor=cyan]
+698 [shape=diamond]
+699 [shape=square, style=filled, fillcolor=cyan]
+700 [shape=square, style=filled, fillcolor=cyan]
+700 [shape=diamond]
+701 [shape=square, style=filled, fillcolor=cyan]
+701 [shape=diamond]
+702 [shape=square, style=filled, fillcolor=cyan]
+702 [shape=diamond]
+703 [shape=square, style=filled, fillcolor=cyan]
+704 [shape=square, style=filled, fillcolor=cyan]
+705 [shape=square, style=filled, fillcolor=cyan]
+705 [shape=diamond]
+706 [shape=square, style=filled, fillcolor=cyan]
+707 [shape=square, style=filled, fillcolor=cyan]
+707 [shape=diamond]
+708 [shape=square, style=filled, fillcolor=cyan]
+708 [shape=diamond]
+709 [shape=square, style=filled, fillcolor=cyan]
+709 [shape=diamond]
+710 [shape=square, style=filled, fillcolor=cyan]
+711 [shape=square, style=filled, fillcolor=cyan]
+711 [shape=diamond]
+712 [shape=square, style=filled, fillcolor=cyan]
+712 [shape=diamond]
+713 [shape=square, style=filled, fillcolor=cyan]
+714 [shape=square, style=filled, fillcolor=cyan]
+714 [shape=diamond]
+715 [shape=square, style=filled, fillcolor=cyan]
+715 [shape=diamond]
+716 [shape=square, style=filled, fillcolor=cyan]
+717 [shape=square, style=filled, fillcolor=cyan]
+717 [shape=diamond]
+718 [shape=square, style=filled, fillcolor=cyan]
+719 [shape=square, style=filled, fillcolor=cyan]
+719 [shape=diamond]
+720 [shape=square, style=filled, fillcolor=cyan]
+721 [shape=square, style=filled, fillcolor=cyan]
+721 [shape=diamond]
+722 [shape=square, style=filled, fillcolor=cyan]
+722 [shape=diamond]
+723 [shape=square, style=filled, fillcolor=cyan]
+723 [shape=diamond]
+724 [shape=square, style=filled, fillcolor=cyan]
+725 [shape=square, style=filled, fillcolor=cyan]
+725 [shape=diamond]
+726 [shape=square, style=filled, fillcolor=cyan]
+727 [shape=square, style=filled, fillcolor=cyan]
+727 [shape=diamond]
+728 [shape=square, style=filled, fillcolor=cyan]
+728 [shape=diamond]
+729 [shape=square, style=filled, fillcolor=cyan]
+729 [shape=diamond]
+730 [shape=square, style=filled, fillcolor=cyan]
+731 [shape=square, style=filled, fillcolor=cyan]
+731 [shape=diamond]
+732 [shape=square, style=filled, fillcolor=cyan]
+733 [shape=square, style=filled, fillcolor=cyan]
+733 [shape=diamond]
+734 [shape=square, style=filled, fillcolor=cyan]
+735 [shape=square, style=filled, fillcolor=cyan]
+735 [shape=diamond]
+736 [shape=square, style=filled, fillcolor=cyan]
+737 [shape=square, style=filled, fillcolor=cyan]
+737 [shape=diamond]
+738 [shape=square, style=filled, fillcolor=cyan]
+739 [shape=square, style=filled, fillcolor=cyan]
+739 [shape=diamond]
+740 [shape=square, style=filled, fillcolor=cyan]
+740 [shape=diamond]
+741 [shape=square, style=filled, fillcolor=cyan]
+742 [shape=square, style=filled, fillcolor=cyan]
+742 [shape=diamond]
+743 [shape=square, style=filled, fillcolor=cyan]
+743 [shape=diamond]
+744 [shape=square, style=filled, fillcolor=cyan]
+744 [shape=diamond]
+745 [shape=square, style=filled, fillcolor=cyan]
+745 [shape=diamond]
+746 [shape=square, style=filled, fillcolor=cyan]
+747 [shape=square, style=filled, fillcolor=cyan]
+748 [shape=square, style=filled, fillcolor=cyan]
+748 [shape=diamond]
+749 [shape=square, style=filled, fillcolor=cyan]
+750 [shape=square, style=filled, fillcolor=cyan]
+750 [shape=diamond]
+751 [shape=square, style=filled, fillcolor=cyan]
+751 [shape=diamond]
+752 [shape=square, style=filled, fillcolor=cyan]
+753 [shape=square, style=filled, fillcolor=cyan]
+753 [shape=diamond]
+754 [shape=square, style=filled, fillcolor=cyan]
+754 [shape=diamond]
+755 [shape=square, style=filled, fillcolor=cyan]
+755 [shape=diamond]
+756 [shape=square, style=filled, fillcolor=cyan]
+757 [shape=square, style=filled, fillcolor=cyan]
+757 [shape=diamond]
+758 [shape=square, style=filled, fillcolor=cyan]
+758 [shape=diamond]
+759 [shape=square, style=filled, fillcolor=cyan]
+760 [shape=square, style=filled, fillcolor=cyan]
+760 [shape=diamond]
+761 [shape=square, style=filled, fillcolor=cyan]
+762 [shape=square, style=filled, fillcolor=cyan]
+762 [shape=diamond]
+763 [shape=square, style=filled, fillcolor=cyan]
+764 [shape=square, style=filled, fillcolor=cyan]
+764 [shape=diamond]
+765 [shape=square, style=filled, fillcolor=cyan]
+765 [shape=diamond]
+766 [shape=square, style=filled, fillcolor=cyan]
+767 [shape=square, style=filled, fillcolor=cyan]
+767 [shape=diamond]
+768 [shape=square, style=filled, fillcolor=cyan]
+768 [shape=diamond]
+769 [shape=square, style=filled, fillcolor=cyan]
+770 [shape=square, style=filled, fillcolor=cyan]
+770 [shape=diamond]
+771 [shape=square, style=filled, fillcolor=cyan]
+771 [shape=diamond]
+772 [shape=square, style=filled, fillcolor=cyan]
+772 [shape=diamond]
+773 [shape=square, style=filled, fillcolor=cyan]
+774 [shape=square, style=filled, fillcolor=cyan]
+774 [shape=diamond]
+775 [shape=square, style=filled, fillcolor=cyan]
+776 [shape=square, style=filled, fillcolor=cyan]
+776 [shape=diamond]
+777 [shape=square, style=filled, fillcolor=cyan]
+778 [shape=square, style=filled, fillcolor=cyan]
+778 [shape=diamond]
+779 [shape=square, style=filled, fillcolor=cyan]
+780 [shape=square, style=filled, fillcolor=cyan]
+780 [shape=diamond]
+781 [shape=square, style=filled, fillcolor=cyan]
+782 [shape=square, style=filled, fillcolor=cyan]
+782 [shape=diamond]
+783 [shape=square, style=filled, fillcolor=cyan]
+784 [shape=square, style=filled, fillcolor=cyan]
+784 [shape=diamond]
+785 [shape=square, style=filled, fillcolor=cyan]
+785 [shape=diamond]
+786 [shape=square, style=filled, fillcolor=cyan]
+787 [shape=square, style=filled, fillcolor=cyan]
+787 [shape=diamond]
+788 [shape=square, style=filled, fillcolor=cyan]
+789 [shape=square, style=filled, fillcolor=cyan]
+789 [shape=diamond]
+790 [shape=square, style=filled, fillcolor=cyan]
+790 [shape=diamond]
+791 [shape=square, style=filled, fillcolor=cyan]
+791 [shape=diamond]
+792 [shape=square, style=filled, fillcolor=cyan]
+792 [shape=diamond]
+793 [shape=square, style=filled, fillcolor=cyan]
+794 [shape=square, style=filled, fillcolor=cyan]
+794 [shape=diamond]
+795 [shape=square, style=filled, fillcolor=cyan]
+796 [shape=square, style=filled, fillcolor=cyan]
+796 [shape=diamond]
+797 [shape=square, style=filled, fillcolor=cyan]
+798 [shape=square, style=filled, fillcolor=cyan]
+798 [shape=diamond]
+799 [shape=square, style=filled, fillcolor=cyan]
+800 [shape=square, style=filled, fillcolor=cyan]
+800 [shape=diamond]
+801 [shape=square, style=filled, fillcolor=cyan]
+802 [shape=square, style=filled, fillcolor=cyan]
+802 [shape=diamond]
+803 [shape=square, style=filled, fillcolor=cyan]
+804 [shape=square, style=filled, fillcolor=cyan]
+804 [shape=diamond]
+805 [shape=square, style=filled, fillcolor=cyan]
+806 [shape=square, style=filled, fillcolor=cyan]
+806 [shape=diamond]
+807 [shape=square, style=filled, fillcolor=cyan]
+808 [shape=square, style=filled, fillcolor=cyan]
+808 [shape=diamond]
+809 [shape=square, style=filled, fillcolor=cyan]
+810 [shape=square, style=filled, fillcolor=cyan]
+810 [shape=diamond]
+811 [shape=square, style=filled, fillcolor=cyan]
+811 [shape=diamond]
+812 [shape=square, style=filled, fillcolor=cyan]
+812 [shape=diamond]
+813 [shape=square, style=filled, fillcolor=cyan]
+813 [shape=diamond]
+814 [shape=square, style=filled, fillcolor=cyan]
+814 [shape=diamond]
+815 [shape=square, style=filled, fillcolor=cyan]
+816 [shape=square, style=filled, fillcolor=cyan]
+817 [shape=square, style=filled, fillcolor=cyan]
+817 [shape=diamond]
+818 [shape=square, style=filled, fillcolor=cyan]
+819 [shape=square, style=filled, fillcolor=cyan]
+819 [shape=diamond]
+820 [shape=square, style=filled, fillcolor=cyan]
+821 [shape=square, style=filled, fillcolor=cyan]
+821 [shape=diamond]
+822 [shape=square, style=filled, fillcolor=cyan]
+822 [shape=diamond]
+823 [shape=square, style=filled, fillcolor=cyan]
+823 [shape=diamond]
+824 [shape=square, style=filled, fillcolor=cyan]
+824 [shape=diamond]
+825 [shape=square, style=filled, fillcolor=cyan]
+826 [shape=square, style=filled, fillcolor=cyan]
+826 [shape=diamond]
+827 [shape=square, style=filled, fillcolor=cyan]
+827 [shape=diamond]
+828 [shape=square, style=filled, fillcolor=cyan]
+829 [shape=square, style=filled, fillcolor=cyan]
+829 [shape=diamond]
+830 [shape=square, style=filled, fillcolor=cyan]
+831 [shape=square, style=filled, fillcolor=cyan]
+831 [shape=diamond]
+832 [shape=square, style=filled, fillcolor=cyan]
+833 [shape=square, style=filled, fillcolor=cyan]
+833 [shape=diamond]
+834 [shape=square, style=filled, fillcolor=cyan]
+835 [shape=square, style=filled, fillcolor=cyan]
+835 [shape=diamond]
+836 [shape=square, style=filled, fillcolor=cyan]
+836 [shape=diamond]
+837 [shape=square, style=filled, fillcolor=cyan]
+837 [shape=diamond]
+838 [shape=square, style=filled, fillcolor=cyan]
+839 [shape=square, style=filled, fillcolor=cyan]
+839 [shape=diamond]
+840 [shape=square, style=filled, fillcolor=cyan]
+840 [shape=diamond]
+841 [shape=square, style=filled, fillcolor=cyan]
+841 [shape=diamond]
+842 [shape=square, style=filled, fillcolor=cyan]
+843 [shape=square, style=filled, fillcolor=cyan]
+843 [shape=diamond]
+844 [shape=square, style=filled, fillcolor=cyan]
+845 [shape=square, style=filled, fillcolor=cyan]
+845 [shape=diamond]
+846 [shape=square, style=filled, fillcolor=cyan]
+847 [shape=square, style=filled, fillcolor=cyan]
+847 [shape=diamond]
+848 [shape=square, style=filled, fillcolor=cyan]
+849 [shape=square, style=filled, fillcolor=cyan]
+849 [shape=diamond]
+850 [shape=square, style=filled, fillcolor=cyan]
+851 [shape=square, style=filled, fillcolor=cyan]
+851 [shape=diamond]
+852 [shape=square, style=filled, fillcolor=cyan]
+853 [shape=square, style=filled, fillcolor=cyan]
+853 [shape=diamond]
+854 [shape=square, style=filled, fillcolor=cyan]
+855 [shape=square, style=filled, fillcolor=cyan]
+855 [shape=diamond]
+856 [shape=square, style=filled, fillcolor=cyan]
+856 [shape=diamond]
+857 [shape=square, style=filled, fillcolor=cyan]
+858 [shape=square, style=filled, fillcolor=cyan]
+858 [shape=diamond]
+859 [shape=square, style=filled, fillcolor=cyan]
+859 [shape=diamond]
+860 [shape=square, style=filled, fillcolor=cyan]
+860 [shape=diamond]
+861 [shape=square, style=filled, fillcolor=cyan]
+861 [shape=diamond]
+862 [shape=square, style=filled, fillcolor=cyan]
+863 [shape=square, style=filled, fillcolor=cyan]
+863 [shape=diamond]
+864 [shape=square, style=filled, fillcolor=cyan]
+865 [shape=square, style=filled, fillcolor=cyan]
+865 [shape=diamond]
+866 [shape=square, style=filled, fillcolor=cyan]
+867 [shape=square, style=filled, fillcolor=cyan]
+867 [shape=diamond]
+868 [shape=square, style=filled, fillcolor=cyan]
+869 [shape=square, style=filled, fillcolor=cyan]
+869 [shape=diamond]
+870 [shape=square, style=filled, fillcolor=cyan]
+871 [shape=square, style=filled, fillcolor=cyan]
+871 [shape=diamond]
+872 [shape=square, style=filled, fillcolor=cyan]
+873 [shape=square, style=filled, fillcolor=cyan]
+873 [shape=diamond]
+874 [shape=square, style=filled, fillcolor=cyan]
+875 [shape=square, style=filled, fillcolor=cyan]
+875 [shape=diamond]
+876 [shape=square, style=filled, fillcolor=cyan]
+877 [shape=square, style=filled, fillcolor=cyan]
+877 [shape=diamond]
+878 [shape=square, style=filled, fillcolor=cyan]
+879 [shape=square, style=filled, fillcolor=cyan]
+879 [shape=diamond]
+880 [shape=square, style=filled, fillcolor=cyan]
+881 [shape=square, style=filled, fillcolor=cyan]
+881 [shape=diamond]
+882 [shape=square, style=filled, fillcolor=cyan]
+883 [shape=square, style=filled, fillcolor=cyan]
+883 [shape=diamond]
+884 [shape=square, style=filled, fillcolor=cyan]
+884 [shape=diamond]
+885 [shape=square, style=filled, fillcolor=cyan]
+885 [shape=diamond]
+886 [shape=square, style=filled, fillcolor=cyan]
+886 [shape=diamond]
+887 [shape=square, style=filled, fillcolor=cyan]
+887 [shape=diamond]
+888 [shape=square, style=filled, fillcolor=cyan]
+889 [shape=square, style=filled, fillcolor=cyan]
+889 [shape=diamond]
+890 [shape=square, style=filled, fillcolor=cyan]
+891 [shape=square, style=filled, fillcolor=cyan]
+891 [shape=diamond]
+892 [shape=square, style=filled, fillcolor=cyan]
+893 [shape=square, style=filled, fillcolor=cyan]
+893 [shape=diamond]
+894 [shape=square, style=filled, fillcolor=cyan]
+895 [shape=square, style=filled, fillcolor=cyan]
+895 [shape=diamond]
+896 [shape=square, style=filled, fillcolor=cyan]
+897 [shape=square, style=filled, fillcolor=cyan]
+897 [shape=diamond]
+898 [shape=square, style=filled, fillcolor=cyan]
+899 [shape=square, style=filled, fillcolor=cyan]
+899 [shape=diamond]
+900 [shape=square, style=filled, fillcolor=cyan]
+901 [shape=square, style=filled, fillcolor=cyan]
+901 [shape=diamond]
+902 [shape=square, style=filled, fillcolor=cyan]
+903 [shape=square, style=filled, fillcolor=cyan]
+903 [shape=diamond]
+904 [shape=square, style=filled, fillcolor=cyan]
+905 [shape=square, style=filled, fillcolor=cyan]
+905 [shape=diamond]
+906 [shape=square, style=filled, fillcolor=cyan]
+907 [shape=square, style=filled, fillcolor=cyan]
+907 [shape=diamond]
+908 [shape=square, style=filled, fillcolor=cyan]
+908 [shape=diamond]
+909 [shape=square, style=filled, fillcolor=cyan]
+909 [shape=diamond]
+910 [shape=square, style=filled, fillcolor=cyan]
+910 [shape=diamond]
+911 [shape=square, style=filled, fillcolor=cyan]
+911 [shape=diamond]
+912 [shape=square, style=filled, fillcolor=cyan]
+912 [shape=diamond]
+913 [shape=square, style=filled, fillcolor=cyan]
+914 [shape=square, style=filled, fillcolor=cyan]
+914 [shape=diamond]
+915 [shape=square, style=filled, fillcolor=cyan]
+916 [shape=square, style=filled, fillcolor=cyan]
+916 [shape=diamond]
+917 [shape=square, style=filled, fillcolor=cyan]
+917 [shape=diamond]
+918 [shape=square, style=filled, fillcolor=cyan]
+918 [shape=diamond]
+919 [shape=square, style=filled, fillcolor=cyan]
+919 [shape=diamond]
+920 [shape=square, style=filled, fillcolor=cyan]
+920 [shape=diamond]
+921 [shape=square, style=filled, fillcolor=cyan]
+922 [shape=square, style=filled, fillcolor=cyan]
+922 [shape=diamond]
+923 [shape=square, style=filled, fillcolor=cyan]
+923 [shape=diamond]
+924 [shape=square, style=filled, fillcolor=cyan]
+925 [shape=square, style=filled, fillcolor=cyan]
+925 [shape=diamond]
+926 [shape=square, style=filled, fillcolor=cyan]
+927 [shape=square, style=filled, fillcolor=cyan]
+927 [shape=diamond]
+928 [shape=square, style=filled, fillcolor=cyan]
+928 [shape=diamond]
+929 [shape=square, style=filled, fillcolor=cyan]
+929 [shape=diamond]
+930 [shape=square, style=filled, fillcolor=cyan]
+930 [shape=diamond]
+931 [shape=square, style=filled, fillcolor=cyan]
+932 [shape=square, style=filled, fillcolor=cyan]
+932 [shape=diamond]
+933 [shape=square, style=filled, fillcolor=cyan]
+933 [shape=diamond]
+934 [shape=square, style=filled, fillcolor=cyan]
+934 [shape=diamond]
+935 [shape=square, style=filled, fillcolor=cyan]
+936 [shape=square, style=filled, fillcolor=cyan]
+936 [shape=diamond]
+937 [shape=square, style=filled, fillcolor=cyan]
+938 [shape=square, style=filled, fillcolor=cyan]
+938 [shape=diamond]
+939 [shape=square, style=filled, fillcolor=cyan]
+940 [shape=square, style=filled, fillcolor=cyan]
+940 [shape=diamond]
+941 [shape=square, style=filled, fillcolor=cyan]
+942 [shape=square, style=filled, fillcolor=cyan]
+942 [shape=diamond]
+943 [shape=square, style=filled, fillcolor=cyan]
+943 [shape=diamond]
+944 [shape=square, style=filled, fillcolor=cyan]
+944 [shape=diamond]
+945 [shape=square, style=filled, fillcolor=cyan]
+946 [shape=square, style=filled, fillcolor=cyan]
+946 [shape=diamond]
+947 [shape=square, style=filled, fillcolor=cyan]
+947 [shape=diamond]
+948 [shape=square, style=filled, fillcolor=cyan]
+948 [shape=diamond]
+949 [shape=square, style=filled, fillcolor=cyan]
+949 [shape=diamond]
+950 [shape=square, style=filled, fillcolor=cyan]
+951 [shape=square, style=filled, fillcolor=cyan]
+951 [shape=diamond]
+952 [shape=square, style=filled, fillcolor=cyan]
+953 [shape=square, style=filled, fillcolor=cyan]
+953 [shape=diamond]
+954 [shape=square, style=filled, fillcolor=cyan]
+955 [shape=square, style=filled, fillcolor=cyan]
+955 [shape=diamond]
+956 [shape=square, style=filled, fillcolor=cyan]
+957 [shape=square, style=filled, fillcolor=cyan]
+957 [shape=diamond]
+958 [shape=square, style=filled, fillcolor=cyan]
+959 [shape=square, style=filled, fillcolor=cyan]
+959 [shape=diamond]
+960 [shape=square, style=filled, fillcolor=cyan]
+961 [shape=square, style=filled, fillcolor=cyan]
+961 [shape=diamond]
+962 [shape=square, style=filled, fillcolor=cyan]
+962 [shape=diamond]
+963 [shape=square, style=filled, fillcolor=cyan]
+964 [shape=square, style=filled, fillcolor=cyan]
+964 [shape=diamond]
+965 [shape=square, style=filled, fillcolor=cyan]
+965 [shape=diamond]
+966 [shape=square, style=filled, fillcolor=cyan]
+966 [shape=diamond]
+967 [shape=square, style=filled, fillcolor=cyan]
+967 [shape=diamond]
+968 [shape=square, style=filled, fillcolor=cyan]
+968 [shape=diamond]
+969 [shape=square, style=filled, fillcolor=cyan]
+970 [shape=square, style=filled, fillcolor=cyan]
+970 [shape=diamond]
+971 [shape=square, style=filled, fillcolor=cyan]
+972 [shape=square, style=filled, fillcolor=cyan]
+972 [shape=diamond]
+973 [shape=square, style=filled, fillcolor=cyan]
+974 [shape=square, style=filled, fillcolor=cyan]
+974 [shape=diamond]
+975 [shape=square, style=filled, fillcolor=cyan]
+976 [shape=square, style=filled, fillcolor=cyan]
+976 [shape=diamond]
+977 [shape=square, style=filled, fillcolor=cyan]
+978 [shape=square, style=filled, fillcolor=cyan]
+978 [shape=diamond]
+979 [shape=square, style=filled, fillcolor=cyan]
+980 [shape=square, style=filled, fillcolor=cyan]
+980 [shape=diamond]
+981 [shape=square, style=filled, fillcolor=cyan]
+982 [shape=square, style=filled, fillcolor=cyan]
+982 [shape=diamond]
+983 [shape=square, style=filled, fillcolor=cyan]
+984 [shape=square, style=filled, fillcolor=cyan]
+984 [shape=diamond]
+985 [shape=square, style=filled, fillcolor=cyan]
+986 [shape=square, style=filled, fillcolor=cyan]
+986 [shape=diamond]
+987 [shape=square, style=filled, fillcolor=cyan]
+987 [shape=diamond]
+988 [shape=square, style=filled, fillcolor=cyan]
+988 [shape=diamond]
+989 [shape=square, style=filled, fillcolor=cyan]
+989 [shape=diamond]
+990 [shape=square, style=filled, fillcolor=cyan]
+990 [shape=diamond]
+991 [shape=square, style=filled, fillcolor=cyan]
+991 [shape=diamond]
+992 [shape=square, style=filled, fillcolor=cyan]
+993 [shape=square, style=filled, fillcolor=cyan]
+993 [shape=diamond]
+994 [shape=square, style=filled, fillcolor=cyan]
+995 [shape=square, style=filled, fillcolor=cyan]
+995 [shape=diamond]
+996 [shape=square, style=filled, fillcolor=cyan]
+997 [shape=square, style=filled, fillcolor=cyan]
+997 [shape=diamond]
+998 [shape=square, style=filled, fillcolor=cyan]
+999 [shape=square, style=filled, fillcolor=cyan]
+999 [shape=diamond]
+1000 [shape=square, style=filled, fillcolor=cyan]
+1001 [shape=square, style=filled, fillcolor=cyan]
+1001 [shape=diamond]
+1002 [shape=square, style=filled, fillcolor=cyan]
+1003 [shape=square, style=filled, fillcolor=cyan]
+1003 [shape=diamond]
+1004 [shape=square, style=filled, fillcolor=cyan]
+1005 [shape=square, style=filled, fillcolor=cyan]
+1005 [shape=diamond]
+1006 [shape=square, style=filled, fillcolor=cyan]
+1007 [shape=square, style=filled, fillcolor=cyan]
+1007 [shape=diamond]
+1008 [shape=square, style=filled, fillcolor=cyan]
+1009 [shape=square, style=filled, fillcolor=cyan]
+1009 [shape=diamond]
+1010 [shape=square, style=filled, fillcolor=cyan]
+1011 [shape=square, style=filled, fillcolor=cyan]
+1011 [shape=diamond]
+1012 [shape=square, style=filled, fillcolor=cyan]
+1013 [shape=square, style=filled, fillcolor=cyan]
+1013 [shape=diamond]
+1014 [shape=square, style=filled, fillcolor=cyan]
+1015 [shape=square, style=filled, fillcolor=cyan]
+1015 [shape=diamond]
+1016 [shape=square, style=filled, fillcolor=cyan]
+1017 [shape=square, style=filled, fillcolor=cyan]
+1017 [shape=diamond]
+1018 [shape=square, style=filled, fillcolor=cyan]
+22 [style=filled, fillcolor=green]
+40 [style=filled, fillcolor=green]
+57 [style=filled, fillcolor=green]
+73 [style=filled, fillcolor=green]
+88 [style=filled, fillcolor=green]
+102 [style=filled, fillcolor=green]
+115 [style=filled, fillcolor=green]
+131 [style=filled, fillcolor=green]
+146 [style=filled, fillcolor=green]
+160 [style=filled, fillcolor=green]
+173 [style=filled, fillcolor=green]
+185 [style=filled, fillcolor=green]
+187 [style=filled, fillcolor=green]
+202 [style=filled, fillcolor=green]
+216 [style=filled, fillcolor=green]
+229 [style=filled, fillcolor=green]
+241 [style=filled, fillcolor=green]
+243 [style=filled, fillcolor=green]
+245 [style=filled, fillcolor=green]
+259 [style=filled, fillcolor=green]
+272 [style=filled, fillcolor=green]
+284 [style=filled, fillcolor=green]
+286 [style=filled, fillcolor=green]
+288 [style=filled, fillcolor=green]
+290 [style=filled, fillcolor=green]
+303 [style=filled, fillcolor=green]
+315 [style=filled, fillcolor=green]
+317 [style=filled, fillcolor=green]
+319 [style=filled, fillcolor=green]
+321 [style=filled, fillcolor=green]
+323 [style=filled, fillcolor=green]
+335 [style=filled, fillcolor=green]
+337 [style=filled, fillcolor=green]
+339 [style=filled, fillcolor=green]
+341 [style=filled, fillcolor=green]
+343 [style=filled, fillcolor=green]
+345 [style=filled, fillcolor=green]
+359 [style=filled, fillcolor=green]
+372 [style=filled, fillcolor=green]
+384 [style=filled, fillcolor=green]
+395 [style=filled, fillcolor=green]
+397 [style=filled, fillcolor=green]
+410 [style=filled, fillcolor=green]
+422 [style=filled, fillcolor=green]
+433 [style=filled, fillcolor=green]
+435 [style=filled, fillcolor=green]
+437 [style=filled, fillcolor=green]
+449 [style=filled, fillcolor=green]
+460 [style=filled, fillcolor=green]
+462 [style=filled, fillcolor=green]
+464 [style=filled, fillcolor=green]
+466 [style=filled, fillcolor=green]
+477 [style=filled, fillcolor=green]
+479 [style=filled, fillcolor=green]
+481 [style=filled, fillcolor=green]
+483 [style=filled, fillcolor=green]
+485 [style=filled, fillcolor=green]
+487 [style=filled, fillcolor=green]
+500 [style=filled, fillcolor=green]
+512 [style=filled, fillcolor=green]
+523 [style=filled, fillcolor=green]
+525 [style=filled, fillcolor=green]
+527 [style=filled, fillcolor=green]
+539 [style=filled, fillcolor=green]
+550 [style=filled, fillcolor=green]
+552 [style=filled, fillcolor=green]
+554 [style=filled, fillcolor=green]
+556 [style=filled, fillcolor=green]
+567 [style=filled, fillcolor=green]
+569 [style=filled, fillcolor=green]
+571 [style=filled, fillcolor=green]
+573 [style=filled, fillcolor=green]
+575 [style=filled, fillcolor=green]
+577 [style=filled, fillcolor=green]
+579 [style=filled, fillcolor=green]
+591 [style=filled, fillcolor=green]
+602 [style=filled, fillcolor=green]
+604 [style=filled, fillcolor=green]
+606 [style=filled, fillcolor=green]
+608 [style=filled, fillcolor=green]
+619 [style=filled, fillcolor=green]
+621 [style=filled, fillcolor=green]
+623 [style=filled, fillcolor=green]
+625 [style=filled, fillcolor=green]
+627 [style=filled, fillcolor=green]
+629 [style=filled, fillcolor=green]
+631 [style=filled, fillcolor=green]
+633 [style=filled, fillcolor=green]
+644 [style=filled, fillcolor=green]
+646 [style=filled, fillcolor=green]
+648 [style=filled, fillcolor=green]
+650 [style=filled, fillcolor=green]
+652 [style=filled, fillcolor=green]
+654 [style=filled, fillcolor=green]
+656 [style=filled, fillcolor=green]
+658 [style=filled, fillcolor=green]
+660 [style=filled, fillcolor=green]
+672 [style=filled, fillcolor=green]
+683 [style=filled, fillcolor=green]
+693 [style=filled, fillcolor=green]
+695 [style=filled, fillcolor=green]
+706 [style=filled, fillcolor=green]
+716 [style=filled, fillcolor=green]
+718 [style=filled, fillcolor=green]
+720 [style=filled, fillcolor=green]
+730 [style=filled, fillcolor=green]
+732 [style=filled, fillcolor=green]
+734 [style=filled, fillcolor=green]
+736 [style=filled, fillcolor=green]
+738 [style=filled, fillcolor=green]
+749 [style=filled, fillcolor=green]
+759 [style=filled, fillcolor=green]
+761 [style=filled, fillcolor=green]
+763 [style=filled, fillcolor=green]
+773 [style=filled, fillcolor=green]
+775 [style=filled, fillcolor=green]
+777 [style=filled, fillcolor=green]
+779 [style=filled, fillcolor=green]
+781 [style=filled, fillcolor=green]
+783 [style=filled, fillcolor=green]
+793 [style=filled, fillcolor=green]
+795 [style=filled, fillcolor=green]
+797 [style=filled, fillcolor=green]
+799 [style=filled, fillcolor=green]
+801 [style=filled, fillcolor=green]
+803 [style=filled, fillcolor=green]
+805 [style=filled, fillcolor=green]
+807 [style=filled, fillcolor=green]
+818 [style=filled, fillcolor=green]
+828 [style=filled, fillcolor=green]
+830 [style=filled, fillcolor=green]
+832 [style=filled, fillcolor=green]
+842 [style=filled, fillcolor=green]
+844 [style=filled, fillcolor=green]
+846 [style=filled, fillcolor=green]
+848 [style=filled, fillcolor=green]
+850 [style=filled, fillcolor=green]
+852 [style=filled, fillcolor=green]
+862 [style=filled, fillcolor=green]
+864 [style=filled, fillcolor=green]
+866 [style=filled, fillcolor=green]
+868 [style=filled, fillcolor=green]
+870 [style=filled, fillcolor=green]
+872 [style=filled, fillcolor=green]
+874 [style=filled, fillcolor=green]
+876 [style=filled, fillcolor=green]
+878 [style=filled, fillcolor=green]
+888 [style=filled, fillcolor=green]
+890 [style=filled, fillcolor=green]
+892 [style=filled, fillcolor=green]
+894 [style=filled, fillcolor=green]
+896 [style=filled, fillcolor=green]
+898 [style=filled, fillcolor=green]
+900 [style=filled, fillcolor=green]
+902 [style=filled, fillcolor=green]
+904 [style=filled, fillcolor=green]
+906 [style=filled, fillcolor=green]
+915 [style=filled, fillcolor=green]
+924 [style=filled, fillcolor=green]
+926 [style=filled, fillcolor=green]
+935 [style=filled, fillcolor=green]
+937 [style=filled, fillcolor=green]
+939 [style=filled, fillcolor=green]
+941 [style=filled, fillcolor=green]
+950 [style=filled, fillcolor=green]
+952 [style=filled, fillcolor=green]
+954 [style=filled, fillcolor=green]
+956 [style=filled, fillcolor=green]
+958 [style=filled, fillcolor=green]
+960 [style=filled, fillcolor=green]
+969 [style=filled, fillcolor=green]
+971 [style=filled, fillcolor=green]
+973 [style=filled, fillcolor=green]
+975 [style=filled, fillcolor=green]
+977 [style=filled, fillcolor=green]
+979 [style=filled, fillcolor=green]
+981 [style=filled, fillcolor=green]
+983 [style=filled, fillcolor=green]
+992 [style=filled, fillcolor=green]
+994 [style=filled, fillcolor=green]
+996 [style=filled, fillcolor=green]
+998 [style=filled, fillcolor=green]
+1000 [style=filled, fillcolor=green]
+1002 [style=filled, fillcolor=green]
+1004 [style=filled, fillcolor=green]
+1006 [style=filled, fillcolor=green]
+1008 [style=filled, fillcolor=green]
+1010 [style=filled, fillcolor=green]
+1012 [style=filled, fillcolor=green]
+1014 [style=filled, fillcolor=green]
+1016 [style=filled, fillcolor=green]
+1018 [style=filled, fillcolor=green]
+}
+0->1 [ label="AGENT_0
+pick-up block_1 tableC" ];
+1->2 [ label="1" ];
+2->3 [ label="AGENT_0
+check block_1 side_0" ];
+3->4 [ label="{(colored side_0): true,(identified block_1): true,}
+0.166667" ];
+4->21 [ label="AGENT_0
+put-down block_1 tableC" ];
+21->22 [ label="1" ];
+3->5 [ label="{(in_sight side_0): true,}
+0.833333" ];
+5->23 [ label="AGENT_0
+check block_1 side_0" ];
+23->5 [ label="1" ];
+5->24 [ label="AGENT_0
+check block_1 side_1" ];
+24->25 [ label="{(colored side_1): true,(identified block_1): true,}
+0.2" ];
+25->114 [ label="AGENT_0
+put-down block_1 tableC" ];
+114->115 [ label="1" ];
+24->26 [ label="{(in_sight side_1): true,}
+0.8" ];
+26->116 [ label="AGENT_0
+check block_1 side_0" ];
+116->26 [ label="1" ];
+26->117 [ label="AGENT_0
+check block_1 side_1" ];
+117->26 [ label="1" ];
+26->118 [ label="AGENT_0
+check block_1 side_2" ];
+118->119 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+119->344 [ label="AGENT_0
+put-down block_1 tableC" ];
+344->345 [ label="1" ];
+118->120 [ label="{(in_sight side_2): true,}
+0.75" ];
+120->346 [ label="AGENT_0
+check block_1 side_0" ];
+346->120 [ label="1" ];
+120->347 [ label="AGENT_0
+check block_1 side_1" ];
+347->120 [ label="1" ];
+120->348 [ label="AGENT_0
+check block_1 side_2" ];
+348->120 [ label="1" ];
+120->349 [ label="AGENT_0
+check block_1 side_3" ];
+349->350 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+350->659 [ label="AGENT_0
+put-down block_1 tableC" ];
+659->660 [ label="1" ];
+349->351 [ label="{(in_sight side_3): true,}
+0.666667" ];
+351->661 [ label="AGENT_0
+check block_1 side_0" ];
+661->351 [ label="1" ];
+351->662 [ label="AGENT_0
+check block_1 side_1" ];
+662->351 [ label="1" ];
+351->663 [ label="AGENT_0
+check block_1 side_2" ];
+663->351 [ label="1" ];
+351->664 [ label="AGENT_0
+check block_1 side_3" ];
+664->351 [ label="1" ];
+351->665 [ label="AGENT_0
+check block_1 side_4" ];
+665->666 [ label="{(colored side_4): true,(identified block_1): true,}
+0.5" ];
+666->905 [ label="AGENT_0
+put-down block_1 tableC" ];
+905->906 [ label="1" ];
+665->667 [ label="{(in_sight side_4): true,}
+0.5" ];
+667->907 [ label="AGENT_0
+check block_1 side_0" ];
+907->667 [ label="1" ];
+667->908 [ label="AGENT_0
+check block_1 side_1" ];
+908->667 [ label="1" ];
+667->909 [ label="AGENT_0
+check block_1 side_2" ];
+909->667 [ label="1" ];
+667->910 [ label="AGENT_0
+check block_1 side_3" ];
+910->667 [ label="1" ];
+667->911 [ label="AGENT_0
+check block_1 side_4" ];
+911->667 [ label="1" ];
+667->912 [ label="AGENT_0
+check block_1 side_5" ];
+912->913 [ label="1" ];
+913->1007 [ label="AGENT_0
+put-down block_1 tableC" ];
+1007->1008 [ label="1" ];
+351->668 [ label="AGENT_0
+check block_1 side_5" ];
+668->669 [ label="{(colored side_5): true,(identified block_1): true,}
+0.5" ];
+669->914 [ label="AGENT_0
+put-down block_1 tableC" ];
+914->915 [ label="1" ];
+668->670 [ label="{(in_sight side_5): true,}
+0.5" ];
+670->916 [ label="AGENT_0
+check block_1 side_0" ];
+916->670 [ label="1" ];
+670->917 [ label="AGENT_0
+check block_1 side_1" ];
+917->670 [ label="1" ];
+670->918 [ label="AGENT_0
+check block_1 side_2" ];
+918->670 [ label="1" ];
+670->919 [ label="AGENT_0
+check block_1 side_3" ];
+919->670 [ label="1" ];
+670->920 [ label="AGENT_0
+check block_1 side_4" ];
+920->921 [ label="1" ];
+921->1009 [ label="AGENT_0
+put-down block_1 tableC" ];
+1009->1010 [ label="1" ];
+670->922 [ label="AGENT_0
+check block_1 side_5" ];
+922->670 [ label="1" ];
+120->352 [ label="AGENT_0
+check block_1 side_4" ];
+352->353 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+353->671 [ label="AGENT_0
+put-down block_1 tableC" ];
+671->672 [ label="1" ];
+352->354 [ label="{(in_sight side_4): true,}
+0.666667" ];
+354->673 [ label="AGENT_0
+check block_1 side_0" ];
+673->354 [ label="1" ];
+354->674 [ label="AGENT_0
+check block_1 side_1" ];
+674->354 [ label="1" ];
+354->675 [ label="AGENT_0
+check block_1 side_2" ];
+675->354 [ label="1" ];
+354->676 [ label="AGENT_0
+check block_1 side_3" ];
+676->677 [ label="{(colored side_3): true,(identified block_1): true,}
+0.5" ];
+677->923 [ label="AGENT_0
+put-down block_1 tableC" ];
+923->924 [ label="1" ];
+676->667 [ label="{(in_sight side_3): true,}
+0.5" ];
+354->678 [ label="AGENT_0
+check block_1 side_4" ];
+678->354 [ label="1" ];
+354->679 [ label="AGENT_0
+check block_1 side_5" ];
+679->680 [ label="{(colored side_5): true,(identified block_1): true,}
+0.5" ];
+680->925 [ label="AGENT_0
+put-down block_1 tableC" ];
+925->926 [ label="1" ];
+679->681 [ label="{(in_sight side_5): true,}
+0.5" ];
+681->927 [ label="AGENT_0
+check block_1 side_0" ];
+927->681 [ label="1" ];
+681->928 [ label="AGENT_0
+check block_1 side_1" ];
+928->681 [ label="1" ];
+681->929 [ label="AGENT_0
+check block_1 side_2" ];
+929->681 [ label="1" ];
+681->930 [ label="AGENT_0
+check block_1 side_3" ];
+930->931 [ label="1" ];
+931->1011 [ label="AGENT_0
+put-down block_1 tableC" ];
+1011->1012 [ label="1" ];
+681->932 [ label="AGENT_0
+check block_1 side_4" ];
+932->681 [ label="1" ];
+681->933 [ label="AGENT_0
+check block_1 side_5" ];
+933->681 [ label="1" ];
+120->355 [ label="AGENT_0
+check block_1 side_5" ];
+355->356 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+356->682 [ label="AGENT_0
+put-down block_1 tableC" ];
+682->683 [ label="1" ];
+355->357 [ label="{(in_sight side_5): true,}
+0.666667" ];
+357->684 [ label="AGENT_0
+check block_1 side_0" ];
+684->357 [ label="1" ];
+357->685 [ label="AGENT_0
+check block_1 side_1" ];
+685->357 [ label="1" ];
+357->686 [ label="AGENT_0
+check block_1 side_2" ];
+686->357 [ label="1" ];
+357->687 [ label="AGENT_0
+check block_1 side_3" ];
+687->688 [ label="{(colored side_3): true,(identified block_1): true,}
+0.5" ];
+688->934 [ label="AGENT_0
+put-down block_1 tableC" ];
+934->935 [ label="1" ];
+687->670 [ label="{(in_sight side_3): true,}
+0.5" ];
+357->689 [ label="AGENT_0
+check block_1 side_4" ];
+689->690 [ label="{(colored side_4): true,(identified block_1): true,}
+0.5" ];
+690->936 [ label="AGENT_0
+put-down block_1 tableC" ];
+936->937 [ label="1" ];
+689->681 [ label="{(in_sight side_4): true,}
+0.5" ];
+357->691 [ label="AGENT_0
+check block_1 side_5" ];
+691->357 [ label="1" ];
+26->121 [ label="AGENT_0
+check block_1 side_3" ];
+121->122 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+122->358 [ label="AGENT_0
+put-down block_1 tableC" ];
+358->359 [ label="1" ];
+121->123 [ label="{(in_sight side_3): true,}
+0.75" ];
+123->360 [ label="AGENT_0
+check block_1 side_0" ];
+360->123 [ label="1" ];
+123->361 [ label="AGENT_0
+check block_1 side_1" ];
+361->123 [ label="1" ];
+123->362 [ label="AGENT_0
+check block_1 side_2" ];
+362->363 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+363->692 [ label="AGENT_0
+put-down block_1 tableC" ];
+692->693 [ label="1" ];
+362->351 [ label="{(in_sight side_2): true,}
+0.666667" ];
+123->364 [ label="AGENT_0
+check block_1 side_3" ];
+364->123 [ label="1" ];
+123->365 [ label="AGENT_0
+check block_1 side_4" ];
+365->366 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+366->694 [ label="AGENT_0
+put-down block_1 tableC" ];
+694->695 [ label="1" ];
+365->367 [ label="{(in_sight side_4): true,}
+0.666667" ];
+367->696 [ label="AGENT_0
+check block_1 side_0" ];
+696->367 [ label="1" ];
+367->697 [ label="AGENT_0
+check block_1 side_1" ];
+697->367 [ label="1" ];
+367->698 [ label="AGENT_0
+check block_1 side_2" ];
+698->699 [ label="{(colored side_2): true,(identified block_1): true,}
+0.5" ];
+699->938 [ label="AGENT_0
+put-down block_1 tableC" ];
+938->939 [ label="1" ];
+698->667 [ label="{(in_sight side_2): true,}
+0.5" ];
+367->700 [ label="AGENT_0
+check block_1 side_3" ];
+700->367 [ label="1" ];
+367->701 [ label="AGENT_0
+check block_1 side_4" ];
+701->367 [ label="1" ];
+367->702 [ label="AGENT_0
+check block_1 side_5" ];
+702->703 [ label="{(colored side_5): true,(identified block_1): true,}
+0.5" ];
+703->940 [ label="AGENT_0
+put-down block_1 tableC" ];
+940->941 [ label="1" ];
+702->704 [ label="{(in_sight side_5): true,}
+0.5" ];
+704->942 [ label="AGENT_0
+check block_1 side_0" ];
+942->704 [ label="1" ];
+704->943 [ label="AGENT_0
+check block_1 side_1" ];
+943->704 [ label="1" ];
+704->944 [ label="AGENT_0
+check block_1 side_2" ];
+944->945 [ label="1" ];
+945->1013 [ label="AGENT_0
+put-down block_1 tableC" ];
+1013->1014 [ label="1" ];
+704->946 [ label="AGENT_0
+check block_1 side_3" ];
+946->704 [ label="1" ];
+704->947 [ label="AGENT_0
+check block_1 side_4" ];
+947->704 [ label="1" ];
+704->948 [ label="AGENT_0
+check block_1 side_5" ];
+948->704 [ label="1" ];
+123->368 [ label="AGENT_0
+check block_1 side_5" ];
+368->369 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+369->705 [ label="AGENT_0
+put-down block_1 tableC" ];
+705->706 [ label="1" ];
+368->370 [ label="{(in_sight side_5): true,}
+0.666667" ];
+370->707 [ label="AGENT_0
+check block_1 side_0" ];
+707->370 [ label="1" ];
+370->708 [ label="AGENT_0
+check block_1 side_1" ];
+708->370 [ label="1" ];
+370->709 [ label="AGENT_0
+check block_1 side_2" ];
+709->710 [ label="{(colored side_2): true,(identified block_1): true,}
+0.5" ];
+710->949 [ label="AGENT_0
+put-down block_1 tableC" ];
+949->950 [ label="1" ];
+709->670 [ label="{(in_sight side_2): true,}
+0.5" ];
+370->711 [ label="AGENT_0
+check block_1 side_3" ];
+711->370 [ label="1" ];
+370->712 [ label="AGENT_0
+check block_1 side_4" ];
+712->713 [ label="{(colored side_4): true,(identified block_1): true,}
+0.5" ];
+713->951 [ label="AGENT_0
+put-down block_1 tableC" ];
+951->952 [ label="1" ];
+712->704 [ label="{(in_sight side_4): true,}
+0.5" ];
+370->714 [ label="AGENT_0
+check block_1 side_5" ];
+714->370 [ label="1" ];
+26->124 [ label="AGENT_0
+check block_1 side_4" ];
+124->125 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+125->371 [ label="AGENT_0
+put-down block_1 tableC" ];
+371->372 [ label="1" ];
+124->126 [ label="{(in_sight side_4): true,}
+0.75" ];
+126->373 [ label="AGENT_0
+check block_1 side_0" ];
+373->126 [ label="1" ];
+126->374 [ label="AGENT_0
+check block_1 side_1" ];
+374->126 [ label="1" ];
+126->375 [ label="AGENT_0
+check block_1 side_2" ];
+375->376 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+376->715 [ label="AGENT_0
+put-down block_1 tableC" ];
+715->716 [ label="1" ];
+375->354 [ label="{(in_sight side_2): true,}
+0.666667" ];
+126->377 [ label="AGENT_0
+check block_1 side_3" ];
+377->378 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+378->717 [ label="AGENT_0
+put-down block_1 tableC" ];
+717->718 [ label="1" ];
+377->367 [ label="{(in_sight side_3): true,}
+0.666667" ];
+126->379 [ label="AGENT_0
+check block_1 side_4" ];
+379->126 [ label="1" ];
+126->380 [ label="AGENT_0
+check block_1 side_5" ];
+380->381 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+381->719 [ label="AGENT_0
+put-down block_1 tableC" ];
+719->720 [ label="1" ];
+380->382 [ label="{(in_sight side_5): true,}
+0.666667" ];
+382->721 [ label="AGENT_0
+check block_1 side_0" ];
+721->382 [ label="1" ];
+382->722 [ label="AGENT_0
+check block_1 side_1" ];
+722->382 [ label="1" ];
+382->723 [ label="AGENT_0
+check block_1 side_2" ];
+723->724 [ label="{(colored side_2): true,(identified block_1): true,}
+0.5" ];
+724->953 [ label="AGENT_0
+put-down block_1 tableC" ];
+953->954 [ label="1" ];
+723->681 [ label="{(in_sight side_2): true,}
+0.5" ];
+382->725 [ label="AGENT_0
+check block_1 side_3" ];
+725->726 [ label="{(colored side_3): true,(identified block_1): true,}
+0.5" ];
+726->955 [ label="AGENT_0
+put-down block_1 tableC" ];
+955->956 [ label="1" ];
+725->704 [ label="{(in_sight side_3): true,}
+0.5" ];
+382->727 [ label="AGENT_0
+check block_1 side_4" ];
+727->382 [ label="1" ];
+382->728 [ label="AGENT_0
+check block_1 side_5" ];
+728->382 [ label="1" ];
+26->127 [ label="AGENT_0
+check block_1 side_5" ];
+127->128 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+128->383 [ label="AGENT_0
+put-down block_1 tableC" ];
+383->384 [ label="1" ];
+127->129 [ label="{(in_sight side_5): true,}
+0.75" ];
+129->385 [ label="AGENT_0
+check block_1 side_0" ];
+385->129 [ label="1" ];
+129->386 [ label="AGENT_0
+check block_1 side_1" ];
+386->129 [ label="1" ];
+129->387 [ label="AGENT_0
+check block_1 side_2" ];
+387->388 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+388->729 [ label="AGENT_0
+put-down block_1 tableC" ];
+729->730 [ label="1" ];
+387->357 [ label="{(in_sight side_2): true,}
+0.666667" ];
+129->389 [ label="AGENT_0
+check block_1 side_3" ];
+389->390 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+390->731 [ label="AGENT_0
+put-down block_1 tableC" ];
+731->732 [ label="1" ];
+389->370 [ label="{(in_sight side_3): true,}
+0.666667" ];
+129->391 [ label="AGENT_0
+check block_1 side_4" ];
+391->392 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+392->733 [ label="AGENT_0
+put-down block_1 tableC" ];
+733->734 [ label="1" ];
+391->382 [ label="{(in_sight side_4): true,}
+0.666667" ];
+129->393 [ label="AGENT_0
+check block_1 side_5" ];
+393->129 [ label="1" ];
+5->27 [ label="AGENT_0
+check block_1 side_2" ];
+27->28 [ label="{(colored side_2): true,(identified block_1): true,}
+0.2" ];
+28->130 [ label="AGENT_0
+put-down block_1 tableC" ];
+130->131 [ label="1" ];
+27->29 [ label="{(in_sight side_2): true,}
+0.8" ];
+29->132 [ label="AGENT_0
+check block_1 side_0" ];
+132->29 [ label="1" ];
+29->133 [ label="AGENT_0
+check block_1 side_1" ];
+133->134 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+134->394 [ label="AGENT_0
+put-down block_1 tableC" ];
+394->395 [ label="1" ];
+133->120 [ label="{(in_sight side_1): true,}
+0.75" ];
+29->135 [ label="AGENT_0
+check block_1 side_2" ];
+135->29 [ label="1" ];
+29->136 [ label="AGENT_0
+check block_1 side_3" ];
+136->137 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+137->396 [ label="AGENT_0
+put-down block_1 tableC" ];
+396->397 [ label="1" ];
+136->138 [ label="{(in_sight side_3): true,}
+0.75" ];
+138->398 [ label="AGENT_0
+check block_1 side_0" ];
+398->138 [ label="1" ];
+138->399 [ label="AGENT_0
+check block_1 side_1" ];
+399->400 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+400->735 [ label="AGENT_0
+put-down block_1 tableC" ];
+735->736 [ label="1" ];
+399->351 [ label="{(in_sight side_1): true,}
+0.666667" ];
+138->401 [ label="AGENT_0
+check block_1 side_2" ];
+401->138 [ label="1" ];
+138->402 [ label="AGENT_0
+check block_1 side_3" ];
+402->138 [ label="1" ];
+138->403 [ label="AGENT_0
+check block_1 side_4" ];
+403->404 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+404->737 [ label="AGENT_0
+put-down block_1 tableC" ];
+737->738 [ label="1" ];
+403->405 [ label="{(in_sight side_4): true,}
+0.666667" ];
+405->739 [ label="AGENT_0
+check block_1 side_0" ];
+739->405 [ label="1" ];
+405->740 [ label="AGENT_0
+check block_1 side_1" ];
+740->741 [ label="{(colored side_1): true,(identified block_1): true,}
+0.5" ];
+741->957 [ label="AGENT_0
+put-down block_1 tableC" ];
+957->958 [ label="1" ];
+740->667 [ label="{(in_sight side_1): true,}
+0.5" ];
+405->742 [ label="AGENT_0
+check block_1 side_2" ];
+742->405 [ label="1" ];
+405->743 [ label="AGENT_0
+check block_1 side_3" ];
+743->405 [ label="1" ];
+405->744 [ label="AGENT_0
+check block_1 side_4" ];
+744->405 [ label="1" ];
+405->745 [ label="AGENT_0
+check block_1 side_5" ];
+745->746 [ label="{(colored side_5): true,(identified block_1): true,}
+0.5" ];
+746->959 [ label="AGENT_0
+put-down block_1 tableC" ];
+959->960 [ label="1" ];
+745->747 [ label="{(in_sight side_5): true,}
+0.5" ];
+747->961 [ label="AGENT_0
+check block_1 side_0" ];
+961->747 [ label="1" ];
+747->962 [ label="AGENT_0
+check block_1 side_1" ];
+962->963 [ label="1" ];
+963->1015 [ label="AGENT_0
+put-down block_1 tableC" ];
+1015->1016 [ label="1" ];
+747->964 [ label="AGENT_0
+check block_1 side_2" ];
+964->747 [ label="1" ];
+747->965 [ label="AGENT_0
+check block_1 side_3" ];
+965->747 [ label="1" ];
+747->966 [ label="AGENT_0
+check block_1 side_4" ];
+966->747 [ label="1" ];
+747->967 [ label="AGENT_0
+check block_1 side_5" ];
+967->747 [ label="1" ];
+138->406 [ label="AGENT_0
+check block_1 side_5" ];
+406->407 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+407->748 [ label="AGENT_0
+put-down block_1 tableC" ];
+748->749 [ label="1" ];
+406->408 [ label="{(in_sight side_5): true,}
+0.666667" ];
+408->750 [ label="AGENT_0
+check block_1 side_0" ];
+750->408 [ label="1" ];
+408->751 [ label="AGENT_0
+check block_1 side_1" ];
+751->752 [ label="{(colored side_1): true,(identified block_1): true,}
+0.5" ];
+752->968 [ label="AGENT_0
+put-down block_1 tableC" ];
+968->969 [ label="1" ];
+751->670 [ label="{(in_sight side_1): true,}
+0.5" ];
+408->753 [ label="AGENT_0
+check block_1 side_2" ];
+753->408 [ label="1" ];
+408->754 [ label="AGENT_0
+check block_1 side_3" ];
+754->408 [ label="1" ];
+408->755 [ label="AGENT_0
+check block_1 side_4" ];
+755->756 [ label="{(colored side_4): true,(identified block_1): true,}
+0.5" ];
+756->970 [ label="AGENT_0
+put-down block_1 tableC" ];
+970->971 [ label="1" ];
+755->747 [ label="{(in_sight side_4): true,}
+0.5" ];
+408->757 [ label="AGENT_0
+check block_1 side_5" ];
+757->408 [ label="1" ];
+29->139 [ label="AGENT_0
+check block_1 side_4" ];
+139->140 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+140->409 [ label="AGENT_0
+put-down block_1 tableC" ];
+409->410 [ label="1" ];
+139->141 [ label="{(in_sight side_4): true,}
+0.75" ];
+141->411 [ label="AGENT_0
+check block_1 side_0" ];
+411->141 [ label="1" ];
+141->412 [ label="AGENT_0
+check block_1 side_1" ];
+412->413 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+413->758 [ label="AGENT_0
+put-down block_1 tableC" ];
+758->759 [ label="1" ];
+412->354 [ label="{(in_sight side_1): true,}
+0.666667" ];
+141->414 [ label="AGENT_0
+check block_1 side_2" ];
+414->141 [ label="1" ];
+141->415 [ label="AGENT_0
+check block_1 side_3" ];
+415->416 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+416->760 [ label="AGENT_0
+put-down block_1 tableC" ];
+760->761 [ label="1" ];
+415->405 [ label="{(in_sight side_3): true,}
+0.666667" ];
+141->417 [ label="AGENT_0
+check block_1 side_4" ];
+417->141 [ label="1" ];
+141->418 [ label="AGENT_0
+check block_1 side_5" ];
+418->419 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+419->762 [ label="AGENT_0
+put-down block_1 tableC" ];
+762->763 [ label="1" ];
+418->420 [ label="{(in_sight side_5): true,}
+0.666667" ];
+420->764 [ label="AGENT_0
+check block_1 side_0" ];
+764->420 [ label="1" ];
+420->765 [ label="AGENT_0
+check block_1 side_1" ];
+765->766 [ label="{(colored side_1): true,(identified block_1): true,}
+0.5" ];
+766->972 [ label="AGENT_0
+put-down block_1 tableC" ];
+972->973 [ label="1" ];
+765->681 [ label="{(in_sight side_1): true,}
+0.5" ];
+420->767 [ label="AGENT_0
+check block_1 side_2" ];
+767->420 [ label="1" ];
+420->768 [ label="AGENT_0
+check block_1 side_3" ];
+768->769 [ label="{(colored side_3): true,(identified block_1): true,}
+0.5" ];
+769->974 [ label="AGENT_0
+put-down block_1 tableC" ];
+974->975 [ label="1" ];
+768->747 [ label="{(in_sight side_3): true,}
+0.5" ];
+420->770 [ label="AGENT_0
+check block_1 side_4" ];
+770->420 [ label="1" ];
+420->771 [ label="AGENT_0
+check block_1 side_5" ];
+771->420 [ label="1" ];
+29->142 [ label="AGENT_0
+check block_1 side_5" ];
+142->143 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+143->421 [ label="AGENT_0
+put-down block_1 tableC" ];
+421->422 [ label="1" ];
+142->144 [ label="{(in_sight side_5): true,}
+0.75" ];
+144->423 [ label="AGENT_0
+check block_1 side_0" ];
+423->144 [ label="1" ];
+144->424 [ label="AGENT_0
+check block_1 side_1" ];
+424->425 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+425->772 [ label="AGENT_0
+put-down block_1 tableC" ];
+772->773 [ label="1" ];
+424->357 [ label="{(in_sight side_1): true,}
+0.666667" ];
+144->426 [ label="AGENT_0
+check block_1 side_2" ];
+426->144 [ label="1" ];
+144->427 [ label="AGENT_0
+check block_1 side_3" ];
+427->428 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+428->774 [ label="AGENT_0
+put-down block_1 tableC" ];
+774->775 [ label="1" ];
+427->408 [ label="{(in_sight side_3): true,}
+0.666667" ];
+144->429 [ label="AGENT_0
+check block_1 side_4" ];
+429->430 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+430->776 [ label="AGENT_0
+put-down block_1 tableC" ];
+776->777 [ label="1" ];
+429->420 [ label="{(in_sight side_4): true,}
+0.666667" ];
+144->431 [ label="AGENT_0
+check block_1 side_5" ];
+431->144 [ label="1" ];
+5->30 [ label="AGENT_0
+check block_1 side_3" ];
+30->31 [ label="{(colored side_3): true,(identified block_1): true,}
+0.2" ];
+31->145 [ label="AGENT_0
+put-down block_1 tableC" ];
+145->146 [ label="1" ];
+30->32 [ label="{(in_sight side_3): true,}
+0.8" ];
+32->147 [ label="AGENT_0
+check block_1 side_0" ];
+147->32 [ label="1" ];
+32->148 [ label="AGENT_0
+check block_1 side_1" ];
+148->149 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+149->432 [ label="AGENT_0
+put-down block_1 tableC" ];
+432->433 [ label="1" ];
+148->123 [ label="{(in_sight side_1): true,}
+0.75" ];
+32->150 [ label="AGENT_0
+check block_1 side_2" ];
+150->151 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+151->434 [ label="AGENT_0
+put-down block_1 tableC" ];
+434->435 [ label="1" ];
+150->138 [ label="{(in_sight side_2): true,}
+0.75" ];
+32->152 [ label="AGENT_0
+check block_1 side_3" ];
+152->32 [ label="1" ];
+32->153 [ label="AGENT_0
+check block_1 side_4" ];
+153->154 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+154->436 [ label="AGENT_0
+put-down block_1 tableC" ];
+436->437 [ label="1" ];
+153->155 [ label="{(in_sight side_4): true,}
+0.75" ];
+155->438 [ label="AGENT_0
+check block_1 side_0" ];
+438->155 [ label="1" ];
+155->439 [ label="AGENT_0
+check block_1 side_1" ];
+439->440 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+440->778 [ label="AGENT_0
+put-down block_1 tableC" ];
+778->779 [ label="1" ];
+439->367 [ label="{(in_sight side_1): true,}
+0.666667" ];
+155->441 [ label="AGENT_0
+check block_1 side_2" ];
+441->442 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+442->780 [ label="AGENT_0
+put-down block_1 tableC" ];
+780->781 [ label="1" ];
+441->405 [ label="{(in_sight side_2): true,}
+0.666667" ];
+155->443 [ label="AGENT_0
+check block_1 side_3" ];
+443->155 [ label="1" ];
+155->444 [ label="AGENT_0
+check block_1 side_4" ];
+444->155 [ label="1" ];
+155->445 [ label="AGENT_0
+check block_1 side_5" ];
+445->446 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+446->782 [ label="AGENT_0
+put-down block_1 tableC" ];
+782->783 [ label="1" ];
+445->447 [ label="{(in_sight side_5): true,}
+0.666667" ];
+447->784 [ label="AGENT_0
+check block_1 side_0" ];
+784->447 [ label="1" ];
+447->785 [ label="AGENT_0
+check block_1 side_1" ];
+785->786 [ label="{(colored side_1): true,(identified block_1): true,}
+0.5" ];
+786->976 [ label="AGENT_0
+put-down block_1 tableC" ];
+976->977 [ label="1" ];
+785->704 [ label="{(in_sight side_1): true,}
+0.5" ];
+447->787 [ label="AGENT_0
+check block_1 side_2" ];
+787->788 [ label="{(colored side_2): true,(identified block_1): true,}
+0.5" ];
+788->978 [ label="AGENT_0
+put-down block_1 tableC" ];
+978->979 [ label="1" ];
+787->747 [ label="{(in_sight side_2): true,}
+0.5" ];
+447->789 [ label="AGENT_0
+check block_1 side_3" ];
+789->447 [ label="1" ];
+447->790 [ label="AGENT_0
+check block_1 side_4" ];
+790->447 [ label="1" ];
+447->791 [ label="AGENT_0
+check block_1 side_5" ];
+791->447 [ label="1" ];
+32->156 [ label="AGENT_0
+check block_1 side_5" ];
+156->157 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+157->448 [ label="AGENT_0
+put-down block_1 tableC" ];
+448->449 [ label="1" ];
+156->158 [ label="{(in_sight side_5): true,}
+0.75" ];
+158->450 [ label="AGENT_0
+check block_1 side_0" ];
+450->158 [ label="1" ];
+158->451 [ label="AGENT_0
+check block_1 side_1" ];
+451->452 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+452->792 [ label="AGENT_0
+put-down block_1 tableC" ];
+792->793 [ label="1" ];
+451->370 [ label="{(in_sight side_1): true,}
+0.666667" ];
+158->453 [ label="AGENT_0
+check block_1 side_2" ];
+453->454 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+454->794 [ label="AGENT_0
+put-down block_1 tableC" ];
+794->795 [ label="1" ];
+453->408 [ label="{(in_sight side_2): true,}
+0.666667" ];
+158->455 [ label="AGENT_0
+check block_1 side_3" ];
+455->158 [ label="1" ];
+158->456 [ label="AGENT_0
+check block_1 side_4" ];
+456->457 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+457->796 [ label="AGENT_0
+put-down block_1 tableC" ];
+796->797 [ label="1" ];
+456->447 [ label="{(in_sight side_4): true,}
+0.666667" ];
+158->458 [ label="AGENT_0
+check block_1 side_5" ];
+458->158 [ label="1" ];
+5->33 [ label="AGENT_0
+check block_1 side_4" ];
+33->34 [ label="{(colored side_4): true,(identified block_1): true,}
+0.2" ];
+34->159 [ label="AGENT_0
+put-down block_1 tableC" ];
+159->160 [ label="1" ];
+33->35 [ label="{(in_sight side_4): true,}
+0.8" ];
+35->161 [ label="AGENT_0
+check block_1 side_0" ];
+161->35 [ label="1" ];
+35->162 [ label="AGENT_0
+check block_1 side_1" ];
+162->163 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+163->459 [ label="AGENT_0
+put-down block_1 tableC" ];
+459->460 [ label="1" ];
+162->126 [ label="{(in_sight side_1): true,}
+0.75" ];
+35->164 [ label="AGENT_0
+check block_1 side_2" ];
+164->165 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+165->461 [ label="AGENT_0
+put-down block_1 tableC" ];
+461->462 [ label="1" ];
+164->141 [ label="{(in_sight side_2): true,}
+0.75" ];
+35->166 [ label="AGENT_0
+check block_1 side_3" ];
+166->167 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+167->463 [ label="AGENT_0
+put-down block_1 tableC" ];
+463->464 [ label="1" ];
+166->155 [ label="{(in_sight side_3): true,}
+0.75" ];
+35->168 [ label="AGENT_0
+check block_1 side_4" ];
+168->35 [ label="1" ];
+35->169 [ label="AGENT_0
+check block_1 side_5" ];
+169->170 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+170->465 [ label="AGENT_0
+put-down block_1 tableC" ];
+465->466 [ label="1" ];
+169->171 [ label="{(in_sight side_5): true,}
+0.75" ];
+171->467 [ label="AGENT_0
+check block_1 side_0" ];
+467->171 [ label="1" ];
+171->468 [ label="AGENT_0
+check block_1 side_1" ];
+468->469 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+469->798 [ label="AGENT_0
+put-down block_1 tableC" ];
+798->799 [ label="1" ];
+468->382 [ label="{(in_sight side_1): true,}
+0.666667" ];
+171->470 [ label="AGENT_0
+check block_1 side_2" ];
+470->471 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+471->800 [ label="AGENT_0
+put-down block_1 tableC" ];
+800->801 [ label="1" ];
+470->420 [ label="{(in_sight side_2): true,}
+0.666667" ];
+171->472 [ label="AGENT_0
+check block_1 side_3" ];
+472->473 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+473->802 [ label="AGENT_0
+put-down block_1 tableC" ];
+802->803 [ label="1" ];
+472->447 [ label="{(in_sight side_3): true,}
+0.666667" ];
+171->474 [ label="AGENT_0
+check block_1 side_4" ];
+474->171 [ label="1" ];
+171->475 [ label="AGENT_0
+check block_1 side_5" ];
+475->171 [ label="1" ];
+5->36 [ label="AGENT_0
+check block_1 side_5" ];
+36->37 [ label="{(colored side_5): true,(identified block_1): true,}
+0.2" ];
+37->172 [ label="AGENT_0
+put-down block_1 tableC" ];
+172->173 [ label="1" ];
+36->38 [ label="{(in_sight side_5): true,}
+0.8" ];
+38->174 [ label="AGENT_0
+check block_1 side_0" ];
+174->38 [ label="1" ];
+38->175 [ label="AGENT_0
+check block_1 side_1" ];
+175->176 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+176->476 [ label="AGENT_0
+put-down block_1 tableC" ];
+476->477 [ label="1" ];
+175->129 [ label="{(in_sight side_1): true,}
+0.75" ];
+38->177 [ label="AGENT_0
+check block_1 side_2" ];
+177->178 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+178->478 [ label="AGENT_0
+put-down block_1 tableC" ];
+478->479 [ label="1" ];
+177->144 [ label="{(in_sight side_2): true,}
+0.75" ];
+38->179 [ label="AGENT_0
+check block_1 side_3" ];
+179->180 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+180->480 [ label="AGENT_0
+put-down block_1 tableC" ];
+480->481 [ label="1" ];
+179->158 [ label="{(in_sight side_3): true,}
+0.75" ];
+38->181 [ label="AGENT_0
+check block_1 side_4" ];
+181->182 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+182->482 [ label="AGENT_0
+put-down block_1 tableC" ];
+482->483 [ label="1" ];
+181->171 [ label="{(in_sight side_4): true,}
+0.75" ];
+38->183 [ label="AGENT_0
+check block_1 side_5" ];
+183->38 [ label="1" ];
+2->6 [ label="AGENT_0
+check block_1 side_1" ];
+6->7 [ label="{(colored side_1): true,(identified block_1): true,}
+0.166667" ];
+7->39 [ label="AGENT_0
+put-down block_1 tableC" ];
+39->40 [ label="1" ];
+6->8 [ label="{(in_sight side_1): true,}
+0.833333" ];
+8->41 [ label="AGENT_0
+check block_1 side_0" ];
+41->42 [ label="{(colored side_0): true,(identified block_1): true,}
+0.2" ];
+42->184 [ label="AGENT_0
+put-down block_1 tableC" ];
+184->185 [ label="1" ];
+41->26 [ label="{(in_sight side_0): true,}
+0.8" ];
+8->43 [ label="AGENT_0
+check block_1 side_1" ];
+43->8 [ label="1" ];
+8->44 [ label="AGENT_0
+check block_1 side_2" ];
+44->45 [ label="{(colored side_2): true,(identified block_1): true,}
+0.2" ];
+45->186 [ label="AGENT_0
+put-down block_1 tableC" ];
+186->187 [ label="1" ];
+44->46 [ label="{(in_sight side_2): true,}
+0.8" ];
+46->188 [ label="AGENT_0
+check block_1 side_0" ];
+188->189 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+189->484 [ label="AGENT_0
+put-down block_1 tableC" ];
+484->485 [ label="1" ];
+188->120 [ label="{(in_sight side_0): true,}
+0.75" ];
+46->190 [ label="AGENT_0
+check block_1 side_1" ];
+190->46 [ label="1" ];
+46->191 [ label="AGENT_0
+check block_1 side_2" ];
+191->46 [ label="1" ];
+46->192 [ label="AGENT_0
+check block_1 side_3" ];
+192->193 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+193->486 [ label="AGENT_0
+put-down block_1 tableC" ];
+486->487 [ label="1" ];
+192->194 [ label="{(in_sight side_3): true,}
+0.75" ];
+194->488 [ label="AGENT_0
+check block_1 side_0" ];
+488->489 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+489->804 [ label="AGENT_0
+put-down block_1 tableC" ];
+804->805 [ label="1" ];
+488->351 [ label="{(in_sight side_0): true,}
+0.666667" ];
+194->490 [ label="AGENT_0
+check block_1 side_1" ];
+490->194 [ label="1" ];
+194->491 [ label="AGENT_0
+check block_1 side_2" ];
+491->194 [ label="1" ];
+194->492 [ label="AGENT_0
+check block_1 side_3" ];
+492->194 [ label="1" ];
+194->493 [ label="AGENT_0
+check block_1 side_4" ];
+493->494 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+494->806 [ label="AGENT_0
+put-down block_1 tableC" ];
+806->807 [ label="1" ];
+493->495 [ label="{(in_sight side_4): true,}
+0.666667" ];
+495->808 [ label="AGENT_0
+check block_1 side_0" ];
+808->809 [ label="{(colored side_0): true,(identified block_1): true,}
+0.5" ];
+809->980 [ label="AGENT_0
+put-down block_1 tableC" ];
+980->981 [ label="1" ];
+808->667 [ label="{(in_sight side_0): true,}
+0.5" ];
+495->810 [ label="AGENT_0
+check block_1 side_1" ];
+810->495 [ label="1" ];
+495->811 [ label="AGENT_0
+check block_1 side_2" ];
+811->495 [ label="1" ];
+495->812 [ label="AGENT_0
+check block_1 side_3" ];
+812->495 [ label="1" ];
+495->813 [ label="AGENT_0
+check block_1 side_4" ];
+813->495 [ label="1" ];
+495->814 [ label="AGENT_0
+check block_1 side_5" ];
+814->815 [ label="{(colored side_5): true,(identified block_1): true,}
+0.5" ];
+815->982 [ label="AGENT_0
+put-down block_1 tableC" ];
+982->983 [ label="1" ];
+814->816 [ label="{(in_sight side_5): true,}
+0.5" ];
+816->984 [ label="AGENT_0
+check block_1 side_0" ];
+984->985 [ label="1" ];
+985->1017 [ label="AGENT_0
+put-down block_1 tableC" ];
+1017->1018 [ label="1" ];
+816->986 [ label="AGENT_0
+check block_1 side_1" ];
+986->816 [ label="1" ];
+816->987 [ label="AGENT_0
+check block_1 side_2" ];
+987->816 [ label="1" ];
+816->988 [ label="AGENT_0
+check block_1 side_3" ];
+988->816 [ label="1" ];
+816->989 [ label="AGENT_0
+check block_1 side_4" ];
+989->816 [ label="1" ];
+816->990 [ label="AGENT_0
+check block_1 side_5" ];
+990->816 [ label="1" ];
+194->496 [ label="AGENT_0
+check block_1 side_5" ];
+496->497 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+497->817 [ label="AGENT_0
+put-down block_1 tableC" ];
+817->818 [ label="1" ];
+496->498 [ label="{(in_sight side_5): true,}
+0.666667" ];
+498->819 [ label="AGENT_0
+check block_1 side_0" ];
+819->820 [ label="{(colored side_0): true,(identified block_1): true,}
+0.5" ];
+820->991 [ label="AGENT_0
+put-down block_1 tableC" ];
+991->992 [ label="1" ];
+819->670 [ label="{(in_sight side_0): true,}
+0.5" ];
+498->821 [ label="AGENT_0
+check block_1 side_1" ];
+821->498 [ label="1" ];
+498->822 [ label="AGENT_0
+check block_1 side_2" ];
+822->498 [ label="1" ];
+498->823 [ label="AGENT_0
+check block_1 side_3" ];
+823->498 [ label="1" ];
+498->824 [ label="AGENT_0
+check block_1 side_4" ];
+824->825 [ label="{(colored side_4): true,(identified block_1): true,}
+0.5" ];
+825->993 [ label="AGENT_0
+put-down block_1 tableC" ];
+993->994 [ label="1" ];
+824->816 [ label="{(in_sight side_4): true,}
+0.5" ];
+498->826 [ label="AGENT_0
+check block_1 side_5" ];
+826->498 [ label="1" ];
+46->195 [ label="AGENT_0
+check block_1 side_4" ];
+195->196 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+196->499 [ label="AGENT_0
+put-down block_1 tableC" ];
+499->500 [ label="1" ];
+195->197 [ label="{(in_sight side_4): true,}
+0.75" ];
+197->501 [ label="AGENT_0
+check block_1 side_0" ];
+501->502 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+502->827 [ label="AGENT_0
+put-down block_1 tableC" ];
+827->828 [ label="1" ];
+501->354 [ label="{(in_sight side_0): true,}
+0.666667" ];
+197->503 [ label="AGENT_0
+check block_1 side_1" ];
+503->197 [ label="1" ];
+197->504 [ label="AGENT_0
+check block_1 side_2" ];
+504->197 [ label="1" ];
+197->505 [ label="AGENT_0
+check block_1 side_3" ];
+505->506 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+506->829 [ label="AGENT_0
+put-down block_1 tableC" ];
+829->830 [ label="1" ];
+505->495 [ label="{(in_sight side_3): true,}
+0.666667" ];
+197->507 [ label="AGENT_0
+check block_1 side_4" ];
+507->197 [ label="1" ];
+197->508 [ label="AGENT_0
+check block_1 side_5" ];
+508->509 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+509->831 [ label="AGENT_0
+put-down block_1 tableC" ];
+831->832 [ label="1" ];
+508->510 [ label="{(in_sight side_5): true,}
+0.666667" ];
+510->833 [ label="AGENT_0
+check block_1 side_0" ];
+833->834 [ label="{(colored side_0): true,(identified block_1): true,}
+0.5" ];
+834->995 [ label="AGENT_0
+put-down block_1 tableC" ];
+995->996 [ label="1" ];
+833->681 [ label="{(in_sight side_0): true,}
+0.5" ];
+510->835 [ label="AGENT_0
+check block_1 side_1" ];
+835->510 [ label="1" ];
+510->836 [ label="AGENT_0
+check block_1 side_2" ];
+836->510 [ label="1" ];
+510->837 [ label="AGENT_0
+check block_1 side_3" ];
+837->838 [ label="{(colored side_3): true,(identified block_1): true,}
+0.5" ];
+838->997 [ label="AGENT_0
+put-down block_1 tableC" ];
+997->998 [ label="1" ];
+837->816 [ label="{(in_sight side_3): true,}
+0.5" ];
+510->839 [ label="AGENT_0
+check block_1 side_4" ];
+839->510 [ label="1" ];
+510->840 [ label="AGENT_0
+check block_1 side_5" ];
+840->510 [ label="1" ];
+46->198 [ label="AGENT_0
+check block_1 side_5" ];
+198->199 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+199->511 [ label="AGENT_0
+put-down block_1 tableC" ];
+511->512 [ label="1" ];
+198->200 [ label="{(in_sight side_5): true,}
+0.75" ];
+200->513 [ label="AGENT_0
+check block_1 side_0" ];
+513->514 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+514->841 [ label="AGENT_0
+put-down block_1 tableC" ];
+841->842 [ label="1" ];
+513->357 [ label="{(in_sight side_0): true,}
+0.666667" ];
+200->515 [ label="AGENT_0
+check block_1 side_1" ];
+515->200 [ label="1" ];
+200->516 [ label="AGENT_0
+check block_1 side_2" ];
+516->200 [ label="1" ];
+200->517 [ label="AGENT_0
+check block_1 side_3" ];
+517->518 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+518->843 [ label="AGENT_0
+put-down block_1 tableC" ];
+843->844 [ label="1" ];
+517->498 [ label="{(in_sight side_3): true,}
+0.666667" ];
+200->519 [ label="AGENT_0
+check block_1 side_4" ];
+519->520 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+520->845 [ label="AGENT_0
+put-down block_1 tableC" ];
+845->846 [ label="1" ];
+519->510 [ label="{(in_sight side_4): true,}
+0.666667" ];
+200->521 [ label="AGENT_0
+check block_1 side_5" ];
+521->200 [ label="1" ];
+8->47 [ label="AGENT_0
+check block_1 side_3" ];
+47->48 [ label="{(colored side_3): true,(identified block_1): true,}
+0.2" ];
+48->201 [ label="AGENT_0
+put-down block_1 tableC" ];
+201->202 [ label="1" ];
+47->49 [ label="{(in_sight side_3): true,}
+0.8" ];
+49->203 [ label="AGENT_0
+check block_1 side_0" ];
+203->204 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+204->522 [ label="AGENT_0
+put-down block_1 tableC" ];
+522->523 [ label="1" ];
+203->123 [ label="{(in_sight side_0): true,}
+0.75" ];
+49->205 [ label="AGENT_0
+check block_1 side_1" ];
+205->49 [ label="1" ];
+49->206 [ label="AGENT_0
+check block_1 side_2" ];
+206->207 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+207->524 [ label="AGENT_0
+put-down block_1 tableC" ];
+524->525 [ label="1" ];
+206->194 [ label="{(in_sight side_2): true,}
+0.75" ];
+49->208 [ label="AGENT_0
+check block_1 side_3" ];
+208->49 [ label="1" ];
+49->209 [ label="AGENT_0
+check block_1 side_4" ];
+209->210 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+210->526 [ label="AGENT_0
+put-down block_1 tableC" ];
+526->527 [ label="1" ];
+209->211 [ label="{(in_sight side_4): true,}
+0.75" ];
+211->528 [ label="AGENT_0
+check block_1 side_0" ];
+528->529 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+529->847 [ label="AGENT_0
+put-down block_1 tableC" ];
+847->848 [ label="1" ];
+528->367 [ label="{(in_sight side_0): true,}
+0.666667" ];
+211->530 [ label="AGENT_0
+check block_1 side_1" ];
+530->211 [ label="1" ];
+211->531 [ label="AGENT_0
+check block_1 side_2" ];
+531->532 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+532->849 [ label="AGENT_0
+put-down block_1 tableC" ];
+849->850 [ label="1" ];
+531->495 [ label="{(in_sight side_2): true,}
+0.666667" ];
+211->533 [ label="AGENT_0
+check block_1 side_3" ];
+533->211 [ label="1" ];
+211->534 [ label="AGENT_0
+check block_1 side_4" ];
+534->211 [ label="1" ];
+211->535 [ label="AGENT_0
+check block_1 side_5" ];
+535->536 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+536->851 [ label="AGENT_0
+put-down block_1 tableC" ];
+851->852 [ label="1" ];
+535->537 [ label="{(in_sight side_5): true,}
+0.666667" ];
+537->853 [ label="AGENT_0
+check block_1 side_0" ];
+853->854 [ label="{(colored side_0): true,(identified block_1): true,}
+0.5" ];
+854->999 [ label="AGENT_0
+put-down block_1 tableC" ];
+999->1000 [ label="1" ];
+853->704 [ label="{(in_sight side_0): true,}
+0.5" ];
+537->855 [ label="AGENT_0
+check block_1 side_1" ];
+855->537 [ label="1" ];
+537->856 [ label="AGENT_0
+check block_1 side_2" ];
+856->857 [ label="{(colored side_2): true,(identified block_1): true,}
+0.5" ];
+857->1001 [ label="AGENT_0
+put-down block_1 tableC" ];
+1001->1002 [ label="1" ];
+856->816 [ label="{(in_sight side_2): true,}
+0.5" ];
+537->858 [ label="AGENT_0
+check block_1 side_3" ];
+858->537 [ label="1" ];
+537->859 [ label="AGENT_0
+check block_1 side_4" ];
+859->537 [ label="1" ];
+537->860 [ label="AGENT_0
+check block_1 side_5" ];
+860->537 [ label="1" ];
+49->212 [ label="AGENT_0
+check block_1 side_5" ];
+212->213 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+213->538 [ label="AGENT_0
+put-down block_1 tableC" ];
+538->539 [ label="1" ];
+212->214 [ label="{(in_sight side_5): true,}
+0.75" ];
+214->540 [ label="AGENT_0
+check block_1 side_0" ];
+540->541 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+541->861 [ label="AGENT_0
+put-down block_1 tableC" ];
+861->862 [ label="1" ];
+540->370 [ label="{(in_sight side_0): true,}
+0.666667" ];
+214->542 [ label="AGENT_0
+check block_1 side_1" ];
+542->214 [ label="1" ];
+214->543 [ label="AGENT_0
+check block_1 side_2" ];
+543->544 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+544->863 [ label="AGENT_0
+put-down block_1 tableC" ];
+863->864 [ label="1" ];
+543->498 [ label="{(in_sight side_2): true,}
+0.666667" ];
+214->545 [ label="AGENT_0
+check block_1 side_3" ];
+545->214 [ label="1" ];
+214->546 [ label="AGENT_0
+check block_1 side_4" ];
+546->547 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+547->865 [ label="AGENT_0
+put-down block_1 tableC" ];
+865->866 [ label="1" ];
+546->537 [ label="{(in_sight side_4): true,}
+0.666667" ];
+214->548 [ label="AGENT_0
+check block_1 side_5" ];
+548->214 [ label="1" ];
+8->50 [ label="AGENT_0
+check block_1 side_4" ];
+50->51 [ label="{(colored side_4): true,(identified block_1): true,}
+0.2" ];
+51->215 [ label="AGENT_0
+put-down block_1 tableC" ];
+215->216 [ label="1" ];
+50->52 [ label="{(in_sight side_4): true,}
+0.8" ];
+52->217 [ label="AGENT_0
+check block_1 side_0" ];
+217->218 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+218->549 [ label="AGENT_0
+put-down block_1 tableC" ];
+549->550 [ label="1" ];
+217->126 [ label="{(in_sight side_0): true,}
+0.75" ];
+52->219 [ label="AGENT_0
+check block_1 side_1" ];
+219->52 [ label="1" ];
+52->220 [ label="AGENT_0
+check block_1 side_2" ];
+220->221 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+221->551 [ label="AGENT_0
+put-down block_1 tableC" ];
+551->552 [ label="1" ];
+220->197 [ label="{(in_sight side_2): true,}
+0.75" ];
+52->222 [ label="AGENT_0
+check block_1 side_3" ];
+222->223 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+223->553 [ label="AGENT_0
+put-down block_1 tableC" ];
+553->554 [ label="1" ];
+222->211 [ label="{(in_sight side_3): true,}
+0.75" ];
+52->224 [ label="AGENT_0
+check block_1 side_4" ];
+224->52 [ label="1" ];
+52->225 [ label="AGENT_0
+check block_1 side_5" ];
+225->226 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+226->555 [ label="AGENT_0
+put-down block_1 tableC" ];
+555->556 [ label="1" ];
+225->227 [ label="{(in_sight side_5): true,}
+0.75" ];
+227->557 [ label="AGENT_0
+check block_1 side_0" ];
+557->558 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+558->867 [ label="AGENT_0
+put-down block_1 tableC" ];
+867->868 [ label="1" ];
+557->382 [ label="{(in_sight side_0): true,}
+0.666667" ];
+227->559 [ label="AGENT_0
+check block_1 side_1" ];
+559->227 [ label="1" ];
+227->560 [ label="AGENT_0
+check block_1 side_2" ];
+560->561 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+561->869 [ label="AGENT_0
+put-down block_1 tableC" ];
+869->870 [ label="1" ];
+560->510 [ label="{(in_sight side_2): true,}
+0.666667" ];
+227->562 [ label="AGENT_0
+check block_1 side_3" ];
+562->563 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+563->871 [ label="AGENT_0
+put-down block_1 tableC" ];
+871->872 [ label="1" ];
+562->537 [ label="{(in_sight side_3): true,}
+0.666667" ];
+227->564 [ label="AGENT_0
+check block_1 side_4" ];
+564->227 [ label="1" ];
+227->565 [ label="AGENT_0
+check block_1 side_5" ];
+565->227 [ label="1" ];
+8->53 [ label="AGENT_0
+check block_1 side_5" ];
+53->54 [ label="{(colored side_5): true,(identified block_1): true,}
+0.2" ];
+54->228 [ label="AGENT_0
+put-down block_1 tableC" ];
+228->229 [ label="1" ];
+53->55 [ label="{(in_sight side_5): true,}
+0.8" ];
+55->230 [ label="AGENT_0
+check block_1 side_0" ];
+230->231 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+231->566 [ label="AGENT_0
+put-down block_1 tableC" ];
+566->567 [ label="1" ];
+230->129 [ label="{(in_sight side_0): true,}
+0.75" ];
+55->232 [ label="AGENT_0
+check block_1 side_1" ];
+232->55 [ label="1" ];
+55->233 [ label="AGENT_0
+check block_1 side_2" ];
+233->234 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+234->568 [ label="AGENT_0
+put-down block_1 tableC" ];
+568->569 [ label="1" ];
+233->200 [ label="{(in_sight side_2): true,}
+0.75" ];
+55->235 [ label="AGENT_0
+check block_1 side_3" ];
+235->236 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+236->570 [ label="AGENT_0
+put-down block_1 tableC" ];
+570->571 [ label="1" ];
+235->214 [ label="{(in_sight side_3): true,}
+0.75" ];
+55->237 [ label="AGENT_0
+check block_1 side_4" ];
+237->238 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+238->572 [ label="AGENT_0
+put-down block_1 tableC" ];
+572->573 [ label="1" ];
+237->227 [ label="{(in_sight side_4): true,}
+0.75" ];
+55->239 [ label="AGENT_0
+check block_1 side_5" ];
+239->55 [ label="1" ];
+2->9 [ label="AGENT_0
+check block_1 side_2" ];
+9->10 [ label="{(colored side_2): true,(identified block_1): true,}
+0.166667" ];
+10->56 [ label="AGENT_0
+put-down block_1 tableC" ];
+56->57 [ label="1" ];
+9->11 [ label="{(in_sight side_2): true,}
+0.833333" ];
+11->58 [ label="AGENT_0
+check block_1 side_0" ];
+58->59 [ label="{(colored side_0): true,(identified block_1): true,}
+0.2" ];
+59->240 [ label="AGENT_0
+put-down block_1 tableC" ];
+240->241 [ label="1" ];
+58->29 [ label="{(in_sight side_0): true,}
+0.8" ];
+11->60 [ label="AGENT_0
+check block_1 side_1" ];
+60->61 [ label="{(colored side_1): true,(identified block_1): true,}
+0.2" ];
+61->242 [ label="AGENT_0
+put-down block_1 tableC" ];
+242->243 [ label="1" ];
+60->46 [ label="{(in_sight side_1): true,}
+0.8" ];
+11->62 [ label="AGENT_0
+check block_1 side_2" ];
+62->11 [ label="1" ];
+11->63 [ label="AGENT_0
+check block_1 side_3" ];
+63->64 [ label="{(colored side_3): true,(identified block_1): true,}
+0.2" ];
+64->244 [ label="AGENT_0
+put-down block_1 tableC" ];
+244->245 [ label="1" ];
+63->65 [ label="{(in_sight side_3): true,}
+0.8" ];
+65->246 [ label="AGENT_0
+check block_1 side_0" ];
+246->247 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+247->574 [ label="AGENT_0
+put-down block_1 tableC" ];
+574->575 [ label="1" ];
+246->138 [ label="{(in_sight side_0): true,}
+0.75" ];
+65->248 [ label="AGENT_0
+check block_1 side_1" ];
+248->249 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+249->576 [ label="AGENT_0
+put-down block_1 tableC" ];
+576->577 [ label="1" ];
+248->194 [ label="{(in_sight side_1): true,}
+0.75" ];
+65->250 [ label="AGENT_0
+check block_1 side_2" ];
+250->65 [ label="1" ];
+65->251 [ label="AGENT_0
+check block_1 side_3" ];
+251->65 [ label="1" ];
+65->252 [ label="AGENT_0
+check block_1 side_4" ];
+252->253 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+253->578 [ label="AGENT_0
+put-down block_1 tableC" ];
+578->579 [ label="1" ];
+252->254 [ label="{(in_sight side_4): true,}
+0.75" ];
+254->580 [ label="AGENT_0
+check block_1 side_0" ];
+580->581 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+581->873 [ label="AGENT_0
+put-down block_1 tableC" ];
+873->874 [ label="1" ];
+580->405 [ label="{(in_sight side_0): true,}
+0.666667" ];
+254->582 [ label="AGENT_0
+check block_1 side_1" ];
+582->583 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+583->875 [ label="AGENT_0
+put-down block_1 tableC" ];
+875->876 [ label="1" ];
+582->495 [ label="{(in_sight side_1): true,}
+0.666667" ];
+254->584 [ label="AGENT_0
+check block_1 side_2" ];
+584->254 [ label="1" ];
+254->585 [ label="AGENT_0
+check block_1 side_3" ];
+585->254 [ label="1" ];
+254->586 [ label="AGENT_0
+check block_1 side_4" ];
+586->254 [ label="1" ];
+254->587 [ label="AGENT_0
+check block_1 side_5" ];
+587->588 [ label="{(colored side_5): true,(identified block_1): true,}
+0.333333" ];
+588->877 [ label="AGENT_0
+put-down block_1 tableC" ];
+877->878 [ label="1" ];
+587->589 [ label="{(in_sight side_5): true,}
+0.666667" ];
+589->879 [ label="AGENT_0
+check block_1 side_0" ];
+879->880 [ label="{(colored side_0): true,(identified block_1): true,}
+0.5" ];
+880->1003 [ label="AGENT_0
+put-down block_1 tableC" ];
+1003->1004 [ label="1" ];
+879->747 [ label="{(in_sight side_0): true,}
+0.5" ];
+589->881 [ label="AGENT_0
+check block_1 side_1" ];
+881->882 [ label="{(colored side_1): true,(identified block_1): true,}
+0.5" ];
+882->1005 [ label="AGENT_0
+put-down block_1 tableC" ];
+1005->1006 [ label="1" ];
+881->816 [ label="{(in_sight side_1): true,}
+0.5" ];
+589->883 [ label="AGENT_0
+check block_1 side_2" ];
+883->589 [ label="1" ];
+589->884 [ label="AGENT_0
+check block_1 side_3" ];
+884->589 [ label="1" ];
+589->885 [ label="AGENT_0
+check block_1 side_4" ];
+885->589 [ label="1" ];
+589->886 [ label="AGENT_0
+check block_1 side_5" ];
+886->589 [ label="1" ];
+65->255 [ label="AGENT_0
+check block_1 side_5" ];
+255->256 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+256->590 [ label="AGENT_0
+put-down block_1 tableC" ];
+590->591 [ label="1" ];
+255->257 [ label="{(in_sight side_5): true,}
+0.75" ];
+257->592 [ label="AGENT_0
+check block_1 side_0" ];
+592->593 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+593->887 [ label="AGENT_0
+put-down block_1 tableC" ];
+887->888 [ label="1" ];
+592->408 [ label="{(in_sight side_0): true,}
+0.666667" ];
+257->594 [ label="AGENT_0
+check block_1 side_1" ];
+594->595 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+595->889 [ label="AGENT_0
+put-down block_1 tableC" ];
+889->890 [ label="1" ];
+594->498 [ label="{(in_sight side_1): true,}
+0.666667" ];
+257->596 [ label="AGENT_0
+check block_1 side_2" ];
+596->257 [ label="1" ];
+257->597 [ label="AGENT_0
+check block_1 side_3" ];
+597->257 [ label="1" ];
+257->598 [ label="AGENT_0
+check block_1 side_4" ];
+598->599 [ label="{(colored side_4): true,(identified block_1): true,}
+0.333333" ];
+599->891 [ label="AGENT_0
+put-down block_1 tableC" ];
+891->892 [ label="1" ];
+598->589 [ label="{(in_sight side_4): true,}
+0.666667" ];
+257->600 [ label="AGENT_0
+check block_1 side_5" ];
+600->257 [ label="1" ];
+11->66 [ label="AGENT_0
+check block_1 side_4" ];
+66->67 [ label="{(colored side_4): true,(identified block_1): true,}
+0.2" ];
+67->258 [ label="AGENT_0
+put-down block_1 tableC" ];
+258->259 [ label="1" ];
+66->68 [ label="{(in_sight side_4): true,}
+0.8" ];
+68->260 [ label="AGENT_0
+check block_1 side_0" ];
+260->261 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+261->601 [ label="AGENT_0
+put-down block_1 tableC" ];
+601->602 [ label="1" ];
+260->141 [ label="{(in_sight side_0): true,}
+0.75" ];
+68->262 [ label="AGENT_0
+check block_1 side_1" ];
+262->263 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+263->603 [ label="AGENT_0
+put-down block_1 tableC" ];
+603->604 [ label="1" ];
+262->197 [ label="{(in_sight side_1): true,}
+0.75" ];
+68->264 [ label="AGENT_0
+check block_1 side_2" ];
+264->68 [ label="1" ];
+68->265 [ label="AGENT_0
+check block_1 side_3" ];
+265->266 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+266->605 [ label="AGENT_0
+put-down block_1 tableC" ];
+605->606 [ label="1" ];
+265->254 [ label="{(in_sight side_3): true,}
+0.75" ];
+68->267 [ label="AGENT_0
+check block_1 side_4" ];
+267->68 [ label="1" ];
+68->268 [ label="AGENT_0
+check block_1 side_5" ];
+268->269 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+269->607 [ label="AGENT_0
+put-down block_1 tableC" ];
+607->608 [ label="1" ];
+268->270 [ label="{(in_sight side_5): true,}
+0.75" ];
+270->609 [ label="AGENT_0
+check block_1 side_0" ];
+609->610 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+610->893 [ label="AGENT_0
+put-down block_1 tableC" ];
+893->894 [ label="1" ];
+609->420 [ label="{(in_sight side_0): true,}
+0.666667" ];
+270->611 [ label="AGENT_0
+check block_1 side_1" ];
+611->612 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+612->895 [ label="AGENT_0
+put-down block_1 tableC" ];
+895->896 [ label="1" ];
+611->510 [ label="{(in_sight side_1): true,}
+0.666667" ];
+270->613 [ label="AGENT_0
+check block_1 side_2" ];
+613->270 [ label="1" ];
+270->614 [ label="AGENT_0
+check block_1 side_3" ];
+614->615 [ label="{(colored side_3): true,(identified block_1): true,}
+0.333333" ];
+615->897 [ label="AGENT_0
+put-down block_1 tableC" ];
+897->898 [ label="1" ];
+614->589 [ label="{(in_sight side_3): true,}
+0.666667" ];
+270->616 [ label="AGENT_0
+check block_1 side_4" ];
+616->270 [ label="1" ];
+270->617 [ label="AGENT_0
+check block_1 side_5" ];
+617->270 [ label="1" ];
+11->69 [ label="AGENT_0
+check block_1 side_5" ];
+69->70 [ label="{(colored side_5): true,(identified block_1): true,}
+0.2" ];
+70->271 [ label="AGENT_0
+put-down block_1 tableC" ];
+271->272 [ label="1" ];
+69->71 [ label="{(in_sight side_5): true,}
+0.8" ];
+71->273 [ label="AGENT_0
+check block_1 side_0" ];
+273->274 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+274->618 [ label="AGENT_0
+put-down block_1 tableC" ];
+618->619 [ label="1" ];
+273->144 [ label="{(in_sight side_0): true,}
+0.75" ];
+71->275 [ label="AGENT_0
+check block_1 side_1" ];
+275->276 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+276->620 [ label="AGENT_0
+put-down block_1 tableC" ];
+620->621 [ label="1" ];
+275->200 [ label="{(in_sight side_1): true,}
+0.75" ];
+71->277 [ label="AGENT_0
+check block_1 side_2" ];
+277->71 [ label="1" ];
+71->278 [ label="AGENT_0
+check block_1 side_3" ];
+278->279 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+279->622 [ label="AGENT_0
+put-down block_1 tableC" ];
+622->623 [ label="1" ];
+278->257 [ label="{(in_sight side_3): true,}
+0.75" ];
+71->280 [ label="AGENT_0
+check block_1 side_4" ];
+280->281 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+281->624 [ label="AGENT_0
+put-down block_1 tableC" ];
+624->625 [ label="1" ];
+280->270 [ label="{(in_sight side_4): true,}
+0.75" ];
+71->282 [ label="AGENT_0
+check block_1 side_5" ];
+282->71 [ label="1" ];
+2->12 [ label="AGENT_0
+check block_1 side_3" ];
+12->13 [ label="{(colored side_3): true,(identified block_1): true,}
+0.166667" ];
+13->72 [ label="AGENT_0
+put-down block_1 tableC" ];
+72->73 [ label="1" ];
+12->14 [ label="{(in_sight side_3): true,}
+0.833333" ];
+14->74 [ label="AGENT_0
+check block_1 side_0" ];
+74->75 [ label="{(colored side_0): true,(identified block_1): true,}
+0.2" ];
+75->283 [ label="AGENT_0
+put-down block_1 tableC" ];
+283->284 [ label="1" ];
+74->32 [ label="{(in_sight side_0): true,}
+0.8" ];
+14->76 [ label="AGENT_0
+check block_1 side_1" ];
+76->77 [ label="{(colored side_1): true,(identified block_1): true,}
+0.2" ];
+77->285 [ label="AGENT_0
+put-down block_1 tableC" ];
+285->286 [ label="1" ];
+76->49 [ label="{(in_sight side_1): true,}
+0.8" ];
+14->78 [ label="AGENT_0
+check block_1 side_2" ];
+78->79 [ label="{(colored side_2): true,(identified block_1): true,}
+0.2" ];
+79->287 [ label="AGENT_0
+put-down block_1 tableC" ];
+287->288 [ label="1" ];
+78->65 [ label="{(in_sight side_2): true,}
+0.8" ];
+14->80 [ label="AGENT_0
+check block_1 side_3" ];
+80->14 [ label="1" ];
+14->81 [ label="AGENT_0
+check block_1 side_4" ];
+81->82 [ label="{(colored side_4): true,(identified block_1): true,}
+0.2" ];
+82->289 [ label="AGENT_0
+put-down block_1 tableC" ];
+289->290 [ label="1" ];
+81->83 [ label="{(in_sight side_4): true,}
+0.8" ];
+83->291 [ label="AGENT_0
+check block_1 side_0" ];
+291->292 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+292->626 [ label="AGENT_0
+put-down block_1 tableC" ];
+626->627 [ label="1" ];
+291->155 [ label="{(in_sight side_0): true,}
+0.75" ];
+83->293 [ label="AGENT_0
+check block_1 side_1" ];
+293->294 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+294->628 [ label="AGENT_0
+put-down block_1 tableC" ];
+628->629 [ label="1" ];
+293->211 [ label="{(in_sight side_1): true,}
+0.75" ];
+83->295 [ label="AGENT_0
+check block_1 side_2" ];
+295->296 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+296->630 [ label="AGENT_0
+put-down block_1 tableC" ];
+630->631 [ label="1" ];
+295->254 [ label="{(in_sight side_2): true,}
+0.75" ];
+83->297 [ label="AGENT_0
+check block_1 side_3" ];
+297->83 [ label="1" ];
+83->298 [ label="AGENT_0
+check block_1 side_4" ];
+298->83 [ label="1" ];
+83->299 [ label="AGENT_0
+check block_1 side_5" ];
+299->300 [ label="{(colored side_5): true,(identified block_1): true,}
+0.25" ];
+300->632 [ label="AGENT_0
+put-down block_1 tableC" ];
+632->633 [ label="1" ];
+299->301 [ label="{(in_sight side_5): true,}
+0.75" ];
+301->634 [ label="AGENT_0
+check block_1 side_0" ];
+634->635 [ label="{(colored side_0): true,(identified block_1): true,}
+0.333333" ];
+635->899 [ label="AGENT_0
+put-down block_1 tableC" ];
+899->900 [ label="1" ];
+634->447 [ label="{(in_sight side_0): true,}
+0.666667" ];
+301->636 [ label="AGENT_0
+check block_1 side_1" ];
+636->637 [ label="{(colored side_1): true,(identified block_1): true,}
+0.333333" ];
+637->901 [ label="AGENT_0
+put-down block_1 tableC" ];
+901->902 [ label="1" ];
+636->537 [ label="{(in_sight side_1): true,}
+0.666667" ];
+301->638 [ label="AGENT_0
+check block_1 side_2" ];
+638->639 [ label="{(colored side_2): true,(identified block_1): true,}
+0.333333" ];
+639->903 [ label="AGENT_0
+put-down block_1 tableC" ];
+903->904 [ label="1" ];
+638->589 [ label="{(in_sight side_2): true,}
+0.666667" ];
+301->640 [ label="AGENT_0
+check block_1 side_3" ];
+640->301 [ label="1" ];
+301->641 [ label="AGENT_0
+check block_1 side_4" ];
+641->301 [ label="1" ];
+301->642 [ label="AGENT_0
+check block_1 side_5" ];
+642->301 [ label="1" ];
+14->84 [ label="AGENT_0
+check block_1 side_5" ];
+84->85 [ label="{(colored side_5): true,(identified block_1): true,}
+0.2" ];
+85->302 [ label="AGENT_0
+put-down block_1 tableC" ];
+302->303 [ label="1" ];
+84->86 [ label="{(in_sight side_5): true,}
+0.8" ];
+86->304 [ label="AGENT_0
+check block_1 side_0" ];
+304->305 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+305->643 [ label="AGENT_0
+put-down block_1 tableC" ];
+643->644 [ label="1" ];
+304->158 [ label="{(in_sight side_0): true,}
+0.75" ];
+86->306 [ label="AGENT_0
+check block_1 side_1" ];
+306->307 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+307->645 [ label="AGENT_0
+put-down block_1 tableC" ];
+645->646 [ label="1" ];
+306->214 [ label="{(in_sight side_1): true,}
+0.75" ];
+86->308 [ label="AGENT_0
+check block_1 side_2" ];
+308->309 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+309->647 [ label="AGENT_0
+put-down block_1 tableC" ];
+647->648 [ label="1" ];
+308->257 [ label="{(in_sight side_2): true,}
+0.75" ];
+86->310 [ label="AGENT_0
+check block_1 side_3" ];
+310->86 [ label="1" ];
+86->311 [ label="AGENT_0
+check block_1 side_4" ];
+311->312 [ label="{(colored side_4): true,(identified block_1): true,}
+0.25" ];
+312->649 [ label="AGENT_0
+put-down block_1 tableC" ];
+649->650 [ label="1" ];
+311->301 [ label="{(in_sight side_4): true,}
+0.75" ];
+86->313 [ label="AGENT_0
+check block_1 side_5" ];
+313->86 [ label="1" ];
+2->15 [ label="AGENT_0
+check block_1 side_4" ];
+15->16 [ label="{(colored side_4): true,(identified block_1): true,}
+0.166667" ];
+16->87 [ label="AGENT_0
+put-down block_1 tableC" ];
+87->88 [ label="1" ];
+15->17 [ label="{(in_sight side_4): true,}
+0.833333" ];
+17->89 [ label="AGENT_0
+check block_1 side_0" ];
+89->90 [ label="{(colored side_0): true,(identified block_1): true,}
+0.2" ];
+90->314 [ label="AGENT_0
+put-down block_1 tableC" ];
+314->315 [ label="1" ];
+89->35 [ label="{(in_sight side_0): true,}
+0.8" ];
+17->91 [ label="AGENT_0
+check block_1 side_1" ];
+91->92 [ label="{(colored side_1): true,(identified block_1): true,}
+0.2" ];
+92->316 [ label="AGENT_0
+put-down block_1 tableC" ];
+316->317 [ label="1" ];
+91->52 [ label="{(in_sight side_1): true,}
+0.8" ];
+17->93 [ label="AGENT_0
+check block_1 side_2" ];
+93->94 [ label="{(colored side_2): true,(identified block_1): true,}
+0.2" ];
+94->318 [ label="AGENT_0
+put-down block_1 tableC" ];
+318->319 [ label="1" ];
+93->68 [ label="{(in_sight side_2): true,}
+0.8" ];
+17->95 [ label="AGENT_0
+check block_1 side_3" ];
+95->96 [ label="{(colored side_3): true,(identified block_1): true,}
+0.2" ];
+96->320 [ label="AGENT_0
+put-down block_1 tableC" ];
+320->321 [ label="1" ];
+95->83 [ label="{(in_sight side_3): true,}
+0.8" ];
+17->97 [ label="AGENT_0
+check block_1 side_4" ];
+97->17 [ label="1" ];
+17->98 [ label="AGENT_0
+check block_1 side_5" ];
+98->99 [ label="{(colored side_5): true,(identified block_1): true,}
+0.2" ];
+99->322 [ label="AGENT_0
+put-down block_1 tableC" ];
+322->323 [ label="1" ];
+98->100 [ label="{(in_sight side_5): true,}
+0.8" ];
+100->324 [ label="AGENT_0
+check block_1 side_0" ];
+324->325 [ label="{(colored side_0): true,(identified block_1): true,}
+0.25" ];
+325->651 [ label="AGENT_0
+put-down block_1 tableC" ];
+651->652 [ label="1" ];
+324->171 [ label="{(in_sight side_0): true,}
+0.75" ];
+100->326 [ label="AGENT_0
+check block_1 side_1" ];
+326->327 [ label="{(colored side_1): true,(identified block_1): true,}
+0.25" ];
+327->653 [ label="AGENT_0
+put-down block_1 tableC" ];
+653->654 [ label="1" ];
+326->227 [ label="{(in_sight side_1): true,}
+0.75" ];
+100->328 [ label="AGENT_0
+check block_1 side_2" ];
+328->329 [ label="{(colored side_2): true,(identified block_1): true,}
+0.25" ];
+329->655 [ label="AGENT_0
+put-down block_1 tableC" ];
+655->656 [ label="1" ];
+328->270 [ label="{(in_sight side_2): true,}
+0.75" ];
+100->330 [ label="AGENT_0
+check block_1 side_3" ];
+330->331 [ label="{(colored side_3): true,(identified block_1): true,}
+0.25" ];
+331->657 [ label="AGENT_0
+put-down block_1 tableC" ];
+657->658 [ label="1" ];
+330->301 [ label="{(in_sight side_3): true,}
+0.75" ];
+100->332 [ label="AGENT_0
+check block_1 side_4" ];
+332->100 [ label="1" ];
+100->333 [ label="AGENT_0
+check block_1 side_5" ];
+333->100 [ label="1" ];
+2->18 [ label="AGENT_0
+check block_1 side_5" ];
+18->19 [ label="{(colored side_5): true,(identified block_1): true,}
+0.166667" ];
+19->101 [ label="AGENT_0
+put-down block_1 tableC" ];
+101->102 [ label="1" ];
+18->20 [ label="{(in_sight side_5): true,}
+0.833333" ];
+20->103 [ label="AGENT_0
+check block_1 side_0" ];
+103->104 [ label="{(colored side_0): true,(identified block_1): true,}
+0.2" ];
+104->334 [ label="AGENT_0
+put-down block_1 tableC" ];
+334->335 [ label="1" ];
+103->38 [ label="{(in_sight side_0): true,}
+0.8" ];
+20->105 [ label="AGENT_0
+check block_1 side_1" ];
+105->106 [ label="{(colored side_1): true,(identified block_1): true,}
+0.2" ];
+106->336 [ label="AGENT_0
+put-down block_1 tableC" ];
+336->337 [ label="1" ];
+105->55 [ label="{(in_sight side_1): true,}
+0.8" ];
+20->107 [ label="AGENT_0
+check block_1 side_2" ];
+107->108 [ label="{(colored side_2): true,(identified block_1): true,}
+0.2" ];
+108->338 [ label="AGENT_0
+put-down block_1 tableC" ];
+338->339 [ label="1" ];
+107->71 [ label="{(in_sight side_2): true,}
+0.8" ];
+20->109 [ label="AGENT_0
+check block_1 side_3" ];
+109->110 [ label="{(colored side_3): true,(identified block_1): true,}
+0.2" ];
+110->340 [ label="AGENT_0
+put-down block_1 tableC" ];
+340->341 [ label="1" ];
+109->86 [ label="{(in_sight side_3): true,}
+0.8" ];
+20->111 [ label="AGENT_0
+check block_1 side_4" ];
+111->112 [ label="{(colored side_4): true,(identified block_1): true,}
+0.2" ];
+112->342 [ label="AGENT_0
+put-down block_1 tableC" ];
+342->343 [ label="1" ];
+111->100 [ label="{(in_sight side_4): true,}
+0.8" ];
+20->113 [ label="AGENT_0
+check block_1 side_5" ];
+113->20 [ label="1" ];
+}
