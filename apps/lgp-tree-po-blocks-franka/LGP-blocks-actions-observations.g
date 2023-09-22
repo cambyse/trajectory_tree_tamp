@@ -1,7 +1,7 @@
 # Check
 DecisionRule check {
   X
-  { (block X) (holding X)! (identified X)! }
+  { (block X) (holding X)! (identified X)! (hand_empty) }
   { (in_sight X) komoCheck(X)=1. }
 }
 

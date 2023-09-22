@@ -79,7 +79,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -0.25 ); //-0.25//-0.1//-0.015 ); for blocks one side
+  tp.setR0( -10.0 ); //-1.0, -0.5
   tp.setMaxDepth( 20 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
@@ -158,7 +158,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "SubTreesAfterFirstBranching" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }

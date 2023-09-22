@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="lgp-tree-po-blocks-franka"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\libs\;CMake Files\libs\HessianDecomposition\;CMake Files\libs\HessianDecomposition\test\;CMake Files\libs\GeometricUtilityTasks\;CMake Files\libs\GeometricUtilityTasks\test\;CMake Files\libs\ObservationTasks\;CMake Files\libs\CollisionAvoidance\;CMake Files\libs\CollisionAvoidance\test\;CMake Files\libs\MathUtility\;CMake Files\libs\MathUtility\test\;CMake Files\libs\Optimization\;CMake Files\libs\Optimization\test\;CMake Files\libs\MultiAgentTaskPlanning\;CMake Files\libs\MultiAgentTaskPlanning\test\;CMake Files\libs\MotionPlanning\;CMake Files\libs\MotionPlanning\test\;CMake Files\libs\POMTP_interfaces\;CMake Files\libs\POMTP_interfaces\test\;CMake Files\libs\POMTP_controllers\;CMake Files\libs\POMTP_controllers\test\;CMake Files\libs\Sampling\;CMake Files\libs\Sampling\test\;CMake Files\..\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\;CMake Files\..\..\..\..\..\..\..\usr\;CMake Files\..\..\..\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\opencv4\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Boost-1.71.0\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_headers-1.71.0\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_system-1.71.0\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_filesystem-1.71.0\;CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_serialization-1.71.0\;CMake Files\..\..\..\..\..\..\..\usr\lib\cmake\;CMake Files\..\..\..\..\..\..\..\usr\lib\cmake\eigen3\;CMake Files\apps\;CMake Files\apps\lgp-collision-avoidance\;CMake Files\apps\DomainPlayer\;CMake Files\apps\lgp-seq-boxes\;CMake Files\apps\lgp-tree-boxes\;CMake Files\apps\lgp-seq-blocks\;CMake Files\apps\lgp-tree-blocks\;CMake Files\apps\lgp-seq-po-blocks\;CMake Files\apps\lgp-tree-po-blocks\;CMake Files\apps\lgp-tree-po-blocks-baxter\;CMake Files\apps\lgp-tree-po-blocks-explo-baxter\;CMake Files\apps\lgp-tree-po-blocks-franka\;CMake Files\apps\lgp-tree-po-blocks-explo-franka\;CMake Files\apps\lgp-seq-self-driving\;CMake Files\apps\lgp-tree-po-self-driving\;CMake Files\apps\lgp-learn-self-driving\;CMake Files\apps\lgp-real-time\;CMake Files\apps\lgp-real-time\test\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="lgp-tree-po-blocks-franka">
+				<Option output="/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/lgp-tree-po-blocks-franka" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_SYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add directory="/home/camille/Dev/mlr/rai/rai"/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_interfaces/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MathUtility/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/ObservationTasks/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/CollisionAvoidance/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MultiAgentTaskPlanning/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MotionPlanning/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Optimization/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/HessianDecomposition/include"/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/GeometricUtilityTasks/."/>
+					<Add directory="/usr/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 lgp-tree-po-blocks-franka"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="lgp-tree-po-blocks-franka/fast">
+				<Option output="/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/lgp-tree-po-blocks-franka" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBOOST_SYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_ALL_NO_LIB"/>
+					<Add option="-DBOOST_FILESYSTEM_DYN_LINK"/>
+					<Add option="-DBOOST_SERIALIZATION_DYN_LINK"/>
+					<Add directory="/home/camille/Dev/mlr/rai/rai"/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_interfaces/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MathUtility/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/ObservationTasks/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/CollisionAvoidance/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MultiAgentTaskPlanning/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MotionPlanning/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Optimization/."/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/HessianDecomposition/include"/>
+					<Add directory="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/GeometricUtilityTasks/."/>
+					<Add directory="/usr/include/opencv4"/>
+					<Add directory="/usr/include/c++/9"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/9"/>
+					<Add directory="/usr/include/c++/9/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/9/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 lgp-tree-po-blocks-franka/fast"/>
+					<CompileFile command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j8 -f &quot;/home/camille/Dev/mlr_build/apps/lgp-tree-po-blocks-franka/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-franka/komo_tree_groundings.cpp">
+			<Option target="lgp-tree-po-blocks-franka"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-franka/komo_tree_groundings.h">
+			<Option target="lgp-tree-po-blocks-franka"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-franka/main.cpp">
+			<Option target="lgp-tree-po-blocks-franka"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/HessianDecomposition/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\HessianDecomposition\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/HessianDecomposition/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\HessianDecomposition\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/GeometricUtilityTasks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\GeometricUtilityTasks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/GeometricUtilityTasks/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\GeometricUtilityTasks\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/ObservationTasks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\ObservationTasks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/CollisionAvoidance/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\CollisionAvoidance\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/CollisionAvoidance/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\CollisionAvoidance\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MathUtility/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MathUtility\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MathUtility/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MathUtility\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Optimization/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\Optimization\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Optimization/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\Optimization\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MultiAgentTaskPlanning/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MultiAgentTaskPlanning\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MultiAgentTaskPlanning/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MultiAgentTaskPlanning\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MotionPlanning/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MotionPlanning\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/MotionPlanning/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\MotionPlanning\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_interfaces/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\POMTP_interfaces\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_interfaces/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\POMTP_interfaces\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_controllers/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\POMTP_controllers\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/POMTP_controllers/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\POMTP_controllers\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Sampling/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\Sampling\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/libs/Sampling/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\libs\Sampling\test\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/BoostDetectToolset-1.71.0.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVModules-release.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/opencv4/OpenCVModules.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\opencv4\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Boost-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/Boost-1.71.0/BoostConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Boost-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_headers-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_headers-1.71.0/boost_headers-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_headers-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_system-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/boost_system-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_system-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_system-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_system-1.71.0/libboost_system-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_system-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_filesystem-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/boost_filesystem-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_filesystem-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_filesystem-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_filesystem-1.71.0/libboost_filesystem-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_filesystem-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_serialization-1.71.0/boost_serialization-config-version.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_serialization-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_serialization-1.71.0/boost_serialization-config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_serialization-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_serialization-1.71.0/libboost_serialization-variant-shared.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_serialization-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/x86_64-linux-gnu/cmake/boost_serialization-1.71.0/libboost_serialization-variant-static.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\boost_serialization-1.71.0\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/cmake/eigen3/Eigen3Config.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\cmake\eigen3\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/cmake/eigen3/Eigen3ConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\cmake\eigen3\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/../../../../../../../usr/lib/cmake/eigen3/Eigen3Targets.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\..\..\..\usr\lib\cmake\eigen3\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-collision-avoidance/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-collision-avoidance\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/DomainPlayer/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\DomainPlayer\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-seq-boxes/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-seq-boxes\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-boxes/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-boxes\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-seq-blocks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-seq-blocks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-blocks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-blocks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-seq-po-blocks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-seq-po-blocks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-blocks\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-baxter/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-blocks-baxter\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-explo-baxter/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-blocks-explo-baxter\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-franka/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-blocks-franka\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-blocks-explo-franka/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-blocks-explo-franka\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-seq-self-driving/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-seq-self-driving\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-tree-po-self-driving/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-tree-po-self-driving\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-learn-self-driving/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-learn-self-driving\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-real-time/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-real-time\"/>
+		</Unit>
+		<Unit filename="/home/camille/Dev/mlr/share/projects/17-camille-obsTask/apps/lgp-real-time/test/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\apps\lgp-real-time\test\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

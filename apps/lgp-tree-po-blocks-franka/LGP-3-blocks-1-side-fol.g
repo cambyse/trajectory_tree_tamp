@@ -28,17 +28,17 @@ UNEQUAL
 
 ## constants
 block_1
-block_a  #block identifier
+block_r  #block identifier
 block_2
-block_b  #block identifier
+block_g  #block identifier
 block_3
-block_c  #block identifier
+block_b  #block identifier
 tableC
 
 
 ## initial state
 START_STATE { (table tableC) 
-(block block_1) (id block_a) (block block_2) (id block_b) (block block_3) (id block_c) 
+(block block_1) (id block_r) (block block_2) (id block_g) (block block_3) (id block_b) 
 (location tableC)
 (UNEQUAL block_1 block_2) (UNEQUAL block_1 block_3) (UNEQUAL block_2 block_3)
 (clear block_3) (clear block_2) (clear tableC)
@@ -49,36 +49,36 @@ START_STATE { (table tableC)
 
 EVENTUAL_FACTS{ 
 {
-(NOT_OBSERVABLE is block_3 block_c)
-(NOT_OBSERVABLE is block_1 block_b)
-(NOT_OBSERVABLE is block_2 block_a)
+(NOT_OBSERVABLE is block_1 block_r)
+(NOT_OBSERVABLE is block_2 block_g)
+(NOT_OBSERVABLE is block_3 block_b)
 }
 {
-(NOT_OBSERVABLE is block_2 block_c)
-(NOT_OBSERVABLE is block_1 block_b)
-(NOT_OBSERVABLE is block_3 block_a)
+(NOT_OBSERVABLE is block_1 block_r)
+(NOT_OBSERVABLE is block_3 block_g)
+(NOT_OBSERVABLE is block_2 block_b)
 }
 
 {
-(NOT_OBSERVABLE is block_3 block_c)
-(NOT_OBSERVABLE is block_2 block_b)
-(NOT_OBSERVABLE is block_1 block_a)
+(NOT_OBSERVABLE is block_2 block_r)
+(NOT_OBSERVABLE is block_1 block_g)
+(NOT_OBSERVABLE is block_3 block_b)
 }
 {
-(NOT_OBSERVABLE is block_1 block_c)
-(NOT_OBSERVABLE is block_2 block_b)
-(NOT_OBSERVABLE is block_3 block_a)
+(NOT_OBSERVABLE is block_2 block_r)
+(NOT_OBSERVABLE is block_3 block_g)
+(NOT_OBSERVABLE is block_1 block_b)
 }
 
 {
-(NOT_OBSERVABLE is block_2 block_c)
-(NOT_OBSERVABLE is block_3 block_b)
-(NOT_OBSERVABLE is block_1 block_a)
+(NOT_OBSERVABLE is block_3 block_r)
+(NOT_OBSERVABLE is block_1 block_g)
+(NOT_OBSERVABLE is block_2 block_b)
 }
 {
-(NOT_OBSERVABLE is block_1 block_c)
-(NOT_OBSERVABLE is block_3 block_b)
-(NOT_OBSERVABLE is block_2 block_a)
+(NOT_OBSERVABLE is block_3 block_r)
+(NOT_OBSERVABLE is block_2 block_g)
+(NOT_OBSERVABLE is block_1 block_b)
 }
 }
 
@@ -105,7 +105,7 @@ BELIEF_START_STATE{
 
 ### Termination RULES 
 Rule {
-  { (on block_a block_b) (on block_b block_c) (hand_empty) } # 
+  { (on block_g block_r) (on block_b block_g) (hand_empty) } # 
   { (QUIT) }
 }
 
