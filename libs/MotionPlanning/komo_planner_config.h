@@ -12,7 +12,7 @@ struct KOMOPlannerConfig
   double maxConstraint_      = 10 * 0.8;
   double minMarkovianCost_   = 0;
 
-  uint microSteps_     = 20; // per phase
+  uint microSteps_           = 20; // per phase
 
   std::launch executionPolicy_ = std::launch::async;
 };

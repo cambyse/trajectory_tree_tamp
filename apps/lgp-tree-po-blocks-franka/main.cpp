@@ -83,16 +83,16 @@ void plan()
   tp.setMaxDepth( 20 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
-
+  mp.setMaxConstraint( 15.0 );
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
   //mp.setKin( "LGP-1-block-1-side-kin.g" );
 
-  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-  mp.setKin( "LGP-2-blocks-1-side-kin.g" );
+  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
 
-  //tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-  //mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );
@@ -130,6 +130,7 @@ void plan()
     mp.solveAndInform( po, policy );
 
     /// TASK PLANNING
+    tp.integrate( policy );
     tp.solve();
     policy = tp.getPolicy();
   }
@@ -142,7 +143,7 @@ void plan()
   //policy.load("policy-0");
 #endif
   // default method
-  mp.display(policy, 200);
+  //mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization
@@ -157,7 +158,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "SubTreesAfterFirstBranching" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }

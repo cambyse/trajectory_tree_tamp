@@ -310,7 +310,7 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
       komo->setTiming( 1., 2, 5., 1 ); // order 1 is needed otherwise crashes - 2 steps per phase, 1 could be in theory enough too, but leads to problems when releasing objects
       if( node->isRoot() ) komo->setSquaredQVelocities(); // square vel is dummy task to have a non null problem
 
-      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
+      komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
 
       komo->groundInit();
       komo->groundTasks( 0., node->data().leadingKomoArgs );
@@ -324,11 +324,12 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
         cout << "KOMO FAILED: " << msg <<endl;
       }
 
-//      if( node->id() == 3 )
+//      if( node->id() == 16 )
 //      {
-//        komo->displayTrajectory();
+//        //komo->getReport(true);
+//        //komo->displayTrajectory();
 //        //komo->displayPath(true);
-//        rai::wait();
+//        //rai::wait();
 //      }
       // save results
       //    DEBUG( komo->MP->reportFeatures(true, FILE("z.problem")); )
@@ -460,7 +461,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         komo->setModel( kin, true/*, false, true, false, false*/ );
         komo->setTiming( 1.0, config_.microSteps_, config_.secPerPhase_, 2 );
         komo->setSquaredQAccelerations();
-        komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
+        komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
 
         komo->groundInit();
         komo->groundTasks(0, node->data().leadingKomoArgs );
@@ -644,7 +645,7 @@ void KOMOPlanner::optimizePathTo( const PolicyNodePtr & leaf )
       komo->setModel( *startKinematics_( w ), true/*, false, true, false, false*/ );
       komo->setTiming( leafTime, config_.microSteps_, config_.secPerPhase_, 2 );
       komo->setSquaredQAccelerations();
-      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
+      komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
 
       komo->groundInit();
 
@@ -664,8 +665,8 @@ void KOMOPlanner::optimizePathTo( const PolicyNodePtr & leaf )
         cout << "KOMO FAILED: " << msg <<endl;
       }
 
-      if(w == 0)
-        komo->getReport(true);
+      //if(w == 0)
+      //  komo->getReport(true);
       // all the komo lead to the same agent trajectory, its ok to use one of it for the rest
 //      if( leaf->id() == 10 )
 //      {
@@ -760,7 +761,7 @@ void KOMOPlanner::optimizeJointPathTo( const PolicyNodePtr & leaf )
       komo->setModel( *startKinematics_( w ), true/*, false, true, false, false*/ );
       komo->setTiming( leafTime, config_.microSteps_, config_.secPerPhase_, 2 );
       komo->setSquaredQAccelerations();
-      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
+      komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
 
       komo->groundInit();
 

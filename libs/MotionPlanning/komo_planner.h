@@ -39,6 +39,7 @@ public:
   void setNSteps( uint n ) { config_.microSteps_ = n; }
   void setMinMarkovianCost( double m ) { config_.minMarkovianCost_ = m; }
   void setExecutionPolicy(std::launch mode) { config_.executionPolicy_ = mode; }
+  void setMaxConstraint( double maxConstraint ) { config_.maxConstraint_ = maxConstraint; }
 
   // testonly accessor
   const KOMOPlannerConfig& config() const { return config_; }

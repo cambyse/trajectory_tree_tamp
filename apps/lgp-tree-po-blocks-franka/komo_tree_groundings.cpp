@@ -81,7 +81,7 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // approach
   if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, 1e2, 0 ); // coming from above
 
-  mp::Interval just_before{{it.time.to - 0.2, it.time.to}, it.edge};
+  mp::Interval just_before{{it.time.to - 0.2, it.time.to - 0.001}, it.edge};
   if(activateObjectives) W(komo).addObjective( just_before, tb, new AxisAlignment( object, ARR( 0, 0, 1.0 ) ), OT_sos, NoArr, 1e2, 0 );
 
   mp::Interval end{{it.time.to, it.time.to}, it.edge};

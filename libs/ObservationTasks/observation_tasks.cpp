@@ -76,11 +76,6 @@ void HeadGetSight::phi(arr& y, arr& J, const rai::KinematicWorld& G )
   arr u = objectPosition_ - headPosition;
   arr Ju = - headJPosition;
 
-  /*double normU = norm2( u );
-  arr JnormU = Jnorm( u );  // get Jacobian of the norm operator
-  arr u1 = u / normU;
-  arr Ju1 = ( Ju * normU - u * JnormU * Ju ) / ( normU * normU ); // jacobian of u normalized
-  */
   arr u1, Ju1;
   u1 = normalizedX( u, Ju, Ju1 );
 
@@ -93,8 +88,8 @@ void HeadGetSight::phi(arr& y, arr& J, const rai::KinematicWorld& G )
   arr tmp_J = zeros( dim_, headJPosition.dim(1) );
 
   // u - v
-  tmp_y.setVectorBlock( 10.0 * ( u1  - v1)     , 0 );    // cost
-  tmp_J.setMatrixBlock( 10.0 * ( Ju1 - Jv1), 0 , 0 );    // jacobian
+  tmp_y.setVectorBlock( 10.0 * ( u1  - v1 )     , 0 );    // cost
+  tmp_J.setMatrixBlock( 10.0 * ( Ju1 - Jv1 ), 0 , 0 );    // jacobian
 
   // u - w
   if( moveAroundPivotDefined_ )
@@ -271,11 +266,6 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   const double d = normU - preferedDistance_;
   tmp_y( 2*u1.d0 ) = d;
   tmp_J.setMatrixBlock( JnormU * Ju, 2 * Ju1.d0, 0 );            // jacobian
-
-//  for( auto p : G.proxies )
-//  {
-//    std::cout << G.shapes( p->a )->name << "-" << G.shapes( p->b )->name << std::endl;
-//  }
 
   // commit results
   y = tmp_y;
