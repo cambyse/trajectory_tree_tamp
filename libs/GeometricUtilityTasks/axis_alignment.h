@@ -128,4 +128,43 @@ struct ZeroVelocity:Feature
 
     private:
       const rai::String objectName_;
-  };
+};
+
+// Zero velocity (to be used in 1st order to force a zero velocity)
+struct ZeroRelativeRotationVel:Feature
+{
+    ZeroRelativeRotationVel( const char* objectName )
+      : objectName_( objectName )
+    {
+
+    }
+
+    virtual void phi( arr& y, arr& J, const rai::KinematicWorld& G );
+
+    uint dim_phi( const rai::KinematicWorld& G ) { return 4; }
+
+    rai::String shortTag(const rai::KinematicWorld& G ){ return STRING("ZeroRelativeRotationVel"); }
+
+    private:
+      const rai::String objectName_;
+};
+
+// Zero velocity (to be used in 1st order to force a zero velocity)
+struct ZeroRelativeVel:Feature
+{
+    ZeroRelativeVel( const char* objectName )
+      : objectName_( objectName )
+    {
+
+    }
+
+    virtual void phi( arr& y, arr& J, const rai::KinematicWorld& G );
+
+    uint dim_phi( const rai::KinematicWorld& G ) { return 3; }
+
+    rai::String shortTag(const rai::KinematicWorld& G ){ return STRING("ZeroRelativeVel"); }
+
+    private:
+      const rai::String objectName_;
+};
+

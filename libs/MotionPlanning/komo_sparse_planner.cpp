@@ -126,8 +126,9 @@ void KOMOSparsePlanner::groundPolicyActionsJoint( const TreeBuilder & tree,
         interval.time = {start, start + 1.0};
         interval.edge = {p->id(), q->id()};
 
-        // square acc
+        // square acc + fix switched objects
         W(komo.get()).addObjective(interval, tree, new TM_Transition(komo->world), OT_sos, NoArr, 1.0, 2);
+        W(komo.get()).addObjective(interval, tree, new TM_FixSwichedObjects(), OT_eq, NoArr, 3e1, 2);
 
         // ground other tasks
         komo->groundTasks(interval, tree, q->data().leadingKomoArgs, 1);
@@ -373,8 +374,9 @@ void ADMMCompressedPlanner::groundPolicyActionsCompressed( const TreeBuilder & f
         interval.time = {start - start_offset, start - start_offset + 1.0};
         interval.edge = {pid, qid};
 
-        // square acc
+        // square acc + fix switch objects
         W(komo.get()).addObjective(interval, compressed, new TM_Transition(komo->world), OT_sos, NoArr, 1.0, 2);
+        W(komo.get()).addObjective(interval, compressed, new TM_FixSwichedObjects(), OT_eq, NoArr, 3e1, 2);
 
         // ground other tasks
         komo->groundTasks(interval, compressed, q->data().leadingKomoArgs, 1);

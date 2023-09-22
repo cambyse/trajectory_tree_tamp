@@ -36,7 +36,6 @@ struct ADMM_MotionProblem_GraphProblem : KOMO::Conv_MotionProblem_GraphProblem
   virtual void phi(arr& phi, arrA& J, arrA& H, const arr& x) override;
 
   void getXMask(arr & xmask) const;
-  //void getXMask(arr & xmask, bool withPrefix) const;
 
   intA tmask; // mask per step
 };

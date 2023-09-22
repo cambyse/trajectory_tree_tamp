@@ -119,7 +119,7 @@ void TargetPosition::phi( arr& y, arr& J, const rai::KinematicWorld& G )
 }
 
 
-//-----ZeroVelocity----------------//
+//-----ZeroRelativeVelocity----------------//
 
 void ZeroVelocity::phi( arr& y, arr& J, const rai::KinematicWorld& G )
 {
@@ -134,6 +134,59 @@ void ZeroVelocity::phi( arr& y, arr& J, const rai::KinematicWorld& G )
 
   tmp_y = objectVelocity;
   tmp_J.setMatrixBlock( objectJVelocity, 0, 0 );
+
+  // commit results
+  y = tmp_y;
+  if(&J) J = tmp_J;
+}
+
+//-----ZeroRelativeRotationVel----------------//
+
+void ZeroRelativeRotationVel::phi( arr& y, arr& J, const rai::KinematicWorld& G )
+{
+  arr tmp_y = zeros( 4 );
+  arr tmp_J = zeros( 4, G.q.N );
+
+  // object
+  const auto object = G.getFrameByName( objectName_ );
+  const auto parent = object->parent;
+
+  if(parent != nullptr)
+  {
+    arr objectRotation, objectJRotation;
+    TM_Default tm(TMT_quat, G, objectName_, NoVector, parent->name, NoVector);
+    tm.phi(objectRotation, objectJRotation, G);
+
+    tmp_y = objectRotation;
+    tmp_J.setMatrixBlock( objectJRotation, 0, 0 );
+  }
+
+  // commit results
+  y = tmp_y;
+  if(&J) J = tmp_J;
+}
+
+
+//-----ZeroRelativeVel----------------//
+
+void ZeroRelativeVel::phi( arr& y, arr& J, const rai::KinematicWorld& G )
+{
+  arr tmp_y = zeros( 3 );
+  arr tmp_J = zeros( 3, G.q.N );
+
+  // object
+  const auto object = G.getFrameByName( objectName_ );
+  const auto parent = object->parent;
+
+  if(parent != nullptr)
+  {
+    arr objectTranslation, objectJTranslation;
+    TM_Default tm(TMT_pos, G, objectName_, NoVector, parent->name, NoVector);
+    tm.phi(objectTranslation, objectJTranslation, G);
+
+    tmp_y = objectTranslation;
+    tmp_J.setMatrixBlock( objectJTranslation, 0, 0 );
+  }
 
   // commit results
   y = tmp_y;

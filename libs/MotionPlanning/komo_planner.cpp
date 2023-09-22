@@ -201,8 +201,8 @@ void KOMOPlanner::display( const Policy & policy, double sec )
   solveAndInform( po, tmp );
 
   //
-  auto elapsed = std::chrono::high_resolution_clock::now() - start;
-  long long ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
+  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  const long long ms = std::chrono::duration_cast<std::chrono::milliseconds>(elapsed).count();
   std::cout << "motion planning time (ms):" << ms << std::endl;
   //
 
@@ -218,7 +218,7 @@ void KOMOPlanner::display( const Policy & policy, double sec )
   // display
   if( sec > 0 )
   {
-    TrajectoryTreeVisualizer viz( frames, "policy", config_.microSteps_ * config_.secPerPhase_ );
+    TrajectoryTreeVisualizer viz( frames, "policy", config_.microSteps_ * config_.secPerPhase_ * 0.1);
 
     rai::wait( sec, true );
   }
@@ -307,11 +307,10 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
       // set-up komo
       komo->setModel( kin, true/*, false, true, false, false */);
 
-      komo->setTiming( 1., 2, 5., 1/*, true*/ );
-      //      komo->setHoming( -1., -1., 1e-1 ); //gradient bug??
-      //komo->setSquaredQVelocities();
-      komo->setSquaredQVelocities();
-      //komo->setFixSwitchedObjects( -1., -1., 1e3 );
+      komo->setTiming( 1., 2, 5., 1 ); // order 1 is needed otherwise crashes - 2 steps per phase, 1 could be in theory enough too, but leads to problems when releasing objects
+      if( node->isRoot() ) komo->setSquaredQVelocities(); // square vel is dummy task to have a non null problem
+
+      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
 
       komo->groundInit();
       komo->groundTasks( 0., node->data().leadingKomoArgs );
@@ -324,11 +323,11 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
       } catch( const char* msg ){
         cout << "KOMO FAILED: " << msg <<endl;
       }
-      //komo->checkGradients();
+
 //      if( node->id() == 3 )
 //      {
 //        komo->displayTrajectory();
-
+//        //komo->displayPath(true);
 //        rai::wait();
 //      }
       // save results
@@ -336,8 +335,8 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
 
       Graph result = komo->getReport();
 
-      double cost = result.get<double>( { "total","sqrCosts" } );
-      double constraints = result.get<double>( { "total","constraints" } );
+      const double cost = result.get<double>( { "total","sqrCosts" } );
+      const double constraints = result.get<double>( { "total","constraints" } );
 
       poseCosts_[ node->data().decisionGraphNodeId ]( w )       = cost;
       poseConstraints_[ node->data().decisionGraphNodeId ]( w ) = constraints;
@@ -461,6 +460,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         komo->setModel( kin, true/*, false, true, false, false*/ );
         komo->setTiming( 1.0, config_.microSteps_, config_.secPerPhase_, 2 );
         komo->setSquaredQAccelerations();
+        komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
 
         komo->groundInit();
         komo->groundTasks(0, node->data().leadingKomoArgs );
@@ -474,11 +474,11 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
           cout << "KOMO FAILED: " << msg <<endl;
         }
 
-//        if( node->id() == 1 )
+//        if( node->id() == 3 )
 //        {
 //            komo->displayTrajectory();
-//            komo->saveTrajectory( std::to_string( node->id() ) );
-//            komo->plotVelocity( std::to_string( node->id() ) );
+//            //komo->saveTrajectory( std::to_string( node->id() ) );
+//            //komo->plotVelocity( std::to_string( node->id() ) );
 //           //rai::wait();
 //        }
 
@@ -593,21 +593,26 @@ void KOMOPlanner::optimizePath( Policy & policy )
 
   bsToLeafs_             = rai::Array< PolicyNodePtr > ( policy.N() );
 
-  std::list<std::future<void>> futures;
   for( const auto& l : policy.leaves() )
   {
-     auto future = std::async(config_.executionPolicy_,
-                              [&]{
-                                  optimizePathTo( l );
-                                });
-
-     futures.push_back(std::move(future));
+    optimizePathTo( l );
   }
 
-  for(auto &future: futures)
-  {
-    future.get();
-  }
+//  std::list<std::future<void>> futures;
+//  for( const auto& l : policy.leaves() )
+//  {
+//     auto future = std::async(config_.executionPolicy_,
+//                              [&]{
+//                                  optimizePathTo( l );
+//                                });
+
+//     futures.push_back(std::move(future));
+//  }
+
+//  for(auto &future: futures)
+//  {
+//    future.get();
+//  }
 
   computePathQResult(policy);
 }
@@ -639,6 +644,7 @@ void KOMOPlanner::optimizePathTo( const PolicyNodePtr & leaf )
       komo->setModel( *startKinematics_( w ), true/*, false, true, false, false*/ );
       komo->setTiming( leafTime, config_.microSteps_, config_.secPerPhase_, 2 );
       komo->setSquaredQAccelerations();
+      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
 
       komo->groundInit();
 
@@ -651,12 +657,15 @@ void KOMOPlanner::optimizePathTo( const PolicyNodePtr & leaf )
       komo->applyRandomization( randomVec_ );
       komo->reset();
       //komo->verbose = 3;
+
       try{
         komo->run();
       } catch(const char* msg){
         cout << "KOMO FAILED: " << msg <<endl;
       }
 
+      if(w == 0)
+        komo->getReport(true);
       // all the komo lead to the same agent trajectory, its ok to use one of it for the rest
 //      if( leaf->id() == 10 )
 //      {
@@ -736,7 +745,7 @@ void KOMOPlanner::optimizeJointPathTo( const PolicyNodePtr & leaf )
   jointPathCostsPerPhase_[ leaf->id() ] = rai::Array< arr >( N );
 
   //-- collect 'path nodes'
-  auto treepath = getPathTo( leaf );
+  const auto treepath = getPathTo( leaf );
 
   // solve problem for all ( relevant ) worlds
   for( auto w = 0; w < N; ++w )
@@ -751,6 +760,7 @@ void KOMOPlanner::optimizeJointPathTo( const PolicyNodePtr & leaf )
       komo->setModel( *startKinematics_( w ), true/*, false, true, false, false*/ );
       komo->setTiming( leafTime, config_.microSteps_, config_.secPerPhase_, 2 );
       komo->setSquaredQAccelerations();
+      komo->setFixSwitchedObjects( -1., -1., 1e3 ); // exact meaning?
 
       komo->groundInit();
 

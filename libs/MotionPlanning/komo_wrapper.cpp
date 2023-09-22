@@ -66,7 +66,7 @@ void KomoWrapper::setupConfigurations(const std::vector<Vars>& branches)
       auto s_m_1_global = branch.order1(s,0);
 
       if(visited[s_global + komo_->k_order]) continue;
-      visited[s_global + komo_->k_order] = 1;
+        visited[s_global + komo_->k_order] = 1;
 
       komo_->configurations(s_global + komo_->k_order)->copy(*komo_->configurations(s_m_1_global + komo_->k_order), true);
       rai::KinematicWorld& K = *komo_->configurations(s_global + komo_->k_order);
@@ -77,8 +77,10 @@ void KomoWrapper::setupConfigurations(const std::vector<Vars>& branches)
       //apply potential graph switches
       for(KinematicSwitch *sw:komo_->switches) {
         if(sw->timeOfApplication == s_global) {
+
+          std::cout << "  apply switch at " << s_global << std::endl;
+
           sw->apply(K);
-          //std::cout << "  apply switch at" << s_global << std::endl;
         }
       }
       //apply potential PERSISTENT flags
@@ -88,6 +90,7 @@ void KomoWrapper::setupConfigurations(const std::vector<Vars>& branches)
         }
       }
       K.calc_q();
+
       K.checkConsistency();
       //    {
       //      cout <<"CONFIGURATION s-k_order=" <<int(s)-k_order <<endl;
@@ -114,6 +117,9 @@ void KomoWrapper::setupConfigurations(const std::vector<Vars>& branches)
 
 void KomoWrapper::addObjective(const Interval& it, const TreeBuilder& tree, Feature* map, ObjectiveType type, const arr& target, double scale, int order, int deltaFromStep, int deltaToStep)
 {
+  CHECK(it.time.to != -1.0, "objective with strong influences on other edges are not compatible with markovian paths");
+  CHECK(it.time.from != -1.0, "objective with strong influences on other edges are not compatible with markovian paths");
+
   if(tree.n_nodes())
   {
     CHECK(komo_->sparseOptimization, "should be there in sparse mode only")

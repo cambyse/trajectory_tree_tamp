@@ -88,11 +88,11 @@ void plan()
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
   //mp.setKin( "LGP-1-block-1-side-kin.g" );
 
-  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
+  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-2-blocks-1-side-kin.g" );
 
-  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+  //tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+  //mp.setKin( "LGP-3-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );
@@ -107,7 +107,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 0
+#if 1
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
@@ -125,7 +125,11 @@ void plan()
     lastPolicy = policy;
 
     /// MOTION PLANNING
+    auto po     = MotionPlanningParameters( policy.id() );
+    po.setParam( "type", "markovJointPath" );
+    mp.solveAndInform( po, policy );
 
+    /// TASK PLANNING
     tp.solve();
     policy = tp.getPolicy();
   }
@@ -134,10 +138,11 @@ void plan()
   savePolicyToFile( policy, "-final" );
 #else
   Policy policy;
-  policy.load("policy-0");
+  policy.load("policy-0-3-blocks");
+  //policy.load("policy-0");
 #endif
   // default method
-  //mp.display(policy, 200);
+  mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization
