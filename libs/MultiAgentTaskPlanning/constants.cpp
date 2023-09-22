@@ -87,23 +87,12 @@ std::set< std::string > getFilteredFacts( const std::string & state )
 
     if( ! fact.empty() && ( fact.find( "decision(") == std::string::npos ) && ( fact.find( "komo") == std::string::npos ) )
     {
-      //fact.append( "," );
       facts.insert( fact );
     }
   }
 
   return facts;
 }
-
-std::vector< std::string > sortFacts( const std::vector< std::string > & facts )
-{
-  std::vector< std::string > sortedFacts = facts;
-
-  std::sort( sortedFacts.begin(), sortedFacts.end() );
-
-  return sortedFacts;
-}
-
 
 //std::string concatenateFacts( const std::set< std::string >  & facts )
 //{

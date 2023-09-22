@@ -78,7 +78,7 @@ void KomoWrapper::setupConfigurations(const std::vector<Vars>& branches)
       for(KinematicSwitch *sw:komo_->switches) {
         if(sw->timeOfApplication == s_global) {
 
-          std::cout << "  apply switch at " << s_global << std::endl;
+          //std::cout << "  apply switch at " << s_global << std::endl;
 
           sw->apply(K);
         }
