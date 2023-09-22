@@ -107,10 +107,88 @@ struct ActiveGetSight:Feature{
 
   // parameters
   static const uint dim_ = 7;
-  const rai::String headName_;
-  const rai::String containerName_;
+  const rai::String sensorName_;
+  const rai::String objectName_;
   const rai::Vector aimingDir_;     // in sensor's shape frame
   const rai::Vector pivotPoint_;    // in container's frame
   double preferedDistance_;
 };
 
+struct SensorAimAtObjectCenter:Feature{
+
+  SensorAimAtObjectCenter( rai::String const& sensorName,
+                           rai::String const& objectName,
+                           arr const& aimingDir // sensor
+                         );
+
+  virtual void phi( arr& y, arr& J, rai::KinematicWorld const& G );
+
+  virtual uint dim_phi( rai::KinematicWorld const& G )
+  {
+    return dim_;
+  }
+
+  virtual rai::String shortTag( rai::KinematicWorld const& G )
+  {
+    return rai::String( "SensorAimAtObjectCenter" );
+  }
+
+  // parameters
+  static const uint dim_ = 3;
+  const rai::String sensorName_;
+  const rai::String objectName_;
+  const rai::Vector aimingDir_;     // in sensor's shape frame
+};
+
+struct SensorAlignsWithPivot:Feature{
+
+  SensorAlignsWithPivot( rai::String const& sensorName,
+                         rai::String const& objectName,
+                         arr const& pivotPoint,
+                         const double maxAngleRad
+                         );
+
+  virtual void phi( arr& y, arr& J, rai::KinematicWorld const& G );
+
+  virtual uint dim_phi( rai::KinematicWorld const& G )
+  {
+    return dim_;
+  }
+
+  virtual rai::String shortTag( rai::KinematicWorld const& G )
+  {
+    return rai::String( "SensorAlignsWithPivot" );
+  }
+
+  // parameters
+  static const uint dim_ = 1;
+  const rai::String sensorName_;
+  const rai::String objectName_;
+  const rai::Vector pivotPoint_;    // in object's frame
+  const double minDotProduct_;
+};
+
+struct SensorDistanceToObject:Feature{
+  SensorDistanceToObject( rai::String const& sensorName,
+                         rai::String const& objectName,
+                         const double preferedDistance
+                         );
+
+  virtual void phi( arr& y, arr& J, rai::KinematicWorld const& G );
+
+  virtual uint dim_phi( rai::KinematicWorld const& G )
+  {
+    return dim_;
+  }
+
+  virtual rai::String shortTag( rai::KinematicWorld const& G )
+  {
+    return rai::String( "SensorDistanceToObject" );
+  }
+
+  // parameters
+  static const uint dim_ = 1;
+  const rai::String sensorName_;
+  const rai::String objectName_;
+  const double preferedDistance_;
+};

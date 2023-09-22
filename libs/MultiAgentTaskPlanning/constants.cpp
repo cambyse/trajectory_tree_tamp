@@ -94,6 +94,16 @@ std::set< std::string > getFilteredFacts( const std::string & state )
   return facts;
 }
 
+//std::vector< std::string > sortFacts( const std::vector< std::string > & facts )
+//{
+//  std::vector< std::string > sortedFacts = facts;
+
+//  std::sort( sortedFacts.begin(), sortedFacts.end() );
+
+//  return sortedFacts;
+//}
+
+
 //std::string concatenateFacts( const std::set< std::string >  & facts )
 //{
 //  std::string filteredResult("{");

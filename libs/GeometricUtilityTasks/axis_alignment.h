@@ -164,7 +164,7 @@ struct ZeroRelativeVel:Feature
 
     rai::String shortTag(const rai::KinematicWorld& G ){ return STRING("ZeroRelativeVel"); }
 
-    private:
-      const rai::String objectName_;
+   private:
+    const rai::String objectName_;
 };
 

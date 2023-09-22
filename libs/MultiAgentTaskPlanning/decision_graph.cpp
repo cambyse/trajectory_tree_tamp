@@ -82,17 +82,17 @@ DecisionGraph& DecisionGraph::operator= ( const DecisionGraph & graph ) // assig
 // DecisionGraph
 DecisionGraph::DecisionGraph( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
   : engine_( engine )
-  , root_( GraphNode< NodeData >::root( NodeData( sortFacts( startStates ), egoBeliefState, false, 0, NodeData::NodeType::ACTION ) ) )
+  , root_()
 {
-  // sort states before creating root
-  std::vector< std::string > sortedStartState = startStates;
+  // filter states before creating root
+  std::vector< std::string > filteredStartStates = startStates;
 
-  for( auto & s : sortedStartState )
+  for( auto & s : filteredStartStates )
   {
     s = concatenateFacts( getFilteredFacts( s ) );
   }
 
-  root_ = GraphNode< NodeData >::root( NodeData( sortedStartState, egoBeliefState, false, 0, NodeData::NodeType::ACTION ) );
+  root_ = GraphNode< NodeData >::root( NodeData( filteredStartStates, egoBeliefState, false, 0, NodeData::NodeType::ACTION ) );
   hash_to_id_[ root_->data().hash() ].push_back( 0 );
 
   nodes_.push_back( root_ );

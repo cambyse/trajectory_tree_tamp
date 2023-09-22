@@ -186,14 +186,14 @@ void HeadGetSightQuat::phi(arr& y, arr& J, const rai::KinematicWorld& G )
 
 //===========================================================================
 
-ActiveGetSight::ActiveGetSight( rai::String const& headName,
-                                        rai::String const& containerName,
+ActiveGetSight::ActiveGetSight( rai::String const& sensorName,
+                                        rai::String const& objectName,
                                         arr const& pivotPoint,
                                         arr const& aimingDir,
                                         double preferedDistance )
   : Feature()
-  , headName_     ( headName )
-  , containerName_( containerName )
+  , sensorName_     ( sensorName )
+  , objectName_( objectName )
   , pivotPoint_   ( pivotPoint )
   , aimingDir_    ( aimingDir / norm2( aimingDir ) )
   , preferedDistance_( preferedDistance )
@@ -204,28 +204,22 @@ ActiveGetSight::ActiveGetSight( rai::String const& headName,
 void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
 {
   // get Object position and pivot position
-  rai::Frame * container = G.getFrameByName( containerName_ );
+  rai::Frame * object = G.getFrameByName( objectName_ );
 
-  CHECK( container != nullptr, "body not found!" );
+  CHECK( object != nullptr, "body not found!" );
 
   arr aimPosition, aimJPosition;
-  G.kinematicsPos( aimPosition, aimJPosition, container );
+  G.kinematicsPos( aimPosition, aimJPosition, object );
 
   arr pivotPosition, pivotJPosition;
-  G.kinematicsPos( pivotPosition, pivotJPosition, container, pivotPoint_ );
-
-  //std::cout << "world aimPosition:" << aimPosition << std::endl;
-  //std::cout << "world pivotPosition:" << pivotPosition << std::endl;
+  G.kinematicsPos( pivotPosition, pivotJPosition, object, pivotPoint_ );
 
   // get sensor position
-  rai::Frame * head = G.getFrameByName( headName_ );
-  arr headPosition, headJPosition;
-  G.kinematicsPos( headPosition, headJPosition, head );
+  rai::Frame * sensor = G.getFrameByName( sensorName_ );
+  arr sensorPosition, sensorJPosition;
+  G.kinematicsPos( sensorPosition, sensorJPosition, sensor );
 
   //std::cout << "headPosition:" << headPosition << std::endl;
-
-  arr headQuat, JheadQuat;
-  G.kinematicsQuat( headQuat, JheadQuat, head ); // get function to minimize and its jacobian in state G
 
   // intermediary computations
   // build w1 : (normalized vector from pivot position to object center)
@@ -239,30 +233,30 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   arr Jw1 = ( Jw * normW - w * JnormW * Jw ) / ( normW * normW );
 
   // build u : vector between aiming point and head
-  arr u = aimPosition - headPosition;
+  arr u = aimPosition - sensorPosition;
   const double normU = norm2( u );
-  arr Ju = aimJPosition - headJPosition;
+  arr Ju = aimJPosition - sensorJPosition;
   arr JnormU = Jnorm2( u );  // get Jacobian of the norm operator
   arr u1 = u / normU;
   arr Ju1 = ( Ju * normU - u * JnormU * Ju ) / ( normU * normU ); // jacobian of u normalized
 
   // build v : aiming direction of the sensor
   arr v, Jv;
-  G.kinematicsVec( v, Jv, head, aimingDir_ ); // get function to minimize and its jacobian in state G
+  G.kinematicsVec( v, Jv, sensor, aimingDir_ ); // get function to minimize and its jacobian in state G
 
   // instantiate a temporary vector for cost and its Jacobian
   arr tmp_y = zeros( dim_ );
-  arr tmp_J = zeros( dim_, headJPosition.dim(1) );
+  arr tmp_J = zeros( dim_, sensorJPosition.dim(1) );
 
-  // head orientation (gradient failure)
+  // sensor orientation - aiming directing is colinear to vector (head - center)
   tmp_y.setVectorBlock( ( u1  - v )     , 0 );    // cost
   tmp_J.setMatrixBlock( ( Ju1 - Jv ), 0 , 0 );    // jacobian
 
-  // head alignment
+  // sensor alignment - object center, object pivot and sensor center are aligned
   tmp_y.setVectorBlock( u1 -  w1,   u1.d0  );                    // cost
   tmp_J.setMatrixBlock( Ju1 -  Jw1, Ju1.d0, 0 );                 // jacobian
 
-  // head distance
+  // sensor distance
   const double d = normU - preferedDistance_;
   tmp_y( 2*u1.d0 ) = d;
   tmp_J.setMatrixBlock( JnormU * Ju, 2 * Ju1.d0, 0 );            // jacobian
@@ -272,3 +266,176 @@ void ActiveGetSight::phi( arr& y, arr& J, rai::KinematicWorld const& G )
   if(&J) J = tmp_J;
 }
 
+
+//===========================================================================
+
+SensorAimAtObjectCenter::SensorAimAtObjectCenter( rai::String const& sensorName,
+                                                  rai::String const& objectName,
+                                                  arr const& aimingDir // sensor
+                                                )
+  : Feature()
+  , sensorName_     ( sensorName )
+  , objectName_     ( objectName )
+  , aimingDir_    ( aimingDir / norm2( aimingDir ) )
+{
+
+}
+
+void SensorAimAtObjectCenter::phi( arr& y, arr& J, rai::KinematicWorld const& G )
+{
+  // get Object position and pivot position
+  rai::Frame * object = G.getFrameByName( objectName_ );
+
+  CHECK( object != nullptr, "body not found!" );
+
+  arr aimPosition, aimJPosition;
+  G.kinematicsPos( aimPosition, aimJPosition, object );
+
+  // get sensor position
+  rai::Frame * sensor = G.getFrameByName( sensorName_ );
+  arr sensorPosition, sensorJPosition;
+  G.kinematicsPos( sensorPosition, sensorJPosition, sensor );
+
+  //std::cout << "headPosition:" << headPosition << std::endl;
+
+  // intermediary computations
+  // build u : vector between aiming point and head
+  arr u = aimPosition - sensorPosition;
+  const double normU = norm2( u );
+  arr Ju = aimJPosition - sensorJPosition;
+  arr JnormU = Jnorm2( u );  // get Jacobian of the norm operator
+  arr u1 = u / normU;
+  arr Ju1 = ( Ju * normU - u * JnormU * Ju ) / ( normU * normU ); // jacobian of u normalized
+
+  // build v : aiming direction of the sensor
+  arr v, Jv;
+  G.kinematicsVec( v, Jv, sensor, aimingDir_ ); // get function to minimize and its jacobian in state G
+
+  // instantiate a temporary vector for cost and its Jacobian
+  arr tmp_y = zeros( dim_ );
+  arr tmp_J = zeros( dim_, sensorJPosition.dim(1) );
+
+  // head orientation - aiming directing is colinear to vector (head - center)
+  tmp_y.setVectorBlock( ( u1  - v )     , 0 );    // cost
+  tmp_J.setMatrixBlock( ( Ju1 - Jv ), 0 , 0 );    // jacobian
+
+  // commit results
+  y = tmp_y;
+  if(&J) J = tmp_J;
+}
+
+//===========================================================================
+
+SensorAlignsWithPivot::SensorAlignsWithPivot( rai::String const& sensorName,
+                                        rai::String const& objectName,
+                                        arr const& pivotPoint,
+                                        const double maxAngleRad )
+  : Feature()
+  , sensorName_     ( sensorName )
+  , objectName_( objectName )
+  , pivotPoint_   ( pivotPoint )
+  , minDotProduct_( std::cos( maxAngleRad ) )
+{
+
+}
+
+void SensorAlignsWithPivot::phi( arr& y, arr& J, rai::KinematicWorld const& G )
+{
+  // get Object position and pivot position
+  rai::Frame * object = G.getFrameByName( objectName_ );
+
+  CHECK( object != nullptr, "body not found!" );
+
+  arr aimPosition, aimJPosition;
+  G.kinematicsPos( aimPosition, aimJPosition, object );
+
+  arr pivotPosition, pivotJPosition;
+  G.kinematicsPos( pivotPosition, pivotJPosition, object, pivotPoint_ );
+
+  // get sensor position
+  rai::Frame * sensor = G.getFrameByName( sensorName_ );
+  arr sensorPosition, sensorJPosition;
+  G.kinematicsPos( sensorPosition, sensorJPosition, sensor );
+
+  // intermediary computations
+  // build w1 : (normalized vector from pivot position to object center)
+  arr w = aimPosition - pivotPosition;
+  const double normW = norm2( w );
+  //std::cout << "normW:" << normW << std::endl;
+  arr w1 = w * 1. / normW;
+  arr JnormW = Jnorm2( w );
+
+  arr Jw = aimJPosition - pivotJPosition;
+  arr Jw1 = ( Jw * normW - w * JnormW * Jw ) / ( normW * normW );
+
+  // build u : vector between aiming point and head
+  arr u = aimPosition - sensorPosition;
+  const double normU = norm2( u );
+  arr Ju = aimJPosition - sensorJPosition;
+  arr JnormU = Jnorm2( u );  // get Jacobian of the norm operator
+  arr u1 = u / normU;
+  arr Ju1 = ( Ju * normU - u * JnormU * Ju ) / ( normU * normU ); // jacobian of u normalized
+
+  // instantiate a temporary vector for cost and its Jacobian
+  arr tmp_y = zeros( 1 );
+  arr tmp_J = zeros( 1, G.q.N );
+
+  // sensor alignment - object center, object pivot and sensor center are aligned
+  tmp_y(0) = minDotProduct_ - dot(u1, w1);                    // cost
+  tmp_J.setMatrixBlock( - ~ ( ( ~ Ju1 ) * w1 + ( ~ Jw1 ) * u1 ), 0, 0 );                  // jacobian
+
+  // commit results
+  y = tmp_y;
+  if(&J) J = tmp_J;
+}
+
+//===========================================================================
+
+SensorDistanceToObject::SensorDistanceToObject( rai::String const& sensorName,
+                                        rai::String const& objectName,
+                                        const double preferedDistance )
+  : Feature()
+  , sensorName_     ( sensorName )
+  , objectName_( objectName )
+  , preferedDistance_( preferedDistance )
+{
+
+}
+
+void SensorDistanceToObject::phi( arr& y, arr& J, rai::KinematicWorld const& G )
+{
+  // get Object position and pivot position
+  rai::Frame * object = G.getFrameByName( objectName_ );
+
+  CHECK( object != nullptr, "body not found!" );
+
+  arr aimPosition, aimJPosition;
+  G.kinematicsPos( aimPosition, aimJPosition, object );
+
+  // get sensor position
+  rai::Frame * sensor = G.getFrameByName( sensorName_ );
+  arr sensorPosition, sensorJPosition;
+  G.kinematicsPos( sensorPosition, sensorJPosition, sensor );
+
+  //std::cout << "headPosition:" << headPosition << std::endl;
+
+  // intermediary computations
+  // build u : vector between aiming point and head
+  arr u = aimPosition - sensorPosition;
+  const double normU = norm2( u );
+  arr Ju = aimJPosition - sensorJPosition;
+  arr JnormU = Jnorm2( u );  // get Jacobian of the norm operator
+
+  // instantiate a temporary vector for cost and its Jacobian
+  arr tmp_y = zeros( dim_ );
+  arr tmp_J = zeros( dim_, sensorJPosition.dim(1) );
+
+  // sensor distance
+  const double d = normU - preferedDistance_;
+  tmp_y( 0 ) = d;
+  tmp_J.setMatrixBlock( JnormU * Ju, 0, 0 );            // jacobian
+
+  // commit results
+  y = tmp_y;
+  if(&J) J = tmp_J;
+}
