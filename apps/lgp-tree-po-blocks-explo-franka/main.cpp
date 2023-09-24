@@ -79,10 +79,11 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -0.00001 ); //-0.25//-0.1//-0.015 ); for blocks one side
+  tp.setR0( -1.0 ); //-0.25//-0.1//-0.015 ); for blocks one side
   tp.setMaxDepth( 10 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
+  mp.setMaxConstraint( 15.0 );
 
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
@@ -98,6 +99,7 @@ void plan()
   mp.registerInit( groundTreeInit );
   mp.registerTask( "pick-up"      , groundTreePickUp );
   mp.registerTask( "put-down"     , groundTreePutDown );
+  mp.registerTask( "put-down-flipped", groundTreePutDownFlipped );
   mp.registerTask( "check"        , groundTreeCheck );
   mp.registerTask( "stack"        , groundTreeStack );
   mp.registerTask( "unstack"      , groundTreeUnStack );
@@ -107,7 +109,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 0
+#if 1
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
@@ -125,7 +127,12 @@ void plan()
     lastPolicy = policy;
 
     /// MOTION PLANNING
+    auto po     = MotionPlanningParameters( policy.id() );
+    po.setParam( "type", "markovJointPath" );
+    mp.solveAndInform( po, policy );
 
+    /// TASK PLANNING
+    tp.integrate( policy );
     tp.solve();
     policy = tp.getPolicy();
   }
@@ -137,7 +144,7 @@ void plan()
   policy.load("policy-0"); //policy-check_pickup_stack_linear
 #endif
   // default method
-  //mp.display(policy, 200);
+  mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization

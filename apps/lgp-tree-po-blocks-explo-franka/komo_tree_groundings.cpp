@@ -67,6 +67,16 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   const auto& place = facts[1].c_str();
   const bool flipped = !strcmp(facts[2].c_str(), "TRUE");
 
+  std::map<std::string, double> sideToYaw{
+    {"side_0", -3.1415 / 2.0 },
+    {"side_1", 0.0 },
+    {"side_2", 3.1415 / 2.0 },
+    {"side_3", 3.1415 },
+    {"side_4", 0.0 },
+    {"side_5", 0.0 }
+  };
+
+
   mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
 
   // approach
@@ -82,7 +92,9 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  rel.rot.setRpy(0.0, (flipped ? 3.145 * 0.5 : 0.0), 0.0);
+  const double angle_y = flipped ? 3.145 * 0.5 : 0.0;
+  const double angle_z = sideToYaw[facts[3]];
+  rel.rot.setRpy(0.0, angle_y, angle_z);
   rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
 
@@ -114,7 +126,7 @@ void groundTreePutDownFlipped(const mp::Interval& it, const mp::TreeBuilder& tb,
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  rel.rot.setRpy(0.0, 3.145 * 0.5, 0.0);
+  rel.rot.setRpy(0.0, 3.145 * 0.5, -3.1415 * 0.5);
   rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
 
