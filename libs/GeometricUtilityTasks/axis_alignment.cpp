@@ -26,14 +26,20 @@ void AxisAlignment::phi( arr& y, arr& J, const rai::KinematicWorld& G )
   const auto body = G.getFrameByName( bobyName_ );
 
   arr bodyAxisDirection, bodyJAxisDirection;
-  G.kinematicsVec( bodyAxisDirection, bodyJAxisDirection, body, axis_ );
+  G.kinematicsVec( bodyAxisDirection, bodyJAxisDirection, body, bodyAxis_ );
 
-  const double dot_product = dot( bodyAxisDirection, axis_ );
+  const double dot_product = dot( bodyAxisDirection, worldAxis_ );
 
   const double cost = 1 - dot_product;
 
+//  if(bodyAxis_(0) < -0.5)
+//  {
+//    std::cout << "bodyAxis:" << bodyAxis_ << std::endl;
+//    std::cout << "bodyAxisDirection:" << bodyAxisDirection << std::endl;
+//  }
+
   tmp_y( 0 ) = cost;
-  tmp_J.setMatrixBlock( - ( ~ axis_ ) * bodyJAxisDirection, 0, 0 );
+  tmp_J.setMatrixBlock( - ( ~ worldAxis_ ) * bodyJAxisDirection, 0, 0 );
 
   // commit results
   y = tmp_y;

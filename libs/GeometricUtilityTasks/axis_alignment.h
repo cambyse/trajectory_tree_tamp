@@ -22,9 +22,10 @@
 // alignment to one world axis
 struct AxisAlignment:Feature
 {
-  AxisAlignment( const char* bobyName, const arr & axis )
+  AxisAlignment( const char* bobyName, const arr & bodyAxis, const arr & worldAxis )
     : bobyName_     ( bobyName )
-    , axis_( axis )
+    , bodyAxis_     ( bodyAxis )
+    , worldAxis_    ( worldAxis )
   {
 
   }
@@ -37,7 +38,8 @@ struct AxisAlignment:Feature
 
   private:
     const rai::String bobyName_;
-    const arr axis_;
+    const arr bodyAxis_;
+    const arr worldAxis_;
 };
 
 // orthogonal to one world axis
