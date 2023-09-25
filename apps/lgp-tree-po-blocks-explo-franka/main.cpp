@@ -141,7 +141,7 @@ void plan()
   savePolicyToFile( policy, "-final" );
 #else
   Policy policy;
-  policy.load("policy-0"); //policy-check_pickup_stack_linear
+  policy.load("policy-0");
 #endif
   // default method
   mp.display(policy, 200);

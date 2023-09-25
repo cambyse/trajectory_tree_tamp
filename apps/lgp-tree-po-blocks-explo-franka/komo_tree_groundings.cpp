@@ -20,6 +20,38 @@ constexpr bool activateObjectives{true};
 
 double shapeSize(const KinematicWorld& K, const char* name, uint i=2);
 
+Quaternion SideToRelease(const std::string& side)
+{
+  std::map<std::string, double> coloredSideToYaw{
+    {"side_0", -3.1415 / 2.0 },
+    {"side_1", 0.0 },
+    {"side_2", 3.1415 / 2.0 },
+    {"side_3", 3.1415 },
+    {"side_4", -3.1415 * 0.5 },
+    {"side_5", -3.1415 * 0.5 }
+  };
+
+  std::map<std::string, double> coloredSideToPitch{
+    {"side_0", 0.0 },
+    {"side_1", 0.0 },
+    {"side_2", 0.0 },
+    {"side_3", 0.0 },
+    {"side_4", -3.1415 * 0.5 },
+    {"side_5", 3.1415 * 0.5 }
+  };
+
+  Quaternion q;
+  q.setRpy(0.0, coloredSideToPitch[side], coloredSideToYaw[side]);
+
+  return q;
+}
+
+//Quaternion SideToRelease()
+//{
+
+//}
+
+
 void groundTreeInit( const mp::TreeBuilder& tb, KOMO_ext* komo, int verbose )
 {
 
@@ -35,6 +67,7 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   const auto& eff = "franka_hand";
   const auto& object = facts[0].c_str();
   const bool flipped = !strcmp(facts[2].c_str(), "TRUE");
+  const bool side_5 = (facts[3] == "side_5");
 
   // approach
   mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
@@ -44,7 +77,9 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  rel.rot.setRpy(0.0, (flipped ? 3.145 * 0.5 : 0.0), 0.0);
+  const double angle_y = (flipped ? ( ( side_5 ? 1.0 : -1.0 ) * 3.145 * 0.5 ) : 0.0);
+  const double angle_z = 0.0;
+  rel.rot.setRpy(0.0, angle_y, angle_z);
   rel.pos.set(0, 0, 0);
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, eff, object, komo->world, SWInit_zero, 0, rel));
 
@@ -65,26 +100,11 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
 {
   const auto& object = facts[0].c_str();
   const auto& place = facts[1].c_str();
-  const bool flipped = !strcmp(facts[2].c_str(), "TRUE");
-
-  std::map<std::string, double> sideToYaw{
-    {"side_0", -3.1415 / 2.0 },
-    {"side_1", 0.0 },
-    {"side_2", 3.1415 / 2.0 },
-    {"side_3", 3.1415 },
-    {"side_4", 0.0 },
-    {"side_5", 0.0 }
-  };
-
 
   mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
 
   // approach
   if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, 1e2, 0 ); // coming from above
-
-  const auto axis = flipped ? ARR( -1.0, 0.0, 0.0 ) : ARR( 0.0, 0.0, 1.0 );
-  mp::Interval just_before{{it.time.to - 0.2, it.time.to - 0.001}, it.edge};
-  if(activateObjectives) W(komo).addObjective( just_before, tb, new AxisAlignment( object, axis, ARR( 0.0, 0.0, 1.0 ) ), OT_sos, NoArr, 1e2, 0 );
 
   mp::Interval end{{it.time.to, it.time.to}, it.edge};
   if(activateObjectives) W(komo).addObjective(end, tb, new TM_AboveBox(komo->world, object, place), OT_ineq, NoArr, 1e1, 0);
@@ -92,9 +112,7 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  const double angle_y = flipped ? 3.145 * 0.5 : 0.0;
-  const double angle_z = sideToYaw[facts[3]];
-  rel.rot.setRpy(0.0, angle_y, angle_z);
+  rel.rot = SideToRelease(facts[2]);
   rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
 
@@ -110,36 +128,36 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   }
 }
 
-
 void groundTreePutDownFlipped(const mp::Interval& it, const mp::TreeBuilder& tb, const std::vector<std::string>& facts, KOMO_ext* komo, int verbose)
 {
-  const auto& object = facts[0].c_str();
-  const auto& place = facts[1].c_str();
+  groundTreePutDown(it, tb, facts, komo, verbose);
+//  const auto& object = facts[0].c_str();
+//  const auto& place = facts[1].c_str();
 
-  mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
-  // approach
-  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, 1e2, 0 ); // coming from above
+//  mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
+//  // approach
+//  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, 1e2, 0 ); // coming from above
 
-  mp::Interval end{{it.time.to, it.time.to}, it.edge};
-  if(activateObjectives) W(komo).addObjective(end, tb, new TM_AboveBox(komo->world, object, place), OT_ineq, NoArr, 1e1, 0);
+//  mp::Interval end{{it.time.to, it.time.to}, it.edge};
+//  if(activateObjectives) W(komo).addObjective(end, tb, new TM_AboveBox(komo->world, object, place), OT_ineq, NoArr, 1e1, 0);
 
-  // switch
-  mp::Interval st{{it.time.to, it.time.to}, it.edge};
-  Transformation rel{0};
-  rel.rot.setRpy(0.0, 3.145 * 0.5, -3.1415 * 0.5);
-  rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
-  W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
+//  // switch
+//  mp::Interval st{{it.time.to, it.time.to}, it.edge};
+//  Transformation rel{0};
+//  rel.rot = SideToRelease(facts[2]);
+//  rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
+//  W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
 
-  if(komo->k_order > 1)
-  {
-    mp::Interval just_after{{it.time.to, it.time.to + 0.2}, it.edge};
-    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, 1e2, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
-  }
+//  if(komo->k_order > 1)
+//  {
+//    mp::Interval just_after{{it.time.to, it.time.to + 0.2}, it.edge};
+//    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, 1e2, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
+//  }
 
-  if(verbose > 0)
-  {
-    std::cout << "from: " << it.time.from << "(" << it.edge.from << ")" << " -> " << it.time.to << "(" << it.edge.to << ")" << " : put down flipped" << facts[0] << " at " << facts[1] << std::endl;
-  }
+//  if(verbose > 0)
+//  {
+//    std::cout << "from: " << it.time.from << "(" << it.edge.from << ")" << " -> " << it.time.to << "(" << it.edge.to << ")" << " : put down flipped" << facts[0] << " at " << facts[1] << std::endl;
+//  }
 }
 
 
