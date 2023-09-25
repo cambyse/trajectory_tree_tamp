@@ -16,13 +16,15 @@ in_sight    # block identification part is visible
 holding     # object is held by an agent
 hand_empty  # hand is free
 on_table    # object X is on the table
-on	    # object X is on object Y
-identified  # object X as been identified, the agnt knows which block it is
+identified  # object X as been identified, the agent knows which block it is
 is
 colored
 bottom_facing
+needs_flipping 
 flipped
-orientation_corrected
+orientation_correct
+observed    # observed X means that the side X has been observed
+object_put_down
 
 # keyword
 NOT_OBSERVABLE
@@ -96,7 +98,12 @@ BELIEF_START_STATE{
 
 ### Termination RULES 
 Rule {
-  { (identified block_1) (orientation_corrected)} # 
+  { (identified block_1) (orientation_correct) (hand_empty)! } # 
+  { (QUIT) }
+}
+
+Rule {
+  { (identified block_1) (orientation_correct) (object_put_down) } # 
   { (QUIT) }
 }
 
