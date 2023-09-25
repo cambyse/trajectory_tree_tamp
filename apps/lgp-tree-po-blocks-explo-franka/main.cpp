@@ -109,7 +109,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 1
+#if 0
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
