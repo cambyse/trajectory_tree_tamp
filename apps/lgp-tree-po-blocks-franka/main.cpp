@@ -107,7 +107,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 1
+#if 0
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
@@ -143,7 +143,7 @@ void plan()
   //policy.load("policy-0");
 #endif
   // default method
-  //mp.display(policy, 200);
+  mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization

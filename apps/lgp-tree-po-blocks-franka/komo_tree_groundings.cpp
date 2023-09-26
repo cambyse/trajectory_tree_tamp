@@ -55,7 +55,7 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  rel.rot.setRadZ(3.1415);
+  rel.rot.setRadZ(0.0);
   rel.pos.set(0, 0, 0);
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, eff, object, komo->world, SWInit_zero, 0, rel));
 
@@ -90,8 +90,7 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
   Transformation rel{0};
-  const double angle = (strcmp(place, "tableC") == 0 ? 3.1415 : 0.0 );
-  rel.rot.setRadZ( angle );
+  rel.rot.setRadZ( 0.0 );
   rel.pos.set(0,0, .5*(shapeSize(komo->world, place) + shapeSize(komo->world, object)));
   W(komo).addSwitch(st, tb, new KinematicSwitch(SW_effJoint, JT_rigid, place, object, komo->world, SWInit_zero, 0, rel));
 
