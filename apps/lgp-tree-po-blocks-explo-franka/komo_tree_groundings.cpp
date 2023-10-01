@@ -40,7 +40,7 @@ Quaternion SideToGrasp(const std::string& side, const bool flipped)
     {std::make_pair("side_3", true), 3.1415 },
     {std::make_pair("side_4", false), 0.0 },
     {std::make_pair("side_4", true), 0.0 },
-    {std::make_pair("side_5", false), 0.0 },
+    {std::make_pair("side_5", false), -3.1415 * 0.5 },
     {std::make_pair("side_5", true), -3.1415 * 0.5 },
   };
 
@@ -56,19 +56,36 @@ Quaternion SideToGrasp(const std::string& side, const bool flipped)
     {std::make_pair("side_4", false), 0.0 },
     {std::make_pair("side_4", true), -3.145 * 0.5 },
     {std::make_pair("side_5", false), 0.0 },
-    {std::make_pair("side_5", true), 3.145 * 0.5 },
+    {std::make_pair("side_5", true), 0.0 }
+  };
+
+  static std::map<std::pair<std::string, bool>, double> coloredSideToRoll{
+    {std::make_pair("side_0", false), 0.0 },
+    {std::make_pair("side_0", true), 0.0 },
+    {std::make_pair("side_1", false), 0.0 },
+    {std::make_pair("side_1", true), 0.0 },
+    {std::make_pair("side_2", false), 0.0 },
+    {std::make_pair("side_2", true), 0.0 },
+    {std::make_pair("side_3", false), 0.0 },
+    {std::make_pair("side_3", true), 0.0 },
+    {std::make_pair("side_4", false), 0.0 },
+    {std::make_pair("side_4", true), 0.0 },
+    {std::make_pair("side_5", false), 3.1415 * 0.5 },
+    {std::make_pair("side_5", true), 3.1415 * 0.5 },
   };
 
   Quaternion q;
 
+  const double angle_x = coloredSideToRoll[std::make_pair(side, flipped)];
   const double angle_y = coloredSideToPitch[std::make_pair(side, flipped)];
   const double angle_z = coloredSideToYaw[std::make_pair(side, flipped)];
-  q.setRpy(0.0, angle_y, angle_z);
+
+  q.setRpy(angle_x, angle_y, angle_z);
 
   return q;
 }
 
-Quaternion SideToRelease(const std::string& side)
+Quaternion SideToRelease(const std::string& side) // orientation object - table
 {
   static std::map<std::string, double> coloredSideToYaw{
     {"side_0", -3.1415 / 2.0 },
@@ -76,7 +93,7 @@ Quaternion SideToRelease(const std::string& side)
     {"side_2", 3.1415 * 0.5 },
     {"side_3", -3.1415 },
     {"side_4", 3.1415 * 0.5 },
-    {"side_5", -3.1415 * 0.5 }
+    {"side_5", 0.0 }
   };
 
   static std::map<std::string, double> coloredSideToPitch{
@@ -85,12 +102,21 @@ Quaternion SideToRelease(const std::string& side)
     {"side_2", 0.0 },
     {"side_3", 0.0 },
     {"side_4", 3.1415 * 0.5 },
+    {"side_5", 0.0 } //3.1415 * 0.5 }
+  };
+
+  static std::map<std::string, double> coloredSideToRoll{
+    {"side_0", 0.0 },
+    {"side_1", 0.0 },
+    {"side_2", 0.0 },
+    {"side_3", 0.0 },
+    {"side_4", 0.0 },
     {"side_5", 3.1415 * 0.5 }
   };
 
   Quaternion q;
 
-  q.setRpy(0.0, coloredSideToPitch[side], coloredSideToYaw[side]);
+  q.setRpy(coloredSideToRoll[side], coloredSideToPitch[side], coloredSideToYaw[side]);
 
   return q;
 }
@@ -176,6 +202,9 @@ void groundTreePutDownFlipped(const mp::Interval& it, const mp::TreeBuilder& tb,
 
 void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const std::vector<std::string>& facts, KOMO_ext* komo, int verbose)
 {
+  const auto& eff = "franka_hand";
+  const auto& object = facts[0].c_str();
+
   std::map<std::string, arr> sideToPivot{
     {"side_0", ARR( -0.05, 0.0, 0.0 )},
     {"side_1", ARR( 0.00, 0.05, 0.0 )},
@@ -186,9 +215,10 @@ void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const st
   };
 
   mp::Interval end{{it.time.to - 0.2, it.time.to}, it.edge};
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( "franka_hand", facts[0].c_str(), ARR( 0, 0, -1 ) ), OT_eq, NoArr, 1e2, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( "franka_hand", facts[0].c_str(), sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( "franka_hand", facts[0].c_str(), 0.2 ), OT_sos, NoArr, 5e1, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( eff, object, ARR( 0, 0, -1 ) ), OT_eq, NoArr, 1e2, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
+  //if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_sos, NoArr, 5e1, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( eff, object, 0.2 ), OT_sos, NoArr, 5e1, 0 );
 
   if(verbose > 0)
   {
