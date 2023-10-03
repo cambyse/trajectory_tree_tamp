@@ -25,6 +25,48 @@ namespace mp
 {
 static constexpr double eps = std::numeric_limits< double >::epsilon();
 
+bool isTaskIrrelevant(const rai::String& task_name, const rai::String& type, const StringA& filtered_tasks)
+{
+  if(type != "sos")
+  {
+    return true;
+  }
+
+  for(const auto& to_filter_out: filtered_tasks)
+  {
+    if(task_name.contains(to_filter_out))
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+double getCost(const Graph& result, const StringA& filtered_tasks)
+{
+  double cost{0.0};
+
+  for(const auto& node: result)
+  {
+    const auto& task_name = node->keys().front();
+
+    const auto& attributes = node->getValue<Graph>();
+
+    if(attributes) // no attributes indicate here that the node doesn'nt correspond to a task
+    {
+      const auto& type = attributes->get<rai::String>({ "type" });
+
+      if(attributes && !isTaskIrrelevant(task_name, type, filtered_tasks))
+      {
+        cost += attributes->get<double>({ "sqrCosts" });
+      }
+    }
+  }
+
+  return cost;
+}
+
 //--------Motion Planner--------------//
 
 void KOMOPlanner::setKin( const std::string & kinDescription )
@@ -134,11 +176,11 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   {
     /// EARLY STOPPING, detect if pose level not possible
     // solve on pose level
-    optimizePoses( policy );
+    //optimizePoses( policy );
 
     bool poseOptimizationFailed = false;
     // if a node has a constraint which is not satisfied, we set the node to infeasible i.e. infinite cost!
-    savePoseOptimizationResults(policy, poseOptimizationFailed);
+    //savePoseOptimizationResults(policy, poseOptimizationFailed);
 
     if( poseOptimizationFailed )  // early stopping
       return;
@@ -218,7 +260,7 @@ void KOMOPlanner::display( const Policy & policy, double sec )
   // display
   if( sec > 0 )
   {
-    TrajectoryTreeVisualizer viz( frames, "policy", config_.microSteps_ * config_.secPerPhase_ * 0.1);
+    TrajectoryTreeVisualizer viz( frames, "policy", config_.microSteps_ / config_.secPerPhase_ * 10 );
 
     rai::wait( sec, true );
   }
@@ -285,6 +327,7 @@ void KOMOPlanner::optimizePoses( Policy & policy )
 
 void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
 {
+  NIY; // pose optimization sometimes has problems leading to higher costs than path -> no reliable pruning -> disabled for now
   //std::cout << "optimizing pose for:" << node->id() << std::endl;
 
   bool feasible = true;
@@ -319,18 +362,19 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
       komo->reset(); //huge
 
       try{
+        komo->verbose = 0;
         komo->run();
       } catch( const char* msg ){
         cout << "KOMO FAILED: " << msg <<endl;
       }
 
-//      if( node->id() == 16 )
-//      {
-//        //komo->getReport(true);
-//        //komo->displayTrajectory();
-//        //komo->displayPath(true);
-//        //rai::wait();
-//      }
+      if( node->id() == 4 )
+      {
+        //komo->getReport(true);
+        //komo->displayTrajectory();
+        //komo->displayPath(true);
+        //rai::wait();
+      }
       // save results
       //    DEBUG( komo->MP->reportFeatures(true, FILE("z.problem")); )
 
@@ -464,29 +508,41 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
 
         komo->groundInit();
-        komo->groundTasks(0, node->data().leadingKomoArgs );
+        komo->groundTasks( 0, node->data().leadingKomoArgs );
 
         if( node->isRoot() ) komo->applyRandomization( randomVec_ );
         komo->reset(); //huge
 
-        try{
+        try {
+          komo->verbose = 0;
           komo->run();
         } catch( const char* msg ){
           cout << "KOMO FAILED: " << msg <<endl;
         }
 
-//        if( node->id() == 3 )
-//        {
-//            komo->displayTrajectory();
-//            //komo->saveTrajectory( std::to_string( node->id() ) );
-//            //komo->plotVelocity( std::to_string( node->id() ) );
-//           //rai::wait();
-//        }
+        if( node->id() == 4 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
+        {
+//          for(const auto& f: komo->world.frames)
+//          {
+//            std::cout << f->name << "--->---" << (f->parent ? f->parent->name : "" ) << std::endl;
+//          }
 
-        Graph result = komo->getReport();
+          //komo->getReport(true);
+          //komo->configurations.last()->watch(true);
+          //komo->displayTrajectory();
 
-        double cost = result.get<double>( { "total", "sqrCosts" } );
-        double constraints = result.get<double>( { "total","constraints" } );
+            //komo->saveTrajectory( std::to_string( node->id() ) );
+            //komo->plotVelocity( std::to_string( node->id() ) );
+           //rai::wait();
+        }
+
+        const Graph result = komo->getReport();
+
+        const double cost = getCost(result, config_.taskIrrelevantForPolicyCost/*{"SensorDistanceToObject"}*/); //result.get<double>( { "total", "sqrCosts" } );
+        const double constraints = result.get<double>( { "total", "constraints" } );
+
+        std::cout << "result:" << result << std::endl;
+        std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
 
         markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;
         markovianPathConstraints_[ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * constraints;
@@ -495,6 +551,10 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         if( constraints >= config_.maxConstraint_ )
         {
           feasible = false;
+
+          //komo->getReport(true);
+          //komo->configurations.last()->watch(true);
+          //komo->displayTrajectory();
         }
 
         // update effective kinematic
@@ -665,8 +725,11 @@ void KOMOPlanner::optimizePathTo( const PolicyNodePtr & leaf )
         cout << "KOMO FAILED: " << msg <<endl;
       }
 
-      //if(w == 0)
-      //  komo->getReport(true);
+//      if(w == 5)
+//      {
+//        komo->getReport(true);
+//        komo->displayTrajectory();
+//      }
       // all the komo lead to the same agent trajectory, its ok to use one of it for the rest
 //      if( leaf->id() == 10 )
 //      {

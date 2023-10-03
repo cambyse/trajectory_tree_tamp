@@ -84,6 +84,7 @@ void plan()
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );
+  mp.addCostIrrelevantTask( "SensorDistanceToObject" );
 
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
@@ -109,7 +110,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 0
+#if 1
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 

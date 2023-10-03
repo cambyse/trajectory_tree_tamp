@@ -13,6 +13,8 @@
 
 namespace mp
 {
+bool isTaskIrrelevant(const rai::String& task_name, const rai::String& type, const StringA& filtered_tasks);
+double getCost(const Graph& result);
 
 class KOMOPlanner : public MotionPlanner
 {
@@ -40,6 +42,7 @@ public:
   void setMinMarkovianCost( double m ) { config_.minMarkovianCost_ = m; }
   void setExecutionPolicy(std::launch mode) { config_.executionPolicy_ = mode; }
   void setMaxConstraint( double maxConstraint ) { config_.maxConstraint_ = maxConstraint; }
+  void addCostIrrelevantTask(const rai::String& task_name) { config_.taskIrrelevantForPolicyCost.append(task_name); };
 
   // testonly accessor
   const KOMOPlannerConfig& config() const { return config_; }
