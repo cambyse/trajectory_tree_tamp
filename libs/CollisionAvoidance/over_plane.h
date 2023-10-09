@@ -57,7 +57,7 @@ struct OverPlaneConstraint:Feature
 //      std::cout << w << std::endl;
 //      std::cout << _Jy << std::endl;
 
-      double md = positionPLane( 2 ) -_y( 2 ) + margin_;
+      const double md = positionPLane( 2 ) -_y( 2 ) + margin_;
 
       tmp_y( w ) = md;
 
@@ -89,6 +89,4 @@ private:
   rai::String jPlaneBodyName_;
   double margin_;
   rai::Array< rai::Vector > collisionModel_;
-  //rai::Array< rai::Vector > constantVectors_;
-
 };

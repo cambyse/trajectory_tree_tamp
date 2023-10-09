@@ -541,7 +541,6 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         const double cost = getCost(result, config_.taskIrrelevantForPolicyCost/*{"SensorDistanceToObject"}*/); //result.get<double>( { "total", "sqrCosts" } );
         const double constraints = result.get<double>( { "total", "constraints" } );
 
-        std::cout << "result:" << result << std::endl;
         std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
 
         markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;

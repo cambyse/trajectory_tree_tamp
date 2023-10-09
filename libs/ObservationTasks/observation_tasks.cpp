@@ -393,11 +393,13 @@ void SensorAlignsWithPivot::phi( arr& y, arr& J, rai::KinematicWorld const& G )
 
 SensorDistanceToObject::SensorDistanceToObject( rai::String const& sensorName,
                                         rai::String const& objectName,
-                                        const double preferedDistance )
+                                        const double preferedDistance,
+                                        const double tolerance )
   : Feature()
   , sensorName_     ( sensorName )
   , objectName_( objectName )
   , preferedDistance_( preferedDistance )
+  , tolerance_( tolerance )
 {
 
 }
@@ -432,7 +434,7 @@ void SensorDistanceToObject::phi( arr& y, arr& J, rai::KinematicWorld const& G )
 
   // sensor distance
   const double d = normU - preferedDistance_;
-  tmp_y( 0 ) = d;
+  tmp_y( 0 ) = d - tolerance_;
   tmp_J.setMatrixBlock( JnormU * Ju, 0, 0 );            // jacobian
 
   // commit results
