@@ -41,7 +41,7 @@ Quaternion SideToGrasp(const std::string& side, const bool flipped)
     {std::make_pair("side_4", false), 0.0 },
     {std::make_pair("side_4", true), 0.0 },
     {std::make_pair("side_5", false), -3.1415 * 0.5 },
-    {std::make_pair("side_5", true), -3.1415 * 0.5 },
+    {std::make_pair("side_5", true), 0.0 /*-3.1415 * 0.5*/ },
   };
 
   static std::map<std::pair<std::string, bool>, double> coloredSideToPitch{
@@ -218,7 +218,7 @@ void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const st
   if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( eff, object, ARR( 0, 0, -1 ) ), OT_eq, NoArr, 1e2, 0 );
   if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
   //if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_sos, NoArr, 5e1, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( eff, object, 0.2 ), OT_sos, NoArr, 5e1, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( eff, object, 0.2, 0.0 ), OT_sos, NoArr, 5e1, 0 );
 
   if(verbose > 0)
   {

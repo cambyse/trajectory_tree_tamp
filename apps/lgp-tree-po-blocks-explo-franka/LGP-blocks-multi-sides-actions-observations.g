@@ -3,14 +3,20 @@
 DecisionRule check {
   X, Y, Z
   { (block X) (side Y) (identified X)! (bottom_facing Y)! (observed Y)! (flipped Z) (hand_empty)} # remove bottom_facing ?
-  { (in_sight Y) (observed Y) komoCheck(X, Y, Z)=1. }
+  { (in_sight Y) (observed Y) (object_put_down)! komoCheck(X, Y, Z)=1. }
 }
 
 # Pick-up
 DecisionRule pick-up { # can be dead-end if picked up without identification!
   X, Y, Z, T
-  { (block X) (location Y) (side T) (on_table X Y) (flipped Z) (colored T) (hand_empty) }
+  { (block X) (location Y) (side T) (on_table X Y) (flipped Z) (colored T) (identified X) (hand_empty) }
   { (on_table X Y)! (holding X) (hand_empty)! komoPickUp(X Y Z T)=1. }
+}
+
+DecisionRule pick-up { # can be dead-end if picked up without identification!
+  X, Y, Z, T
+  { (block X) (location Y) (side T) (on_table X Y) (flipped Z) (colored T) (needs_flipping) (hand_empty) }
+  { (on_table X Y)! (holding X) (hand_empty)! (object_put_down)! komoPickUp(X Y Z T)=1. }
 }
 
 # Put-down
@@ -33,6 +39,18 @@ Rule {
   X, Y
   { (block X) (side Y) (NOT_OBSERVABLE colored Y) (in_sight Y) }
   { (in_sight Y)! (colored Y) (NOT_OBSERVABLE colored Y)! (identified X)}
+}
+
+Rule { # test
+  X, Y
+  { (block X) (side Y) (colored Y) (in_sight Y) }
+  { (in_sight Y)! (identified X)}
+}
+
+Rule { # remove in sight
+  X, Y
+  { (block X) (side Y) (NOT_OBSERVABLE colored Y)! (in_sight Y) }
+  { (in_sight Y)!}
 }
 
 # Helpers

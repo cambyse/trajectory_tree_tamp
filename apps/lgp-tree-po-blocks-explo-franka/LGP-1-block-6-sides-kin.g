@@ -7,6 +7,7 @@ body tableC{ type=9, X=<T t(0.5 0 0.2)>, size=[0.6 0.6 .04 .01], color=[.2 .2 .7
 
 body block_1 { type=9 size=[.1 .1 .1 .01] color=[0.3 0.3 0.3] }	
 shape xx (block_1){ type=1 size=[0 0 0 0.005] color=[1 1 0] rel=<T t(-0.1 0 0.0)> }
+shape yy (block_1){ type=1 size=[0 0 0 0.01] color=[1 1 0] rel=<T t(0.3 0.0 0.0)> }
 
 joint (tableC block_1) { from=<T t(0.0 0 0.07) > type=10 }
  

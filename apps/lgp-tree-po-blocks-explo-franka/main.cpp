@@ -3,6 +3,13 @@
 #include <chrono>
 
 #include <boost/filesystem.hpp>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/min.hpp>
+#include <boost/accumulators/statistics/max.hpp>
+#include <boost/accumulators/statistics/variance.hpp>
+
 #include <Kin/kinViewer.h>
 
 #include <graph_planner.h>
@@ -75,11 +82,26 @@ void display_robot()
 
 void plan()
 {
+  ///
+  std::ofstream candidate, results, best_policy;
+  candidate.open( "policy-candidates.data" );
+  results.open( "policy-results.data" );
+  best_policy.open( "policy-best_policy.data" );
+  double graph_building_s = 0;
+  double task_planning_s = 0;
+  double motion_planning_s = 0;
+  double joint_motion_planning_s = 0;
+
+  namespace ba = boost::accumulators;
+  boost::accumulators::accumulator_set<double, ba::features< ba::tag::variance, ba::tag::mean, ba::tag::min, ba::tag::max > > acc_length;
+  boost::accumulators::accumulator_set<double, ba::features< ba::tag::variance, ba::tag::mean, ba::tag::min, ba::tag::max > > acc_acc_cost;
+  ///
+
   matp::GraphPlanner tp;
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -1.0 ); //-0.25//-0.1//-0.015 ); for blocks one side
+  tp.setR0( -.25 ); //-0.25//-0.1//-0.015 ); for blocks one side
   tp.setMaxDepth( 10 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
@@ -106,15 +128,27 @@ void plan()
   mp.registerTask( "unstack"      , groundTreeUnStack );
 
   /// BUILD DECISION GRAPH
-  tp.buildGraph(true);
+  {
+    auto start = std::chrono::high_resolution_clock::now();
+    /// GRAPH BUILDING
+    tp.buildGraph(true);
+    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    graph_building_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+  }
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
 #if 1
   /// POLICY SEARCH
   Policy policy, lastPolicy;
+  double best_value{std::numeric_limits<double>::lowest()};
+  {
+    auto start = std::chrono::high_resolution_clock::now();
+    tp.solve();
+    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+    task_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+  }
 
-  tp.solve();
   policy = tp.getPolicy();
 
   uint nIt = 0;
@@ -123,18 +157,37 @@ void plan()
   {
     nIt++;
 
+    ///
     savePolicyToFile( policy );
+    candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
+    ///
 
     lastPolicy = policy;
 
-    /// MOTION PLANNING
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "markovJointPath" );
-    mp.solveAndInform( po, policy );
+    {
+      /// MOTION PLANNING
+      auto start = std::chrono::high_resolution_clock::now();
+      auto po     = MotionPlanningParameters( policy.id() );
+      po.setParam( "type", "markovJointPath" );
+      mp.solveAndInform( po, policy );
+      auto elapsed = std::chrono::high_resolution_clock::now() - start;
+      motion_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
 
-    /// TASK PLANNING
-    tp.integrate( policy );
-    tp.solve();
+      ///
+      best_value = std::max(policy.value(), best_value);
+      results << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
+      best_policy << policy.id() << "," << best_value << std::endl;
+      ///
+    }
+
+    {
+      /// TASK PLANNING
+      auto start = std::chrono::high_resolution_clock::now();
+      tp.integrate( policy );
+      tp.solve();
+      auto elapsed = std::chrono::high_resolution_clock::now() - start;
+      task_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+    }
     policy = tp.getPolicy();
   }
   while( lastPolicy != policy && nIt != maxIt );
@@ -144,8 +197,17 @@ void plan()
   Policy policy;
   policy.load("policy-0");
 #endif
+  ///
+  savePolicyToFile( policy, "-final" );
+  candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
+  results << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
+
+  candidate.close();
+  results.close();
+  ///
+
   // default method
-  mp.display(policy, 200);
+//  mp.display(policy, 200);
 
   /// JOINT OPTIMIZATION
   // single joint optimization
@@ -160,7 +222,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "SubTreesAfterFirstBranching" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }
