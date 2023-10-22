@@ -31,6 +31,7 @@ public:
 
   // display
   void display( const Policy & policy, double sec ) override;
+  void displayMarkovianPaths( const Policy & policy, double sec ) const;
   std::pair< double, double > evaluateLastSolution();
 
   // ground symbols
@@ -90,7 +91,8 @@ private:
   std::unordered_map< uint, arr > poseConstraints_; // node id -> constraints for each world
 
   // markovian path
-  std::unordered_map< uint, rai::Array< rai::KinematicWorld > > effMarkovianPathKinematics_;
+  std::unordered_map< uint, rai::Array< rai::KinematicWorld > > effMarkovianPathKinematics_;  // resulting final kinematic of path piece going to node id
+  std::unordered_map< uint, rai::Array< rai::Array< rai::KinematicWorld > > > markovianPaths_; // resulting path(s) of traj piece going to node id
   std::unordered_map< uint, double > markovianPathCosts_; // node id -> averaged cost
   std::unordered_map< uint, double > markovianPathConstraints_; // node id -> averaged constraints
 

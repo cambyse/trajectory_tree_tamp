@@ -266,6 +266,72 @@ void KOMOPlanner::display( const Policy & policy, double sec )
   }
 }
 
+void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) const
+{
+  rai::Array< rai::Array< rai::Array< rai::KinematicWorld > > > frames;
+  frames.resize(1);
+
+  const auto policy_leaves = policy.leaves();
+
+  const auto get_leaf_for_world = [](const uint w, const std::list<Policy::GraphNodeTypePtr>& leaves ) -> Policy::GraphNodeTypePtr
+  {
+    const auto leaf_it = std::find_if(leaves.cbegin(), leaves.cend(), [&w](const auto& leaf) { return leaf->data().beliefState[w] > 0.0; } );
+
+    CHECK(leaf_it != leaves.cend(), "policy doesn't seem to solve all belief states!");
+
+    return *leaf_it;
+  };
+
+  const auto get_path_to_leaf = [](const Policy::GraphNodeTypePtr& leaf) -> std::list<uint>
+  {
+     std::list<uint> path;
+     path.push_back(leaf->data().decisionGraphNodeId);
+
+     auto parent = leaf->parent();
+     while(parent)
+     {
+       path.push_back(parent->data().decisionGraphNodeId);
+       parent = parent->parent();
+     }
+
+     path.reverse();
+
+     return path;
+  };
+
+
+  frames(0).resize(startKinematics_.d0);
+  for(auto w{0}; w < startKinematics_.d0; ++w)
+  {
+    const auto leaf = get_leaf_for_world(w, policy_leaves);
+
+    const auto path = get_path_to_leaf(leaf);
+
+    for(const auto node_id: path)
+    {
+      const auto path_pieces_it = markovianPaths_.find(node_id);
+      CHECK(path_pieces_it != markovianPaths_.cend(), "policy doesn't have planned paths!");
+
+      const auto& path_pieces = path_pieces_it->second;
+
+      CHECK(path_pieces.d0 > w, "path pieces should contain at least one path");
+      CHECK(path_pieces(w).d0 > 0, "path pieces for word should not be empty");
+
+      for(const auto kin: path_pieces(w))
+      {
+        frames(0)(w).append(kin);
+      }
+    }
+  }
+
+  if( sec > 0 )
+  {
+    TrajectoryTreeVisualizer viz( frames, "policy", config_.microSteps_ / config_.secPerPhase_ * 10 );
+
+    rai::wait();
+  }
+}
+
 std::pair< double, double > KOMOPlanner::evaluateLastSolution()
 {
   // retrieve trajectories
@@ -483,7 +549,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
   {
     const auto N = node->data().beliefState.size();
     effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ] = rai::Array< rai::KinematicWorld >( N );
-
+    markovianPaths_[ node->data().decisionGraphNodeId ] = rai::Array< rai::Array< rai::KinematicWorld > >( N );
     markovianPathCosts_      [ node->data().decisionGraphNodeId ] = 0;
     markovianPathConstraints_[ node->data().decisionGraphNodeId ] = 0;
 
@@ -538,7 +604,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
 
         const Graph result = komo->getReport();
 
-        const double cost = getCost(result, config_.taskIrrelevantForPolicyCost/*{"SensorDistanceToObject"}*/); //result.get<double>( { "total", "sqrCosts" } );
+        const double cost = getCost(result, config_.taskIrrelevantForPolicyCost);
         const double constraints = result.get<double>( { "total", "constraints" } );
 
         std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
@@ -559,13 +625,19 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         // update effective kinematic
         effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) = *komo->configurations.last();
 
+        // copy path
+        for( auto s = 0; s < komo->configurations.N; ++s )
+        {
+          rai::KinematicWorld kin( *komo->configurations( s ) );
+          markovianPaths_[ node->data().decisionGraphNodeId ]( w ).append( kin );
+        }
+        //markovianPaths_[ node->data().decisionGraphNodeId ]( w ) = komo->x;
+
         // update switch
         for( rai::KinematicSwitch * sw: komo->switches )
         {
-          //    CHECK_EQ(sw->timeOfApplication, 1, "need to do this before the optimization..");
-          if( sw->timeOfApplication>=2 ) sw->apply( effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) );
+          if( sw->timeOfApplication >=2 ) sw->apply( effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) );
         }
-        //effKinematics_[ node ]( w ).topSort();
         effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ).getJointState();
 
         // free
@@ -596,11 +668,12 @@ void KOMOPlanner::saveMarkovianPathOptimizationResults( Policy & policy ) const
     auto kIt = markovianPathConstraints_.find(node->data().decisionGraphNodeId);
     auto cIt = markovianPathCosts_.find(node->data().decisionGraphNodeId);
     CHECK(kIt != markovianPathConstraints_.end(), "map should contain optimization results");
+    CHECK(cIt != markovianPathCosts_.end(), "map should contain optimization results");
 
     double constraint = kIt->second;
     double cost = cIt->second;
 
-    if( constraint >= config_.maxConstraint_ )
+    if( constraint >= config_.maxConstraint_ ) // policy infeasible
     {
       std::cout << "Markovian Optimization failed on node " << node->id() << " constraint:" << constraint << std::endl;
 
@@ -614,7 +687,6 @@ void KOMOPlanner::saveMarkovianPathOptimizationResults( Policy & policy ) const
     {
       node->data().markovianReturn =  -( config_.minMarkovianCost_ + cost );
       node->data().status = PolicyNodeData::INFORMED;
-
       // push children on list
       for( const auto& c : node->children() )
       {
