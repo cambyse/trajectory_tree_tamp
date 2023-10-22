@@ -290,7 +290,8 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
      auto parent = leaf->parent();
      while(parent)
      {
-       path.push_back(parent->data().decisionGraphNodeId);
+       if(parent->data().decisionGraphNodeId != 0)
+          path.push_back(parent->data().decisionGraphNodeId);
        parent = parent->parent();
      }
 
@@ -315,11 +316,15 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
       const auto& path_pieces = path_pieces_it->second;
 
       CHECK(path_pieces.d0 > w, "path pieces should contain at least one path");
-      CHECK(path_pieces(w).d0 > 0, "path pieces for word should not be empty");
+      const uint start_s = frames(0)(w).empty() ? 0 : markovian_path_k_order_; // don't append two times the prefixes!
+      const uint end_s = (node_id == leaf->id()) ? path_pieces(w).d0 : path_pieces(w).d0 - 1;
 
-      for(const auto kin: path_pieces(w))
+      CHECK(start_s < path_pieces(w).d0, "path pieces for word should not be empty");
+      CHECK(end_s < path_pieces(w).d0, "path pieces for word should not be empty");
+
+      for(auto s = start_s ; s < end_s - 1; ++s)
       {
-        frames(0)(w).append(kin);
+        frames(0)(w).append(path_pieces(w)(s));
       }
     }
   }
@@ -486,6 +491,8 @@ void KOMOPlanner::optimizePosesFrom( const Policy::GraphNodeTypePtr & node )
 
 void KOMOPlanner::savePoseOptimizationResults( Policy & policy, bool & poseOptimizationFailed ) const
 {
+  NIY
+
   std::list< Policy::GraphNodeTypePtr > fifo;
   fifo.push_back( policy.root() );
 
@@ -561,9 +568,6 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
 
         rai::KinematicWorld kin = node->isRoot() ? *( startKinematics_( w ) ) : ( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId )->second( w ) );
 
-        //kin.calc_q(); // this line is necessary to have the assert being valid (since rai version)
-        //CHECK( kin.q.size() > 0, "wrong start configuration!");
-
         // create komo
         auto komo = komoFactory_.createKomo();
 
@@ -576,9 +580,20 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         komo->groundInit();
         komo->groundTasks( 0, node->data().leadingKomoArgs );
 
-        if( node->isRoot() ) komo->applyRandomization( randomVec_ );
-        komo->reset(); //huge
+        komo->reset();
 
+        // apply correct prefix
+        if(!node->isRoot())
+        {
+          const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second( w );
+          for(auto s = 0; s < komo->k_order; ++s)
+          {
+            const auto& kin = parent_path_piece( -komo->k_order + s - 1 );
+            komo->configurations(s)->setJointState(kin.q);
+          }
+        }
+
+        // run
         try {
           komo->verbose = 0;
           komo->run();
@@ -631,7 +646,6 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
           rai::KinematicWorld kin( *komo->configurations( s ) );
           markovianPaths_[ node->data().decisionGraphNodeId ]( w ).append( kin );
         }
-        //markovianPaths_[ node->data().decisionGraphNodeId ]( w ) = komo->x;
 
         // update switch
         for( rai::KinematicSwitch * sw: komo->switches )

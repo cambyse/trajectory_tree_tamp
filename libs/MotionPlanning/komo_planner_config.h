@@ -15,4 +15,6 @@ struct KOMOPlannerConfig
   uint microSteps_           = 20; // per phase
 
   std::launch executionPolicy_ = std::launch::async;
+
+  StringA taskIrrelevantForPolicyCost {};
 };

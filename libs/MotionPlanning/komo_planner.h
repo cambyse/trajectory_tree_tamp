@@ -91,6 +91,7 @@ private:
   std::unordered_map< uint, arr > poseConstraints_; // node id -> constraints for each world
 
   // markovian path
+  const uint markovian_path_k_order_{2};
   std::unordered_map< uint, rai::Array< rai::KinematicWorld > > effMarkovianPathKinematics_;  // resulting final kinematic of path piece going to node id
   std::unordered_map< uint, rai::Array< rai::Array< rai::KinematicWorld > > > markovianPaths_; // resulting path(s) of traj piece going to node id
   std::unordered_map< uint, double > markovianPathCosts_; // node id -> averaged cost

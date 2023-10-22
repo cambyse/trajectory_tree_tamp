@@ -72,7 +72,6 @@ private:
   mutable Rewards rewards_;//std::vector< double > rewards_; // current state of rewards
   std::vector< double > values_;
   DecisionGraph decidedGraph_;
-
 };
 
 } // namespace matp
