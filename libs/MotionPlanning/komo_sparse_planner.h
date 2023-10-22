@@ -31,7 +31,14 @@ public:
                                  Policy & policy,
                                  const std::shared_ptr< ExtensibleKOMO > & komo ) const;
   void watch( const std::shared_ptr< ExtensibleKOMO > & komo ) const;
-  void watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const;
+  void watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const; // will watch using only the witness komo -> inconsistent
+  void watch( const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics,
+              const rai::Array<rai::KinematicSwitch*> switches,
+              const Policy & policy,
+              const TreeBuilder & tree,
+              const arr& x,
+              const uint stepsPerPhase,
+              const uint k_order ) const;
 
   virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const = 0;
 

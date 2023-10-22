@@ -180,6 +180,71 @@ void KOMOSparsePlanner::watch( const std::shared_ptr< ExtensibleKOMO > & komo, c
   rai::wait();
 }
 
+void KOMOSparsePlanner::watch( const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics,
+                               const rai::Array<rai::KinematicSwitch*> switches,
+                               const Policy & policy, const TreeBuilder & tree,
+                               const arr& x,
+                               const uint stepsPerPhase,
+                               const uint k_order ) const
+{
+  rai::Array< rai::Array< rai::Array< rai::KinematicWorld > > > frames;
+  frames.resize(1);
+
+  const auto policy_leaves = policy.leaves();
+
+  const auto get_leaf_for_world = [](const uint w, const std::list<Policy::GraphNodeTypePtr>& leaves ) -> uint
+  {
+    const auto leaf_it = std::find_if(leaves.cbegin(), leaves.cend(), [&w](const auto& leaf) { return leaf->data().beliefState[w] > 0.0; } );
+
+    CHECK(leaf_it != leaves.cend(), "policy doesn't seem to solve all belief states!");
+
+    return (*leaf_it)->id();
+  };
+
+  frames(0).resize(startKinematics.size());
+  for(auto w{0}; w < startKinematics.size(); ++w)
+  {
+    const auto leaf = get_leaf_for_world(w, policy_leaves);
+    const auto branch = tree.get_branch(leaf);
+    const auto vars0 = branch.get_vars0({0.0, branch.n_nodes() - 1}, tree._get_branch(leaf), stepsPerPhase);
+    const auto qDim = startKinematics(w)->q.d0;
+
+    frames(0)(w).resize(vars0.d0 + k_order);
+    frames(0)(w)(0).copy(*startKinematics(w), true);
+
+    // copy prefix
+    for(auto s{1}; s < k_order; ++s)
+    {
+      frames(0)(w)(s).copy(frames(0)(w)(s - 1), true);
+    }
+
+    // copy frames and apply q
+    for(auto s{0}; s < vars0.d0; ++s)
+    {
+      const auto global = vars0(s);
+      const auto x_start{global * qDim};
+      const auto q = x({x_start, x_start + qDim - 1});
+
+      auto& K = frames(0)(w)(s + k_order);
+      K.copy(frames(0)(w)(s + k_order - 1), true);
+      K.setJointState(q);
+
+      //apply potential graph switches
+      for(auto *sw:switches)
+      {
+        if(sw->timeOfApplication == global)
+        {
+          sw->apply(K);
+        }
+      }
+    }
+  }
+
+  TrajectoryTreeVisualizer viz( frames, "policy", stepsPerPhase * 0.5);
+
+  rai::wait();
+}
+
 /// JOINT
 void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
 {
@@ -510,7 +575,8 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
-  watch(witness, tree);
+  //watch(witness, tree);
+  watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 
   //watch(komos.back());
   //witness->plotVelocity();
