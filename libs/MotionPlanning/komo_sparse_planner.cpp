@@ -20,8 +20,8 @@ using U = AverageUpdater;
 
 namespace mp
 {
-/// COMMON: KOMOSparsePlanner
-TreeBuilder KOMOSparsePlanner::buildTree( Policy & policy ) const
+
+TreeBuilder KOMOSparsePlanner::buildTree( const Policy & policy ) const
 {
   TreeBuilder treeBuilder(1.0, 0);
 
@@ -49,6 +49,7 @@ TreeBuilder KOMOSparsePlanner::buildTree( Policy & policy ) const
 
   return treeBuilder;
 }
+
 
 std::shared_ptr< ExtensibleKOMO > KOMOSparsePlanner::intializeKOMO( const TreeBuilder & tree, const std::shared_ptr< const rai::KinematicWorld > & startKinematic ) const
 {
@@ -575,12 +576,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
-  //watch(witness, tree);
   watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
-
-  //watch(komos.back());
-  //witness->plotVelocity();
-  //rai::wait( 30, true );
 }
 
 // for checking the dimension consistency

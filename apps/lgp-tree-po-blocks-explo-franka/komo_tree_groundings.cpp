@@ -30,18 +30,18 @@ Quaternion SideToGrasp(const std::string& side, const bool flipped)
   }
 
   static std::map<std::pair<std::string, bool>, double> coloredSideToYaw{
-    {std::make_pair("side_0", false), -3.1415 * 0.5 },
-    {std::make_pair("side_0", true), -3.1415 * 0.5 },
-    {std::make_pair("side_1", false), 0.0 },
-    {std::make_pair("side_1", true), 0.0 },
-    {std::make_pair("side_2", false), 3.1415 * 0.5 },
-    {std::make_pair("side_2", true), 3.1415 * 0.5 },
-    {std::make_pair("side_3", false), 3.1415 },
-    {std::make_pair("side_3", true), 3.1415 },
-    {std::make_pair("side_4", false), 0.0 },
-    {std::make_pair("side_4", true), 0.0 },
-    {std::make_pair("side_5", false), -3.1415 * 0.5 },
-    {std::make_pair("side_5", true), 0.0 /*-3.1415 * 0.5*/ },
+        {std::make_pair("side_0", false), 0.0 },
+        {std::make_pair("side_0", true), 0.0 },
+        {std::make_pair("side_1", false), 3.1415 * 0.5 },
+        {std::make_pair("side_1", true), 3.1415 * 0.5 },
+        {std::make_pair("side_2", false), 0.0 },
+        {std::make_pair("side_2", true), 0.0 },
+        {std::make_pair("side_3", false), 3.1415 * 0.5 },
+        {std::make_pair("side_3", true), 3.1415 * 0.5 },
+        {std::make_pair("side_4", false), 3.1415 * 0.5 },
+        {std::make_pair("side_4", true), 3.1415 * 0.5 },
+        {std::make_pair("side_5", false), -3.1415 * 0.5 },
+        {std::make_pair("side_5", true), -3.1415 * 0.5 },
   };
 
   static std::map<std::pair<std::string, bool>, double> coloredSideToPitch{
@@ -68,8 +68,8 @@ Quaternion SideToGrasp(const std::string& side, const bool flipped)
     {std::make_pair("side_2", true), 0.0 },
     {std::make_pair("side_3", false), 0.0 },
     {std::make_pair("side_3", true), 0.0 },
-    {std::make_pair("side_4", false), 0.0 },
-    {std::make_pair("side_4", true), 0.0 },
+    {std::make_pair("side_4", false), -3.1415 * 0.5 },
+    {std::make_pair("side_4", true), -3.1415 * 0.5 },
     {std::make_pair("side_5", false), 3.1415 * 0.5 },
     {std::make_pair("side_5", true), 3.1415 * 0.5 },
   };
@@ -92,7 +92,7 @@ Quaternion SideToRelease(const std::string& side) // orientation object - table
     {"side_1", 0.0 },
     {"side_2", 3.1415 * 0.5 },
     {"side_3", -3.1415 },
-    {"side_4", 3.1415 * 0.5 },
+    {"side_4", 0.0 * 3.1415 * 0.5 },
     {"side_5", 0.0 }
   };
 
@@ -101,8 +101,8 @@ Quaternion SideToRelease(const std::string& side) // orientation object - table
     {"side_1", 0.0 },
     {"side_2", 0.0 },
     {"side_3", 0.0 },
-    {"side_4", 3.1415 * 0.5 },
-    {"side_5", 0.0 } //3.1415 * 0.5 }
+    {"side_4", 0.0 * 3.1415 * 0.5 },
+    {"side_5", 0.0 }
   };
 
   static std::map<std::string, double> coloredSideToRoll{
@@ -110,7 +110,7 @@ Quaternion SideToRelease(const std::string& side) // orientation object - table
     {"side_1", 0.0 },
     {"side_2", 0.0 },
     {"side_3", 0.0 },
-    {"side_4", 0.0 },
+    {"side_4", -3.1415 * 0.5 },
     {"side_5", 3.1415 * 0.5 }
   };
 
