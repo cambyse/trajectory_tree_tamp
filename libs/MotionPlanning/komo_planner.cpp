@@ -395,17 +395,17 @@ arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
         // debug
         if(p->id() != 0)
         {
-        const auto parent_decision_graph_id = nodeIdToDecisionGraphId.at(p->id());
-        const auto& parent_path_pieces = markovianPaths_.at(parent_decision_graph_id);
-        const auto parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
-        CHECK( parent_path_piece_it != parent_path_pieces.end(), "Invalid path piece lookup!" );
-        const auto& witness_parent_path_piece = *parent_path_piece_it;
+          const auto parent_decision_graph_id = nodeIdToDecisionGraphId.at(p->id());
+          const auto& parent_path_pieces = markovianPaths_.at(parent_decision_graph_id);
+          const auto parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
+          CHECK( parent_path_piece_it != parent_path_pieces.end(), "Invalid path piece lookup!" );
+          const auto& witness_parent_path_piece = *parent_path_piece_it;
 
-        std::cout << "check transition " << p->data().decisionGraphNodeId << " -> " << q->data().decisionGraphNodeId << std::endl;
-        std::cout << witness_parent_path_piece(-2).q << " vs. " << witness_path_piece(0).q << std::endl;
-        std::cout << witness_parent_path_piece(-1).q << " vs. " << witness_path_piece(1).q << std::endl;
+          std::cout << "check transition " << p->data().decisionGraphNodeId << "->" << q->data().decisionGraphNodeId << " (" << p->id() << "->" << q->id() << ")" << std::endl;
+          std::cout << witness_path_piece(0).q << " vs. " << witness_parent_path_piece(-2).q << std::endl;
+          std::cout << witness_path_piece(1).q << " vs. " << witness_parent_path_piece(-1).q << std::endl;
 
-        //CHECK(witness_parent_path_piece(-2).q == witness_path_piece(0).q, "wrong connection!");
+          CHECK(witness_parent_path_piece(-2).q == witness_path_piece(0).q, "wrong order 2 connection!");
         }
         //
 
@@ -669,7 +669,11 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         {
           std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
 
-          const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second( w );
+          const auto& parent_path_pieces = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second;
+          const auto& parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [](const auto& piece) { return piece.d0 > 0; } );
+          const auto& parent_path_piece = *parent_path_piece_it;
+
+          //const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second( w );
           for(auto s = 0; s < komo->k_order; ++s)
           {
             const auto& kin = parent_path_piece( -int(komo->k_order) + s );
@@ -728,6 +732,8 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) = *komo->configurations.last();
 
         // copy path
+        std::cout << "save results to " << node->data().decisionGraphNodeId << std::endl;
+
         for( auto s = 0; s < komo->configurations.N; ++s )
         {
           rai::KinematicWorld kin( *komo->configurations( s ) );

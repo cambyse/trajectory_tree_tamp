@@ -101,7 +101,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -50. ); //-0.25//-0.1//-0.015 ); for blocks one side
+  tp.setR0( -500. ); //-0.25//-0.1//-0.015 ); for blocks one side
   tp.setMaxDepth( 10 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
@@ -130,8 +130,8 @@ void plan()
   /// BUILD DECISION GRAPH
   {
     auto start = std::chrono::high_resolution_clock::now();
-    /// GRAPH BUILDING
-    tp.buildGraph(true);
+    /// TASK TREE BUILDING
+    tp.buildGraph(false);
     auto elapsed = std::chrono::high_resolution_clock::now() - start;
     graph_building_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
   }
