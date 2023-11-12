@@ -303,17 +303,24 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
       CHECK(path_pieces_it != markovianPaths_.cend(), "policy doesn't have planned paths!");
 
       const auto& path_pieces = path_pieces_it->second;
+      CHECK(path_pieces.d0 > 0, "path pieces shouldn't be empty!");
+      const auto& world_witness_path_piece = path_pieces(w);
+      const auto path_piece_it = std::find_if(path_pieces.begin(), path_pieces.end(), [](const auto& piece) { return piece.d0 > 0; });
+      CHECK(path_piece_it != path_pieces.end(), "wrong path piece lookup!");
+      const auto& x_witness_path_piece = *path_piece_it;
 
-      CHECK(path_pieces.d0 > w, "path pieces should contain at least one path");
       const uint start_s = frames(0)(w).empty() ? 0 : markovian_path_k_order_; // don't append two times the prefixes!
-      const uint end_s = (node_id == leaf->id()) ? path_pieces(w).d0 : path_pieces(w).d0 /*- 1*/;
+      const uint end_s = (node_id == leaf->id()) ? world_witness_path_piece.d0 : world_witness_path_piece.d0 /*- 1*/;
 
-      CHECK(start_s < path_pieces(w).d0, "path pieces for world should not be empty");
-      CHECK(end_s <= path_pieces(w).d0, "path pieces for world should not be empty");
+      CHECK(start_s < world_witness_path_piece.d0, "path pieces for world should not be empty");
+      CHECK(end_s <= world_witness_path_piece.d0, "path pieces for world should not be empty");
 
       for(auto s = start_s ; s < end_s; ++s)
       {
-        frames(0)(w).append(path_pieces(w)(s));
+        const auto q = x_witness_path_piece(s).q;
+        auto kin = world_witness_path_piece(s); // copy to get the good world
+        kin.setJointState(q);
+        frames(0)(w).append(kin);
       }
     }
   }
@@ -392,7 +399,7 @@ arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
           }
         }
 
-        // debug
+        // double check connection integrity
         if(p->id() != 0)
         {
           const auto parent_decision_graph_id = nodeIdToDecisionGraphId.at(p->id());
@@ -400,10 +407,9 @@ arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
           const auto parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
           CHECK( parent_path_piece_it != parent_path_pieces.end(), "Invalid path piece lookup!" );
           const auto& witness_parent_path_piece = *parent_path_piece_it;
-
-          std::cout << "check transition " << p->data().decisionGraphNodeId << "->" << q->data().decisionGraphNodeId << " (" << p->id() << "->" << q->id() << ")" << std::endl;
-          std::cout << witness_path_piece(0).q << " vs. " << witness_parent_path_piece(-2).q << std::endl;
-          std::cout << witness_path_piece(1).q << " vs. " << witness_parent_path_piece(-1).q << std::endl;
+//          std::cout << "check transition " << p->data().decisionGraphNodeId << "->" << q->data().decisionGraphNodeId << " (" << p->id() << "->" << q->id() << ")" << std::endl;
+//          std::cout << witness_path_piece(0).q << " vs. " << witness_parent_path_piece(-2).q << std::endl;
+//          std::cout << witness_path_piece(1).q << " vs. " << witness_parent_path_piece(-1).q << std::endl;
 
           CHECK(witness_parent_path_piece(-2).q == witness_path_piece(0).q, "wrong order 2 connection!");
         }
