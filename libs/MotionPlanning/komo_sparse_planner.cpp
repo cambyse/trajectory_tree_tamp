@@ -3,6 +3,7 @@
 #include <subtree_generators.h>
 #include <komo_wrapper.h>
 #include <trajectory_tree_visualizer.h>
+#include <komo_planner_utils.h>
 
 #include <utils.h>
 #include <decentralized_optimizer.h>
@@ -21,34 +22,7 @@ using U = AverageUpdater;
 namespace mp
 {
 
-TreeBuilder KOMOSparsePlanner::buildTree( const Policy & policy ) const
-{
-  TreeBuilder treeBuilder(1.0, 0);
-
-  std::list< Policy::GraphNodeTypePtr > fifo;
-  fifo.push_back( policy.root() );
-
-  while( ! fifo.empty() )
-  {
-    auto b = fifo.back();
-    fifo.pop_back();
-
-    const auto& a = b->parent();
-
-    if(a)
-    {
-      const auto& p = b->data().p;
-      treeBuilder.add_edge(a->id(), b->id(), p);
-    }
-
-    for(const auto&c : b->children())
-    {
-      fifo.push_back(c);
-    }
-  }
-
-  return treeBuilder;
-}
+static double TM_FixSwichedObjects_scale{3.0e1};
 
 
 std::shared_ptr< ExtensibleKOMO > KOMOSparsePlanner::intializeKOMO( const TreeBuilder & tree, const std::shared_ptr< const rai::KinematicWorld > & startKinematic ) const
@@ -129,7 +103,7 @@ void KOMOSparsePlanner::groundPolicyActionsJoint( const TreeBuilder & tree,
 
         // square acc + fix switched objects
         W(komo.get()).addObjective(interval, tree, new TM_Transition(komo->world), OT_sos, NoArr, 1.0, 2);
-        W(komo.get()).addObjective(interval, tree, new TM_FixSwichedObjects(), OT_eq, NoArr, 3e1, 2);
+        W(komo.get()).addObjective(interval, tree, new TM_FixSwichedObjects(), OT_eq, NoArr, TM_FixSwichedObjects_scale, 2);
 
         // ground other tasks
         komo->groundTasks(interval, tree, q->data().leadingKomoArgs, 1);
@@ -246,6 +220,63 @@ void KOMOSparsePlanner::watch( const rai::Array< std::shared_ptr< const rai::Kin
   rai::wait();
 }
 
+double KOMOSparsePlanner::getCost(const std::shared_ptr< ExtensibleKOMO > & komo ) const
+{
+  double total_cost{0.0};
+
+  for(uint i=0; i<komo->objectives.N; i++)
+  {
+    Objective *task = komo->objectives(i);
+    WorldL Ktuple;
+    Ktuple.resize(task->vars.d1);
+
+    if(isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
+    {
+       continue;
+    }
+
+    double task_cost{0.0};
+
+    for(uint t=0;t<task->vars.d0;t++)
+    {
+      for(uint s=0; s<task->vars.d1; ++s)
+      {
+        const auto global = task->vars(t, s) + komo->k_order;
+
+        CHECK(global >= 0 && global < komo->configurations.d0, "");
+
+        Ktuple(s) = komo->configurations(global);
+      }
+
+      uint d=task->map->__dim_phi(Ktuple);
+      arr y;
+      arr J;
+      task->map->__phi(y, J, Ktuple);
+      CHECK(y.d0 == d, "wrong tm dimensionality");
+
+      const double global_scale = task->map->scale.N ? task->map->scale(0) : 1.0;
+
+      CHECK(t < task->scales.d0, "");
+
+      const double scale = task->scales(t) * global_scale;
+      const double tau = Ktuple(-1)->frames(0)->tau;
+
+      if(task->type==OT_sos)
+      {
+        task_cost += scale * sumOfSqr(y / tau);
+      }
+    }
+
+    std::cout << task->name << " : " << task_cost << std::endl;
+
+    total_cost += task_cost;
+  }
+
+  std::cout << "total_cost : " << total_cost << std::endl;
+
+  return total_cost;
+}
+
 /// JOINT
 void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
 {
@@ -298,7 +329,6 @@ void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr<
 
   //
   komo->getReport(true);
-  //for(auto c: komo->configurations) std::cout << c->q.N << std::endl;
 
   x = komo->x;
 
@@ -442,7 +472,7 @@ void ADMMCompressedPlanner::groundPolicyActionsCompressed( const TreeBuilder & f
 
         // square acc + fix switch objects
         W(komo.get()).addObjective(interval, compressed, new TM_Transition(komo->world), OT_sos, NoArr, 1.0, 2);
-        W(komo.get()).addObjective(interval, compressed, new TM_FixSwichedObjects(), OT_eq, NoArr, 3e1, 2);
+        W(komo.get()).addObjective(interval, compressed, new TM_FixSwichedObjects(), OT_eq, NoArr, TM_FixSwichedObjects_scale, 2);
 
         // ground other tasks
         komo->groundTasks(interval, compressed, q->data().leadingKomoArgs, 1);
@@ -576,6 +606,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
+  getCost(witness);
   watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 }
 
@@ -639,6 +670,39 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
 
 //  }
 //}
+
+
+void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
+{
+  using W = KomoWrapper;
+
+  // build tree
+  const auto tree = buildTree(policy);
+
+  // prepare komo
+  auto komo = intializeKOMO(tree, startKinematics.front());
+
+  // ground policy actions
+  komo->groundInit(tree);
+  const auto allVars = getSubProblems(tree, policy);
+  groundPolicyActionsJoint(tree, policy, komo);
+
+  // run optimization
+  W(komo.get()).reset(allVars);
+
+  // initialize
+  if(x_.d0)
+  {
+    for(uint i = 0; i < x_.d0; ++i)
+    {
+      std::cout << x_(i) << ", " << std::endl;
+    }
+    komo->set_x( x_ );
+  }
+
+  getCost(komo);
+  watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
+}
 
 
 }

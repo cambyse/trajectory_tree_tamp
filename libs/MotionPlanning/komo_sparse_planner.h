@@ -23,22 +23,23 @@ public:
   {}
 
   // common parts between all strategies
-  TreeBuilder buildTree( const Policy & ) const;
   std::shared_ptr< ExtensibleKOMO > intializeKOMO( const TreeBuilder & tree, const std::shared_ptr< const rai::KinematicWorld > & ) const;
-  std::vector<Vars> getSubProblems( const TreeBuilder & tree, Policy & policy ) const; // deprecated
+  std::vector<Vars> getSubProblems( const TreeBuilder & tree, Policy & policy ) const; // deprecated (branch gen)
   std::vector<intA> getSubProblemMasks( const std::vector<Vars> & allVars, uint T ) const;
   void groundPolicyActionsJoint( const TreeBuilder & tree,
                                  Policy & policy,
                                  const std::shared_ptr< ExtensibleKOMO > & komo ) const;
   void watch( const std::shared_ptr< ExtensibleKOMO > & komo ) const;
-  void watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const; // will watch using only the witness komo -> inconsistent
-  void watch( const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics,
+  void watch( const std::shared_ptr< ExtensibleKOMO > & komo, const TreeBuilder & tree ) const; // watch using only the witness komo -> inconsistent for visualization
+  void watch( const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics, // consistent watch with different worlds
               const rai::Array<rai::KinematicSwitch*> switches,
               const Policy & policy,
               const TreeBuilder & tree,
               const arr& x,
               const uint stepsPerPhase,
               const uint k_order ) const;
+
+  double getCost(const std::shared_ptr< ExtensibleKOMO > & komo ) const; // use witness komo and task grounding inside it
 
   virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const = 0;
 
@@ -89,6 +90,19 @@ private:
   GeneratorFactory generatorFactory_;
   std::string decompositionStrategy_;
   uint nJobs_{8};
+};
+
+// Use to evaluate and watch results only, no actual planning
+class EvaluationPlanner : KOMOSparsePlanner
+{
+public:
+  EvaluationPlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory, const arr& x)
+    : KOMOSparsePlanner(config, factory)
+    , x_(x)
+  {};
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
+
+  arr x_;
 };
 
 }

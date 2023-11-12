@@ -130,7 +130,9 @@ void KomoWrapper::addObjective(const Interval& it, const TreeBuilder& tree, Feat
     auto obj = komo_->addObjective(-123., -123., map, type, target, scale, order, deltaFromStep, deltaToStep);
 
     obj->vars = spec.vars;
-    obj->scales = spec.scales;
+    obj->scales = /*scale **/ spec.scales;
+
+    CHECK(obj->scales.d0 == spec.scales.d0, "wrong dimensionality of the scales!");
   }
   else
   {

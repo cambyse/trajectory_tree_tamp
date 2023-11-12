@@ -79,11 +79,12 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -10.0 ); //-1.0, -0.5
+  tp.setR0( -1.0 ); //-1.0, -0.5
   tp.setMaxDepth( 20 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );
+
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
   //mp.setKin( "LGP-1-block-1-side-kin.g" );
@@ -107,7 +108,7 @@ void plan()
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
-#if 0
+#if 1
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 

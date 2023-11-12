@@ -52,10 +52,38 @@ std::vector<std::string> LogicEngine::getPossibleActions( uint agentId )
 
   const auto& actions = engine_->get_actions();
 
+
+  //
+
+  //std::cout << "STATE:\n" << *engine_->getState() << std::endl;
+
+  const std::string state = getState();
+
+  if( state.find("observed side_0") != std::string::npos &&
+      state.find("observed side_1") != std::string::npos &&
+      state.find("observed side_2") != std::string::npos &&
+      state.find("observed side_3") != std::string::npos &&
+      state.find("observed side_4") != std::string::npos &&
+      state.find("colored side_5") != std::string::npos &&
+      state.find("flipped TRUE") != std::string::npos //&&
+
+      //state.find("hand_empty): true") == std::string::npos &&
+      //state.find("identified") == std::string::npos
+
+      )
+  {
+    int a{0};
+  }
+  //
+  //std::cout << "ACTIONS:" << std::endl;
   for( const auto& action : actions )
   {
     if( isOfAgent( action, agentId ) || agentNumber_ == 1 )
     {
+      //
+      //std::cout  << actionToString( action ) << std::endl;
+      //
+
       filteredActions.push_back( actionToString( action ) );
     }
   }

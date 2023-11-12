@@ -220,27 +220,33 @@ void plan_graph_search()
   std::cout << "ACC COSTS: [" << ba::min( acc_acc_cost ) << " " << ba::max( acc_acc_cost ) << "] mean:" << ba::mean( acc_acc_cost ) << " std_dev:" << sqrt( ba::variance( acc_acc_cost ) ) << std::endl;
 }
 
-void baxter()
+void display_robot()
 {
   {
     rai::KinematicWorld kin;
-    kin.init( "LGP-blocks-kin-unified-b6.g" );
 
-//    const double zf = 1.47;
-//    const double s = 0.55;
-//    kin.gl().camera.setPosition(s * 10., s * 4.5, zf + s * ( 3.5 - zf ));
+    kin.init( "LGP-franka-kin-one-table.g" );
+    kin.setJointState({0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
 
-    const double zf = 1.0;
-    const double s = 0.35;
-    kin.gl().camera.setPosition(s * 10., s * 0, zf + s * ( 1.5 - zf ));
+    std::cout << "q:" << kin.q << std::endl;
 
-    kin.gl().camera.focus(0.5, 0, zf);
-    kin.gl().camera.upright();
+//    kin.init( "LGP-blocks-kin-unified-b6.g" );
 
-    kin.watch();
-    kin.write( std::cout );
+////    const double zf = 1.47;
+////    const double s = 0.55;
+////    kin.gl().camera.setPosition(s * 10., s * 4.5, zf + s * ( 3.5 - zf ));
 
-    rai::wait( 300, true );
+//    const double zf = 1.0;
+//    const double s = 0.35;
+//    kin.gl().camera.setPosition(s * 10., s * 0, zf + s * ( 1.5 - zf ));
+
+//    kin.gl().camera.focus(0.5, 0, zf);
+//    kin.gl().camera.upright();
+
+    kin.watch(100);
+//    kin.write( std::cout );
+
+//    rai::wait( 300, true );
   }
 }
 
@@ -382,7 +388,8 @@ int main(int argc,char **argv)
   //plan_graph_search();
 
   plan_3_methods();
-  //baxter();
+
+  //display_robot();
 
   return 0;
 }

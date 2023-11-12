@@ -17,6 +17,12 @@ using namespace rai;
 using W = mp::KomoWrapper;
 
 constexpr bool activateObjectives{true};
+constexpr double ZeroVelocity_scale{1.0e2};
+constexpr double TargetPosition_scale{1.0e2};
+constexpr double TM_AboveBox_scale{1.0e1};
+constexpr double SensorAimAtObjectCenter_scale{1.0e2};
+constexpr double SensorAlignsWithPivot_scale{1.0e2};
+constexpr double SensorDistanceToObject_scale{5.0e1};
 
 double shapeSize(const KinematicWorld& K, const char* name, uint i=2);
 
@@ -140,7 +146,7 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   // approach
   mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
   const auto approach_position = flipped ? ARR( -0.1, 0.0, 0.0 ) : ARR( 0.0, 0.0, 0.1 );
-  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( eff, object, approach_position ), OT_sos, NoArr, 1e2, 0 ); // coming from above
+  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( eff, object, approach_position ), OT_sos, NoArr, TargetPosition_scale, 0 ); // coming from above
 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
@@ -153,7 +159,7 @@ void groundTreeUnStack(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   if(komo->k_order > 1)
   {
     mp::Interval just_after{{it.time.to, it.time.to + 0.2}, it.edge};
-    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, 1e2, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
+    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, ZeroVelocity_scale, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
   }
 
   if(verbose > 0)
@@ -170,10 +176,10 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   mp::Interval before{{it.time.to - 0.3, it.time.to - 0.3}, it.edge};
 
   // approach
-  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, 1e2, 0 ); // coming from above
+  if(activateObjectives) W(komo).addObjective( before, tb, new TargetPosition( object, place, ARR( 0.0, 0.0, 0.1 ) ), OT_sos, NoArr, TargetPosition_scale, 0 ); // coming from above
 
   mp::Interval end{{it.time.to, it.time.to}, it.edge};
-  if(activateObjectives) W(komo).addObjective(end, tb, new TM_AboveBox(komo->world, object, place), OT_ineq, NoArr, 1e1, 0);
+  if(activateObjectives) W(komo).addObjective(end, tb, new TM_AboveBox(komo->world, object, place), OT_ineq, NoArr, TM_AboveBox_scale, 0);
 
   // switch
   mp::Interval st{{it.time.to, it.time.to}, it.edge};
@@ -185,7 +191,7 @@ void groundTreePutDown(const mp::Interval& it, const mp::TreeBuilder& tb, const 
   if(komo->k_order > 1)
   {
     mp::Interval just_after{{it.time.to, it.time.to + 0.2}, it.edge};
-    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, 1e2, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
+    if(activateObjectives) W(komo).addObjective( just_after, tb, new ZeroVelocity( object ), OT_eq, NoArr, ZeroVelocity_scale, 1 ); // force the object not to move when starting to pick (mainly to force it not to go under the table)
   }
 
   if(verbose > 0)
@@ -215,10 +221,10 @@ void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const st
   };
 
   mp::Interval end{{it.time.to - 0.2, it.time.to}, it.edge};
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( eff, object, ARR( 0, 0, -1 ) ), OT_eq, NoArr, 1e2, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( eff, object, ARR( 0, 0, -1 ) ), OT_eq, NoArr, SensorAimAtObjectCenter_scale, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, SensorAlignsWithPivot_scale, 0 );
   //if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( eff, object, sideToPivot[facts[1]], 45.0 * 3.1415 / 180.0 ), OT_sos, NoArr, 5e1, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( eff, object, 0.2, 0.0 ), OT_sos, NoArr, 5e1, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( eff, object, 0.2, 0.0 ), OT_sos, NoArr, SensorDistanceToObject_scale, 0 );
 
   if(verbose > 0)
   {

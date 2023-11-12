@@ -103,6 +103,9 @@ void GraphPlanner::integrate( const Policy & policy )
 
               //std::cout << "integrate from " << id_right_parent << " to " << c->data().decisionGraphNodeId << " = " << c->data().markovianReturn << std::endl;
 
+              //auto prev = rewards_.find(fromToIndex( id_right_parent, c->data().decisionGraphNodeId ));
+              std::cout << "integrate from " << n->data().decisionGraphNodeId << " to " << c->data().decisionGraphNodeId << ", new value = " << c->data().markovianReturn << ", old value = " << rewards_.get( fromToIndex( id_right_parent, c->data().decisionGraphNodeId ) ) << std::endl;
+
               //rewards_[ fromToIndex( id_right_parent, c->data().decisionGraphNodeId ) ] = c->data().markovianReturn;
               rewards_.set( fromToIndex( id_right_parent, c->data().decisionGraphNodeId ), c->data().markovianReturn);
 
@@ -222,6 +225,8 @@ void GraphPlanner::buildPolicy()
 
   policy_ = Policy( policyRoot );
   policy_.setValue( values_[ decisionGraph().root()->id() ] );
+
+  CHECK(policy_.value() > std::numeric_limits<double>::lowest(), "extracted policy seems to be infeasible (infinite costs)!");
 
   std::cout << "GraphPlanner::buildPolicy.. end (value=" << policy_.value() << ")" << std::endl;
 }

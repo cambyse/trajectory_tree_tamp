@@ -75,6 +75,8 @@ std::vector< double > ValueIterationAlgorithm::process( const DecisionGraph & gr
     {
       const auto& u = weakU.lock();
 
+      //bool verbose{u->id() == 0};
+
       if( u->data().nodeType == NodeData::NodeType::ACTION )
       {
         if( u->data().agentId == 0 )
@@ -86,21 +88,40 @@ std::vector< double > ValueIterationAlgorithm::process( const DecisionGraph & gr
             // max operation, choose the best child
             for( auto v : u->children() )
             {
+//              if(verbose)
+//              {
+//                std::cout << " v->id():" << v->id() << " values[ v->id() ]:" << values[ v->id() ] << std::endl;
+//              }
+
               const auto r = rewards.get( fromToIndex( u->id(), v->id() ) );
 
               if( values[ v->id() ] + r > newTargetValue )
               {
+//                if(verbose)
+//                {
+//                  std::cout << " v->id():" << v->id() << " values[ v->id() ]:" << values[ v->id() ] << " r: " << r <<  "  newTargetValue:" << newTargetValue << std::endl;
+//                }
                 newTargetValue = values[ v->id() ] + r;
               }
             }
 
             if( newTargetValue == m_inf() ) // there were no children so unfeasible
             {
+//              //
+//              for(const auto& s: u->data().states)
+//              {
+//                std::cout << s << std::endl;
+//              }
+//              //
+
               const auto diff = diff_func( values[ u->id() ], m_inf() );
               maxDiff = std::max( maxDiff, diff );
 
-              //std::cout << "A update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << m_inf() << std::endl;
-              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
+//              if( verbose )
+//              {
+//                std::cout << "A update " << u->id() << " old value:" << values[ u->id() ] << " new value:" << m_inf() << std::endl;
+//                std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
+//              }
 
               values[ u->id() ] = m_inf();
             }
@@ -110,8 +131,11 @@ std::vector< double > ValueIterationAlgorithm::process( const DecisionGraph & gr
               const auto diff = diff_func( values[ u->id() ], newValue );
               maxDiff = std::max( maxDiff, diff );
 
-              //std::cout << "B update " << u->id() << " old value:" << values[ u->id() ] << " new value:" << newValue << std::endl;
-              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
+//              if( verbose )
+//              {
+//                //std::cout << "B update " << u->id() << " old value:" << values[ u->id() ] << " new value:" << newValue << std::endl;
+//                std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
+//              }
 
               values[ u->id() ] = newValue;
             }
@@ -149,9 +173,9 @@ std::vector< double > ValueIterationAlgorithm::process( const DecisionGraph & gr
           newTargetValue += p * values[ v->id() ] ;
         }
 
-        CHECK( fabs(sumP-1.0) < 0.001, "wrong belief state!" );
+        CHECK( fabs( sumP-1.0 ) < 0.001, "wrong belief state!" );
 
-        const auto newValue = values[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
+        const auto newValue = values[ u->id() ] * ( 1.0 - alpha ) + alpha * newTargetValue;
         const auto diff = diff_func( values[ u->id() ], newValue );
         maxDiff = std::max( maxDiff, diff );
 

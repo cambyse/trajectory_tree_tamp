@@ -13,8 +13,10 @@
 #include <komo_planner_utils.h>
 #include <komo_sparse_planner.h>
 #include <komo_sub_problems_finder.h>
+#include <komo_planner_utils.h>
 #include <Core/util.h>
 
+#include <unordered_set>
 #include <thread>
 #include <future>
 #include <list>
@@ -24,24 +26,6 @@
 namespace mp
 {
 static constexpr double eps = std::numeric_limits< double >::epsilon();
-
-bool isTaskIrrelevant(const rai::String& task_name, const rai::String& type, const StringA& filtered_tasks)
-{
-  if(type != "sos")
-  {
-    return true;
-  }
-
-  for(const auto& to_filter_out: filtered_tasks)
-  {
-    if(task_name.contains(to_filter_out))
-    {
-      return true;
-    }
-  }
-
-  return false;
-}
 
 double getCost(const Graph& result, const StringA& filtered_tasks)
 {
@@ -222,6 +206,11 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
     KOMOSubProblemsFinder analyser(config_, komoFactory_);
     analyser.analyse(policy, startKinematics_);
   }
+  else if( po.getParam( "type" ) == "EvaluateMarkovianCosts" )
+  {
+    EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy));
+    evaluation.optimize(policy, startKinematics_);
+  }
   else
   {
     CHECK( false, "not implemented yet!" );
@@ -317,12 +306,12 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
 
       CHECK(path_pieces.d0 > w, "path pieces should contain at least one path");
       const uint start_s = frames(0)(w).empty() ? 0 : markovian_path_k_order_; // don't append two times the prefixes!
-      const uint end_s = (node_id == leaf->id()) ? path_pieces(w).d0 : path_pieces(w).d0 - 1;
+      const uint end_s = (node_id == leaf->id()) ? path_pieces(w).d0 : path_pieces(w).d0 /*- 1*/;
 
-      CHECK(start_s < path_pieces(w).d0, "path pieces for word should not be empty");
-      CHECK(end_s < path_pieces(w).d0, "path pieces for word should not be empty");
+      CHECK(start_s < path_pieces(w).d0, "path pieces for world should not be empty");
+      CHECK(end_s <= path_pieces(w).d0, "path pieces for world should not be empty");
 
-      for(auto s = start_s ; s < end_s - 1; ++s)
+      for(auto s = start_s ; s < end_s; ++s)
       {
         frames(0)(w).append(path_pieces(w)(s));
       }
@@ -335,6 +324,99 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
 
     rai::wait();
   }
+}
+
+arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
+{
+  arr x;
+
+  const auto tree = buildTree(policy);
+
+  // build a map policy id -> decision graph id
+  std::unordered_map<uint, uint> nodeIdToDecisionGraphId;
+  std::list< Policy::GraphNodeTypePtr > fifo;
+  fifo.push_back( policy.root() );
+
+  while( ! fifo.empty() )
+  {
+    auto b = fifo.back();
+    fifo.pop_back();
+
+    const auto& a = b->parent();
+
+    nodeIdToDecisionGraphId[b->id()] = b->data().decisionGraphNodeId;
+
+    for(const auto&c : b->children())
+    {
+      fifo.push_back(c);
+    }
+  }
+
+  // go through policy and gather planned configurations
+  const auto q_dim = startKinematics_.front()->q.d0;
+  x.resize((tree.n_nodes() - 1) * config_.microSteps_ * q_dim);
+  std::unordered_set<uint> visited;
+
+  for(const auto& l: policy.sleaves())
+  {
+    auto q = l;
+    auto p = q->parent();
+
+    const auto branch= tree._get_branch(l->id());
+
+    while(p)
+    {
+      if(visited.find(q->id()) == visited.end())
+      {
+        double start = p->depth();
+        double end = q->depth();
+
+        const auto var_0 = tree.get_vars0(TimeInterval{start, end}, branch, config_.microSteps_);
+        //const auto var_2 = tree.get_vars(TimeInterval{start, end},  l->id(), 2, config_.microSteps_);
+
+        const auto decision_graph_id = nodeIdToDecisionGraphId.at(q->id());
+        const auto& path_pieces = markovianPaths_.at(decision_graph_id);
+        const auto path_piece_it = std::find_if(path_pieces.begin(), path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
+        CHECK( path_piece_it != path_pieces.end(), "Invalid path piece lookup!" );
+        const auto& witness_path_piece = *path_piece_it;
+
+        for(uint s=0; s < witness_path_piece.d0 - markovian_path_k_order_; ++s)
+        {
+          const auto global = var_0(s);
+
+          for(uint i=0; i < q_dim; ++i)
+          {
+            const auto global_i = global * q_dim + i;
+            CHECK(x(global_i) == 0.0, "overrides part of x already gathered, it is most likely a bug!");
+            x(global_i) = witness_path_piece(s + markovian_path_k_order_).q(i);
+          }
+        }
+
+        // debug
+        if(p->id() != 0)
+        {
+        const auto parent_decision_graph_id = nodeIdToDecisionGraphId.at(p->id());
+        const auto& parent_path_pieces = markovianPaths_.at(parent_decision_graph_id);
+        const auto parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
+        CHECK( parent_path_piece_it != parent_path_pieces.end(), "Invalid path piece lookup!" );
+        const auto& witness_parent_path_piece = *parent_path_piece_it;
+
+        std::cout << "check transition " << p->data().decisionGraphNodeId << " -> " << q->data().decisionGraphNodeId << std::endl;
+        std::cout << witness_parent_path_piece(-2).q << " vs. " << witness_path_piece(0).q << std::endl;
+        std::cout << witness_parent_path_piece(-1).q << " vs. " << witness_path_piece(1).q << std::endl;
+
+        //CHECK(witness_parent_path_piece(-2).q == witness_path_piece(0).q, "wrong connection!");
+        }
+        //
+
+        visited.insert(q->id());
+      }
+      q = p;
+      p = q->parent();
+    }
+  }
+
+  return x;
 }
 
 std::pair< double, double > KOMOPlanner::evaluateLastSolution()
@@ -585,10 +667,15 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         // apply correct prefix
         if(!node->isRoot())
         {
+          std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
+
           const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second( w );
           for(auto s = 0; s < komo->k_order; ++s)
           {
-            const auto& kin = parent_path_piece( -komo->k_order + s - 1 );
+            const auto& kin = parent_path_piece( -int(komo->k_order) + s );
+
+            std::cout << -int(komo->k_order) + s << " apply:" << kin.q << std::endl;
+
             komo->configurations(s)->setJointState(kin.q);
           }
         }

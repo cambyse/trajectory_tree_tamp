@@ -140,6 +140,7 @@ public:
 private:
   std::vector< std::vector < std::vector < double > > > world_to_q_list_;
   std::vector< uint > qmask_;
+  rai::Array< arr > world_to_x_; // is redundant with world_to_q_list_ -> check if this can be unified
   uint stepsPerPhase_;
 };
 

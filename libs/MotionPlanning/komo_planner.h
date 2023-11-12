@@ -13,7 +13,6 @@
 
 namespace mp
 {
-bool isTaskIrrelevant(const rai::String& task_name, const rai::String& type, const StringA& filtered_tasks);
 double getCost(const Graph& result);
 
 class KOMOPlanner : public MotionPlanner
@@ -32,6 +31,9 @@ public:
   // display
   void display( const Policy & policy, double sec ) override;
   void displayMarkovianPaths( const Policy & policy, double sec ) const;
+  arr getMarkovianPathTree( const Policy & policy ) const;
+
+  // evaluation (paper with TMKit comparison)
   std::pair< double, double > evaluateLastSolution();
 
   // ground symbols

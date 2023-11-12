@@ -224,9 +224,9 @@ int main(int argc,char **argv)
 
   rnd.clockSeed();
 
-  komo_tree_dev();
+  //komo_tree_dev();
 
-  //plan_graph_search();
+  plan_graph_search();
 
   return 0;
 }

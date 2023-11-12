@@ -171,7 +171,8 @@ struct SensorAlignsWithPivot:Feature{
 struct SensorDistanceToObject:Feature{
   SensorDistanceToObject( rai::String const& sensorName,
                          rai::String const& objectName,
-                         const double preferedDistance
+                         const double preferedDistance,
+                         const double tolerance
                          );
 
   virtual void phi( arr& y, arr& J, rai::KinematicWorld const& G );
@@ -191,4 +192,5 @@ struct SensorDistanceToObject:Feature{
   const rai::String sensorName_;
   const rai::String objectName_;
   const double preferedDistance_;
+  const double tolerance_;
 };

@@ -2,45 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bc3df9aa-9300-4f70-9b75-cee7ee09a17e" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../../../../../rai" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../rai" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../../.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CollisionAvoidance/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../CollisionAvoidance/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../GeometricUtilityTasks/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../GeometricUtilityTasks/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../HessianDecomposition/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../HessianDecomposition/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MathUtility/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../MathUtility/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MotionPlanning/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../MotionPlanning/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MotionPlanning/komo_sparse_planner.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../MotionPlanning/komo_sparse_planner.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MotionPlanning/komo_sub_problems_finder.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../MotionPlanning/komo_sub_problems_finder.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../MultiAgentTaskPlanning/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../MultiAgentTaskPlanning/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ObservationTasks/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../ObservationTasks/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/decentralized_lagrangian.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/decentralized_lagrangian.tpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/decentralized_optimizer.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/decentralized_optimizer.tpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/qp_lagrangian.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/include/Optimization/utils.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/src/qp_larangian.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/src/utils.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/functions.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/functions.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/qp_problems.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/qp_problems.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/test_dec_opt_constrained.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/test_dec_opt_constrained.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/test_opt_constrained.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/test_opt_constrained.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/test_qp.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/test_qp.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Optimization/test/test_utils.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../Optimization/test/test_utils.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/augmented_lagrangian_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/augmented_lagrangian_solver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/decentralized_aula.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/decentralized_aula.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/newton.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/newton.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/optimization_problems.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/optimization_problems.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/qp_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/qp_solver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/test/observers.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/test/observers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/test/test_admm_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/test/test_admm_solver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/test/test_augmented_lagrangian_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/test/test_augmented_lagrangian_solver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/optimization/test/test_qp_solver.py" beforeDir="false" afterPath="$PROJECT_DIR$/optimization/test/test_qp_solver.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Sampling/common.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Sampling/common.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../apps/lgp-real-time/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../apps/lgp-real-time/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../apps/lgp-seq-boxes/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../apps/lgp-seq-boxes/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../apps/lgp-tree-po-self-driving/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../apps/lgp-tree-po-self-driving/main.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CollisionAvoidance/axis_alignment.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CollisionAvoidance/axis_alignment.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CollisionAvoidance/axis_alignment.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CollisionAvoidance/axis_alignment.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CollisionAvoidance/over_plane.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CollisionAvoidance/over_plane.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../MathUtility/graph_node.h" beforeDir="false" afterPath="$PROJECT_DIR$/../MathUtility/graph_node.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -50,36 +20,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/optimization/optimization_problems.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="12" selection-start-line="28" selection-start-column="12" selection-end-line="28" selection-end-column="12" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/optimization/newton.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1560">
-              <caret line="105" selection-start-line="105" selection-end-line="105" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/optimization/test/test_qp_solver.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="960">
-              <caret line="68" selection-start-line="68" selection-end-line="68" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optimization/test/test_qp_decomposition.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -116,7 +56,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/optimization/qp_decomposition.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
+            <state relative-caret-position="240">
               <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -128,7 +68,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/komo/komo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1334">
+            <state relative-caret-position="2295">
               <caret line="156" column="24" selection-start-line="156" selection-start-column="8" selection-end-line="156" selection-end-column="24" />
               <folding>
                 <element signature="e#0#18#0" expanded="true" />
@@ -137,12 +77,44 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/komo/test/test_komo.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-5085">
+            <state>
               <folding>
                 <element signature="e#0#23#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../../../../../../openai-quickstart-python/app.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="270">
+              <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../../../../../etf_vs_immo/simulation.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" column="26" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="26" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/komo/plot.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <folding>
+                <element signature="e#0#18#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -171,8 +143,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>EQ</find>
-      <find>time()</find>
       <find>get_step</find>
       <find>add_edge</find>
       <find>get_current_lane</find>
@@ -201,6 +171,8 @@
       <find>DecentralizedAugmentedLagrangianSolverN</find>
       <find>admm |x-z|=</find>
       <find>np.abs</find>
+      <find>square_meter_rent_muc</find>
+      <find>capital_gain_tax</find>
     </findStrings>
     <replaceStrings>
       <replace>cx</replace>
@@ -213,8 +185,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$USER_HOME$/tmp/path.py" />
-        <option value="$USER_HOME$/tmp/markers.py" />
         <option value="$USER_HOME$/tm-examples/extract-timing.py" />
         <option value="$USER_HOME$/tm-examples/baxter-blocks-original-3/extract-timing.py" />
         <option value="$PROJECT_DIR$/test/test_linalg.py" />
@@ -264,10 +234,12 @@
         <option value="$PROJECT_DIR$/optimization/test/test_qp_decomposition.py" />
         <option value="$PROJECT_DIR$/optimization/newton.py" />
         <option value="$PROJECT_DIR$/optimization/qp_decomposition.py" />
+        <option value="$PROJECT_DIR$/../../../../../../openai-quickstart-python/app.py" />
+        <option value="$PROJECT_DIR$/../../../../../../etf_vs_immo/simulation.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="64" />
     <option name="y" value="-4" />
     <option name="width" value="1857" />
@@ -279,7 +251,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -290,24 +261,23 @@
             <path>
               <item name="PyKomo" type="b2602c69:ProjectViewProjectNode" />
               <item name="PyKomo" type="462c0819:PsiDirectoryNode" />
-              <item name="komo" type="462c0819:PsiDirectoryNode" />
+              <item name="optimization" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="PyKomo" type="b2602c69:ProjectViewProjectNode" />
-              <item name="PyKomo" type="462c0819:PsiDirectoryNode" />
-              <item name="komo" type="462c0819:PsiDirectoryNode" />
-              <item name="test" type="462c0819:PsiDirectoryNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Python" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../../etf_vs_immo/simulation.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyIntegratedToolsModulesConfigurable" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -534,10 +504,9 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="65" y="-4" width="1855" height="1204" extended-state="7" />
-    <editor active="true" />
+    <frame x="72" y="27" width="1848" height="1053" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49884528" visible="true" weight="0.24945416" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49884528" visible="true" weight="0.24931507" />
       <window_info id="Structure" order="1" sideWeight="0.5011547" side_tool="true" weight="0.2496124" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -689,18 +658,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/test/test_constrained_opt.py" />
-    <entry file="file://$PROJECT_DIR$/optimizers.py" />
-    <entry file="file://$PROJECT_DIR$/optimization/square_penalty_solver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="30" lean-forward="true" selection-start-line="30" selection-end-line="30" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.7/site-packages/numpy/lib/twodim_base.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="157">
@@ -1026,6 +983,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/optimization/qp_decomposition.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/komo/komo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2295">
+          <caret line="156" column="24" selection-start-line="156" selection-start-column="8" selection-end-line="156" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/komo/test/test_komo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#23#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../../../../openai-quickstart-python/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="21" column="55" selection-start-line="21" selection-start-column="55" selection-end-line="21" selection-end-column="55" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/optimization/admm_solver.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -1036,32 +1032,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/optimization/qp_decomposition.py">
+    <entry file="file://$PROJECT_DIR$/komo/plot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="18" column="36" selection-start-line="18" selection-start-column="36" selection-end-line="18" selection-end-column="36" />
+        <state>
           <folding>
             <element signature="e#0#18#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/komo/komo.py">
+    <entry file="file://$PROJECT_DIR$/../../../../../../etf_vs_immo/simulation.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1334">
-          <caret line="156" column="24" selection-start-line="156" selection-start-column="8" selection-end-line="156" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/komo/test/test_komo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-5085">
-          <folding>
-            <element signature="e#0#23#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="75">
+          <caret line="5" column="26" selection-start-line="5" selection-start-column="25" selection-end-line="5" selection-end-column="26" />
         </state>
       </provider>
     </entry>

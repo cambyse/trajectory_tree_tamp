@@ -673,4 +673,34 @@ bool operator==(const TreeBuilder& a, const TreeBuilder& b)
 {
   return a.adjacency_matrix() == b.adjacency_matrix() && a.p() == b.p() && a.d() == b.d();
 }
+
+
+TreeBuilder buildTree( const Policy & policy )
+{
+  TreeBuilder treeBuilder(1.0, 0);
+
+  std::list< Policy::GraphNodeTypePtr > fifo;
+  fifo.push_back( policy.root() );
+
+  while( ! fifo.empty() )
+  {
+    auto b = fifo.back();
+    fifo.pop_back();
+
+    const auto& a = b->parent();
+
+    if(a)
+    {
+      const auto& p = b->data().p;
+      treeBuilder.add_edge(a->id(), b->id(), p);
+    }
+
+    for(const auto&c : b->children())
+    {
+      fifo.push_back(c);
+    }
+  }
+
+  return treeBuilder;
+}
 }

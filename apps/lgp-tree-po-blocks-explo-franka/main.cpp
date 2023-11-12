@@ -101,7 +101,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -.25 ); //-0.25//-0.1//-0.015 ); for blocks one side
+  tp.setR0( -50. ); //-0.25//-0.1//-0.015 ); for blocks one side
   tp.setMaxDepth( 10 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
@@ -158,6 +158,7 @@ void plan()
     nIt++;
 
     ///
+    std::cout << "\nPlanning for policy: " << policy.id()<< std::endl;
     savePolicyToFile( policy );
     candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
     ///
@@ -209,6 +210,14 @@ void plan()
   // default method
 //  mp.display(policy, 200);
 
+  // markovian
+    mp.displayMarkovianPaths(policy, 200);
+  {
+    auto po     = MotionPlanningParameters( policy.id() );
+    po.setParam( "type", "EvaluateMarkovianCosts" );
+    mp.solveAndInform( po, policy );
+  }
+
   /// JOINT OPTIMIZATION
   // single joint optimization
 //  {
@@ -222,7 +231,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "SubTreesAfterFirstBranching" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "BranchGen" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }
