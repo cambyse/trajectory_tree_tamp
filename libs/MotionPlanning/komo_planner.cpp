@@ -27,7 +27,7 @@ namespace mp
 {
 static constexpr double eps = std::numeric_limits< double >::epsilon();
 
-double getCost(const Graph& result, const StringA& filtered_tasks)
+double GetCost(const Graph& result, const StringA& filtered_tasks)
 {
   double cost{0.0};
 
@@ -52,6 +52,59 @@ double getCost(const Graph& result, const StringA& filtered_tasks)
 }
 
 //--------Motion Planner--------------//
+
+//double KOMOPlanner::getCost(const std::shared_ptr<ExtensibleKOMO> & komo ) const
+//{
+//  double total_cost{0.0};
+
+//  for(uint i=0; i<komo->objectives.N; i++)
+//  {
+//    Objective *task = komo->objectives(i);
+//    WorldL Ktuple;
+//    Ktuple.resize(task->map->order + 1);
+
+//    if(isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
+//    {
+//       continue;
+//    }
+
+//    double task_cost{0.0};
+
+//    for(uint t=0;t < std::min(task->vars.d0, komo->configurations.d0 - task->map->order - 1);t++)
+//    {
+//      for(uint s=0; s < task->map->order + 1; ++s)
+//      {
+//        const auto global = t + s;
+
+//        CHECK(global >= 0 && global < komo->configurations.d0, "");
+
+//        Ktuple(s) = komo->configurations(global);
+//      }
+
+//      uint d=task->map->__dim_phi(Ktuple);
+//      arr y;
+//      arr J;
+//      task->map->__phi(y, J, Ktuple);
+//      CHECK(y.d0 == d, "wrong tm dimensionality");
+
+//      const double global_scale = task->map->scale.N ? task->map->scale(0) : 1.0;
+//      const double scale = task->scales.d0 ? task->scales(t) * global_scale : global_scale;
+
+//      if(task->type==OT_sos)
+//      {
+//        task_cost += scale * sumOfSqr(y);
+//      }
+//    }
+
+//    std::cout << task->name << " : " << task_cost << std::endl;
+
+//    total_cost += task_cost;
+//  }
+
+//  std::cout << "total_cost : " << total_cost << std::endl;
+
+//  return total_cost;
+//}
 
 void KOMOPlanner::setKin( const std::string & kinDescription )
 {
@@ -197,7 +250,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   }
   else if( po.getParam( "type" ) == "ADMMCompressed" )
   {
-    ADMMCompressedPlanner planner(config_, komoFactory_);
+    ADMMCompressedPlanner planner(config_, komoFactory_, getMarkovianPathTree(policy)); // NoArr); //
     planner.setDecompositionStrategy(po.getParam("decompositionStrategy"), po.getParam("nJobs"));
     planner.optimize(policy, startKinematics_);
   }
@@ -679,13 +732,9 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
           const auto& parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [](const auto& piece) { return piece.d0 > 0; } );
           const auto& parent_path_piece = *parent_path_piece_it;
 
-          //const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second( w );
           for(auto s = 0; s < komo->k_order; ++s)
           {
             const auto& kin = parent_path_piece( -int(komo->k_order) + s );
-
-            std::cout << -int(komo->k_order) + s << " apply:" << kin.q << std::endl;
-
             komo->configurations(s)->setJointState(kin.q);
           }
         }
@@ -716,8 +765,10 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
 
         const Graph result = komo->getReport();
 
-        const double cost = getCost(result, config_.taskIrrelevantForPolicyCost);
+        const double cost = GetCost(result, config_.taskIrrelevantForPolicyCost);
         const double constraints = result.get<double>( { "total", "constraints" } );
+
+        //const double cost2 = getCost(komo);
 
         std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
 
@@ -738,8 +789,6 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
         effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) = *komo->configurations.last();
 
         // copy path
-        std::cout << "save results to " << node->data().decisionGraphNodeId << std::endl;
-
         for( auto s = 0; s < komo->configurations.N; ++s )
         {
           rai::KinematicWorld kin( *komo->configurations( s ) );

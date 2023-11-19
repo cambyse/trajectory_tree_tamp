@@ -211,7 +211,7 @@ void plan()
 //  mp.display(policy, 200);
 
   // markovian
-    mp.displayMarkovianPaths(policy, 200);
+  //  mp.displayMarkovianPaths(policy, 200);
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "EvaluateMarkovianCosts" );
@@ -226,7 +226,7 @@ void plan()
 //    mp.solveAndInform( po, policy ); // it displays
 //  }
 
-  /// JOINT OPTIMIZATION
+  /// DECOMPOSED SPARSE OPTIMIZATION
   // adsm
   {
     auto po     = MotionPlanningParameters( policy.id() );

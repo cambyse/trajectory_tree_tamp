@@ -74,8 +74,9 @@ public:
 class ADMMCompressedPlanner : KOMOSparsePlanner
 {
 public:
-  ADMMCompressedPlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory)
+  ADMMCompressedPlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory, const arr& x)
     : KOMOSparsePlanner(config, factory)
+    , x_{x}
   {};
   void setDecompositionStrategy(const std::string& strategy, const std::string& nJobs);
   void groundPolicyActionsCompressed( const TreeBuilder & fullTree,
@@ -90,6 +91,7 @@ private:
   GeneratorFactory generatorFactory_;
   std::string decompositionStrategy_;
   uint nJobs_{8};
+  arr x_;
 };
 
 // Use to evaluate and watch results only, no actual planning

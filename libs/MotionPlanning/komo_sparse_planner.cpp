@@ -239,6 +239,8 @@ double KOMOSparsePlanner::getCost(const std::shared_ptr< ExtensibleKOMO > & komo
 
     for(uint t=0;t<task->vars.d0;t++)
     {
+      CHECK(task->map->order + 1 == task->vars.d1, "inconsistent tm order!");
+
       for(uint s=0; s<task->vars.d1; ++s)
       {
         const auto global = task->vars(t, s) + komo->k_order;
@@ -259,15 +261,14 @@ double KOMOSparsePlanner::getCost(const std::shared_ptr< ExtensibleKOMO > & komo
       CHECK(t < task->scales.d0, "");
 
       const double scale = task->scales(t) * global_scale;
-      const double tau = Ktuple(-1)->frames(0)->tau;
 
       if(task->type==OT_sos)
       {
-        task_cost += scale * sumOfSqr(y / tau);
+        task_cost += scale * sumOfSqr(y);
       }
     }
 
-    std::cout << task->name << " : " << task_cost << std::endl;
+    //std::cout << task->name << " : " << task_cost << " from:" << task->vars(0, -1) << " to:" << task->vars(-1, -1) << std::endl;
 
     total_cost += task_cost;
   }
@@ -499,6 +500,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
 
   // 1 - PREPARE KOMOS
   const auto witness = intializeKOMO(tree, startKinematics.front());
+
   groundPolicyActionsJoint(tree, policy, witness);
 
   // 1.1 - init and ground each komo
@@ -513,6 +515,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
     const auto& mapping = std::get<2>(sub);
 
     auto komo = intializeKOMO(compressed, startKinematics(0));
+
     komos.push_back(komo);
     groundPolicyActionsCompressed(tree, uncompressed, compressed, mapping, policy, komos[w]);
   }
@@ -571,7 +574,7 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   // 3 - RUN
   auto start = std::chrono::high_resolution_clock::now();
 
-  auto x = witness->x;
+  auto x = x_.d0 ? x_ : witness->x;
 
   OptOptions options;
   options.verbose = 1;
@@ -592,7 +595,8 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   double optimizationTime=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
 
   //4 - LOGS + PRINTS
-  if(true) {
+  if(true)
+  {
     cout <<"** optimization time=" << optimizationTime
          <<" setJointStateCount=" << rai::KinematicWorld::setJointStateCount <<endl;
 
@@ -691,18 +695,11 @@ void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared
   W(komo.get()).reset(allVars);
 
   // initialize
-  if(x_.d0)
-  {
-    for(uint i = 0; i < x_.d0; ++i)
-    {
-      std::cout << x_(i) << ", " << std::endl;
-    }
-    komo->set_x( x_ );
-  }
+  CHECK(x_.d0 != 0, "invalid x")
+
+  komo->set_x( x_ );
 
   getCost(komo);
-  watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
+  //watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
 }
-
-
 }

@@ -13,7 +13,7 @@
 
 namespace mp
 {
-double getCost(const Graph& result);
+double GetCost(const Graph& result);
 
 class KOMOPlanner : public MotionPlanner
 {
@@ -21,6 +21,8 @@ class KOMOPlanner : public MotionPlanner
   using PolicyNodeWeakPtr = Policy::GraphNodeTypeWeakPtr;
 
 public:
+  //double getCost(const std::shared_ptr<ExtensibleKOMO> & komo ) const;
+
   // modifiers
   void setKin( const std::string & kinDescription ) override;
   std::vector< double > drawRandomVector( const std::vector< double > & override = std::vector< double >() );
