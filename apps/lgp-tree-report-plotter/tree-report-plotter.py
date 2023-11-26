@@ -72,9 +72,23 @@ while len(objective_chunks) == 3 and objective_chunks[0] == "objective":
 
 #print("objectives: {}".format(objectives))
 
-var_chunks = objective_chunks
+
+# irrelevant objectives
+irrelevant_objectives = []
+irrelevant_objective_chunks = objective_chunks
+assert objective_chunks[0] == "objectives_irrelevant_for_total_cost"
+irrelevant_objective_chunks = file.readline().rstrip().split(" ")
+
+while len(irrelevant_objective_chunks) == 1 and len(irrelevant_objective_chunks[0]) > 0:
+  irrelevant_objectives.append(irrelevant_objective_chunks[0])
+  irrelevant_objective_chunks = file.readline().rstrip().split(" ")
+
+print("irrelevant_objectives: {}".format(irrelevant_objectives))
+
+assert irrelevant_objective_chunks[0] == ''
 
 # vars
+var_chunks = file.readline().rstrip().split(" ")
 vars = []
 while len(var_chunks) == 2 and var_chunks[0] == "branch":
   id = var_chunks[1]
@@ -86,7 +100,6 @@ while len(var_chunks) == 2 and var_chunks[0] == "branch":
     var_chunks = file.readline().rstrip().split(" ")
 
   vars.append(var0)
-
   var_chunks = file.readline().rstrip().split(" ")
 
 #print("vars: {}".format(vars))
@@ -104,7 +117,7 @@ for i, var in enumerate(vars):
     name = objective.get("name")
     s_to_cost = []
 
-    if name == "SensorDistanceToObject": #"Transition::pos0:vel0.1:acc1": #":
+    if name in irrelevant_objectives:
       continue
 
     for local, global_s in enumerate(var):

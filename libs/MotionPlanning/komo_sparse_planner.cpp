@@ -260,8 +260,6 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
 
       const double scale = task->scales(t) * global_scale;
 
-
-
       const auto global_task_time = task->vars(t, -1);
       report.slices[global_task_time].q = komo->configurations(task->vars(t, -1))->q;
 
@@ -272,18 +270,21 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
       }
       else if(task->type==OT_eq)
       {
-//        report.slices[global_task_time].objectivesResults[std::string(task->name.p)] = scale * y;
-//        task_cost += scale y;
+        // TODO: sumOfSqr ? or max abs?
       }
       else if(task->type==OT_ineq)
       {
-
+        // TODO: max? or sumOfSqr of violations?
       }
     }
 
     if(!isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
     {
       report.totalCost += task_cost;
+    }
+    else
+    {
+      report.objectivesIrrelevantForCost.insert(std::string(task->name.p));
     }
   }
 
