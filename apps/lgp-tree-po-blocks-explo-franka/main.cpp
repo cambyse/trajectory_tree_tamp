@@ -231,7 +231,7 @@ void plan()
   {
     auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "BranchGen" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }

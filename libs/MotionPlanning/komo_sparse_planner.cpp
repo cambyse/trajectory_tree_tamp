@@ -261,7 +261,8 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
       const double scale = task->scales(t) * global_scale;
 
       const auto global_task_time = task->vars(t, -1);
-      report.slices[global_task_time].q = komo->configurations(task->vars(t, -1))->q;
+
+      report.slices[global_task_time].q = komo->configurations(task->vars(t, -1) + komo->k_order)->q;
 
       if(task->type==OT_sos)
       {
@@ -628,9 +629,14 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
-  const auto report = getOptimizationReport(witness, std::get<0>(allVars));
-  report.save("optimizationReportAdmmCompressed.re");
-  watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
+
+  EvaluationPlanner(config_,
+                    komoFactory_,
+                    x,
+                    "optimizationReportAdmmCompressed.re").optimize(policy, startKinematics);
+  //const auto report = getOptimizationReport(witness, std::get<0>(allVars));
+  //report.save("optimizationReportAdmmCompressed.re");
+  //watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 }
 
 // for checking the dimension consistency
@@ -719,7 +725,7 @@ void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared
   komo->set_x( x_ );
 
   const auto report = getOptimizationReport(komo, allVars);
-  report.save("optimizationReportMarkovianPathTree.re");
+  report.save(reportFile_);
   //watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
 }
 }

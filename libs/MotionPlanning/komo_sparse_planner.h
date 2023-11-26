@@ -99,13 +99,18 @@ private:
 class EvaluationPlanner : KOMOSparsePlanner
 {
 public:
-  EvaluationPlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory, const arr& x)
+  EvaluationPlanner(const KOMOPlannerConfig& config,
+                    const KOMOFactory& factory,
+                    const arr& x,
+                    const std::string& reportFile)
     : KOMOSparsePlanner(config, factory)
     , x_(x)
+    , reportFile_(reportFile)
   {};
   void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
 
   arr x_;
+  std::string reportFile_;
 };
 
 }

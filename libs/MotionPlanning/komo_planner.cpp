@@ -261,7 +261,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   }
   else if( po.getParam( "type" ) == "EvaluateMarkovianCosts" )
   {
-    EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy));
+    EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy), "optimizationReportMarkovianPathTree.re");
     evaluation.optimize(policy, startKinematics_);
   }
   else

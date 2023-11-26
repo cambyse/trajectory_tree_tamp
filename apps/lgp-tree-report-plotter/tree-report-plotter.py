@@ -12,8 +12,8 @@ if len(args.filepath) == 0:
 filepath = args.filepath[0]
 
 file = open(filepath, "r")
-#file_content = file.read()
-#print(file_content)
+
+### SEQUENTIAL PARSING###
 
 stepsPerPhase_chunks = file.readline().split(" ")
 assert stepsPerPhase_chunks[0] == "stepsPerPhase"
@@ -164,6 +164,8 @@ def onpick(event):
   # legend proxy line, and toggle the visibility
   legline = event.artist
   origline = lined[legline]
+
+  print("HERE")
 
   vis = not origline.get_visible()
   origline.set_visible(vis)
