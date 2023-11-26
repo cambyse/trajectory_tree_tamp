@@ -118,7 +118,6 @@ void KOMOSparsePlanner::groundPolicyActionsJoint( const TreeBuilder & tree,
 
 void KOMOSparsePlanner::watch( const std::shared_ptr< ExtensibleKOMO > & komo ) const
 {
-  //komo->displayTrajectory(0.1, true, false);
   Var<WorldL> configs;
   auto v = std::make_shared<KinPathViewer>(configs,  0.2, -0 );
   v->setConfigurations(komo->configurations);
@@ -220,20 +219,19 @@ void KOMOSparsePlanner::watch( const rai::Array< std::shared_ptr< const rai::Kin
   rai::wait();
 }
 
-double KOMOSparsePlanner::getCost(const std::shared_ptr< ExtensibleKOMO > & komo ) const
+OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_ptr< ExtensibleKOMO > & komo, const std::vector<Vars>& allVars ) const
 {
-  double total_cost{0.0};
+  OptimizationReport report;
+  report.slices.resize(komo->T);
+  report.allVars = allVars;
 
   for(uint i=0; i<komo->objectives.N; i++)
   {
     Objective *task = komo->objectives(i);
+    report.objectives[std::string(task->name.p)] = task->type;
+
     WorldL Ktuple;
     Ktuple.resize(task->vars.d1);
-
-    if(isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
-    {
-       continue;
-    }
 
     double task_cost{0.0};
 
@@ -262,20 +260,39 @@ double KOMOSparsePlanner::getCost(const std::shared_ptr< ExtensibleKOMO > & komo
 
       const double scale = task->scales(t) * global_scale;
 
+
+
+      const auto global_task_time = task->vars(t, -1);
+      report.slices[global_task_time].q = komo->configurations(task->vars(t, -1))->q;
+
       if(task->type==OT_sos)
       {
+        report.slices[global_task_time].objectivesResults[std::string(task->name.p)] = scale * sumOfSqr(y);
         task_cost += scale * sumOfSqr(y);
+      }
+      else if(task->type==OT_eq)
+      {
+//        report.slices[global_task_time].objectivesResults[std::string(task->name.p)] = scale * y;
+//        task_cost += scale y;
+      }
+      else if(task->type==OT_ineq)
+      {
+
       }
     }
 
-    //std::cout << task->name << " : " << task_cost << " from:" << task->vars(0, -1) << " to:" << task->vars(-1, -1) << std::endl;
-
-    total_cost += task_cost;
+    if(!isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
+    {
+      report.totalCost += task_cost;
+    }
   }
 
-  std::cout << "total_cost : " << total_cost << std::endl;
+  std::cout << "total_cost : " << report.totalCost << std::endl;
 
-  return total_cost;
+  report.stepsPerPhase = config_.microSteps_;
+  report.allVars = allVars;
+
+  return report;
 }
 
 /// JOINT
@@ -610,7 +627,8 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //
   witness->set_x(x);
   witness->x = x;
-  getCost(witness);
+  const auto report = getOptimizationReport(witness, std::get<0>(allVars));
+  report.save("optimizationReportAdmmCompressed.re");
   watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 }
 
@@ -699,7 +717,8 @@ void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared
 
   komo->set_x( x_ );
 
-  getCost(komo);
+  const auto report = getOptimizationReport(komo, allVars);
+  report.save("optimizationReportMarkovianPathTree.re");
   //watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
 }
 }

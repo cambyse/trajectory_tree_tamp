@@ -10,6 +10,7 @@
 #include <komo_planner_config.h>
 #include <komo_wrapper.h>
 #include <subtree_generators.h>
+#include <optimization_report.h>
 
 namespace mp
 {
@@ -39,7 +40,7 @@ public:
               const uint stepsPerPhase,
               const uint k_order ) const;
 
-  double getCost(const std::shared_ptr< ExtensibleKOMO > & komo ) const; // use witness komo and task grounding inside it
+  OptimizationReport getOptimizationReport(const std::shared_ptr< ExtensibleKOMO > & komo, const std::vector<Vars>& allVars ) const; // use witness komo and task grounding inside it
 
   virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const = 0;
 
