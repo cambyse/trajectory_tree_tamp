@@ -639,68 +639,6 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   //watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 }
 
-// for checking the dimension consistency
-//auto nz = [](const arr& x)
-//{
-//  uint n = 0;
-//  for(auto i = 0; i < x.d0; ++i)
-//  {
-//    if(x(i)!=0.0)
-//      n++;
-//  }
-//  return n;
-//};
-
-//uint nx = 0;
-//uint nkx = 0;
-//for(auto w = 0; w < komos.size(); ++w)
-//{
-//  const auto& x = xmasks[w];
-//  const auto& kx = komos[w]->x;
-
-//  const auto n = nz(x);
-//  //CHECK_EQ(n, kx.d0, "corrupted dimensions");
-//  //if(n != kx.d0)
-//  std::cout << n << " vs. " << kx.d0 << std::endl;
-
-//  nkx += kx.d0;
-//  nx += n;
-//}
-
-//std::cout << nkx << " VS. " << nx << " VS. " << witness->x.d0 << std::endl;
-
-// debug
-//{
-//  auto gen2 = generatorFactory_.create("BranchGen", nJobs_, tree);
-//  auto subproblems2 = get_subproblems(gen2); // uncompressed pb, compressed pb, mapping
-//  auto allVars2 = get_all_vars(subproblems2, config_.microSteps_);   // get subproblem vars (local)
-
-//  for(auto w = 0; w < subproblems.size(); ++w)
-//  {
-//    const auto& sub = subproblems[w];
-//    const auto& uncompressed = std::get<0>(sub);
-//    const auto& compressed = std::get<1>(sub);
-//    const auto& mapping = std::get<2>(sub);
-
-//    const auto& sub2 = subproblems2[w];
-//    const auto& uncompressed2 = std::get<0>(sub2);
-//    const auto& compressed2 = std::get<1>(sub2);
-//    const auto& mapping2 = std::get<2>(sub2);
-
-//    std::cout << uncompressed.adjacency_matrix() << std::endl << std::endl;
-//    std::cout << uncompressed2.adjacency_matrix() << std::endl << std::endl;
-
-
-//    std::cout << compressed.adjacency_matrix() << std::endl << std::endl;
-//    std::cout << compressed2.adjacency_matrix() << std::endl << std::endl;
-
-//    //CHECK_EQ(uncompressed, uncompressed2, "");
-//    //CHECK_EQ(compressed, compressed2, "");
-
-//  }
-//}
-
-
 void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
 {
   using W = KomoWrapper;
