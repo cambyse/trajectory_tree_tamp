@@ -58,11 +58,6 @@ private:
   void computeQMask();
 
   /// MARKOVIAN
-  // poses
-  void optimizePoses( Policy & );
-  void optimizePosesFrom( const PolicyNodePtr & );
-  void savePoseOptimizationResults( Policy &, bool & poseOptimizationFailed ) const;
-
   // markovian path
   void optimizeMarkovianPath( Policy & );
   void optimizeMarkovianPathFrom( const PolicyNodePtr & );
@@ -88,11 +83,6 @@ private:
   KOMOFactory komoFactory_;
 
   std::vector< double > randomVec_; // used to randomize the initial configuration
-
-  // pose
-  std::unordered_map< uint, rai::Array< rai::KinematicWorld > > effKinematics_;
-  std::unordered_map< uint, arr > poseCosts_;       // node id -> costs for each world
-  std::unordered_map< uint, arr > poseConstraints_; // node id -> constraints for each world
 
   // markovian path
   const uint markovian_path_k_order_{2};
