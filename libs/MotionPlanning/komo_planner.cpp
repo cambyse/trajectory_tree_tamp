@@ -355,23 +355,18 @@ void KOMOPlanner::displayMarkovianPaths( const Policy & policy, double sec ) con
       const auto path_pieces_it = markovianPaths_.find(node_id);
       CHECK(path_pieces_it != markovianPaths_.cend(), "policy doesn't have planned paths!");
 
-      const auto& path_pieces = path_pieces_it->second;
-      CHECK(path_pieces.d0 > 0, "path pieces shouldn't be empty!");
-      const auto& world_witness_path_piece = path_pieces(w);
-      const auto path_piece_it = std::find_if(path_pieces.begin(), path_pieces.end(), [](const auto& piece) { return piece.d0 > 0; });
-      CHECK(path_piece_it != path_pieces.end(), "wrong path piece lookup!");
-      const auto& x_witness_path_piece = *path_piece_it;
+      const auto& x_witness_path_piece = path_pieces_it->second;
 
       const uint start_s = frames(0)(w).empty() ? 0 : markovian_path_k_order_; // don't append two times the prefixes!
-      const uint end_s = (node_id == leaf->id()) ? world_witness_path_piece.d0 : world_witness_path_piece.d0 /*- 1*/;
+      const uint end_s = (node_id == leaf->id()) ? x_witness_path_piece.d0 : x_witness_path_piece.d0 /*- 1*/;
 
-      CHECK(start_s < world_witness_path_piece.d0, "path pieces for world should not be empty");
-      CHECK(end_s <= world_witness_path_piece.d0, "path pieces for world should not be empty");
+      CHECK(start_s < x_witness_path_piece.d0, "path pieces for world should not be empty");
+      CHECK(end_s <= x_witness_path_piece.d0, "path pieces for world should not be empty");
 
       for(auto s = start_s ; s < end_s; ++s)
       {
         const auto q = x_witness_path_piece(s).q;
-        auto kin = world_witness_path_piece(s); // copy to get the good world
+        auto kin = x_witness_path_piece(s); // copy to get the good world
         kin.setJointState(q);
         frames(0)(w).append(kin);
       }
@@ -432,13 +427,8 @@ arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
         double end = q->depth();
 
         const auto var_0 = tree.get_vars0(TimeInterval{start, end}, branch, config_.microSteps_);
-        //const auto var_2 = tree.get_vars(TimeInterval{start, end},  l->id(), 2, config_.microSteps_);
-
         const auto decision_graph_id = nodeIdToDecisionGraphId.at(q->id());
-        const auto& path_pieces = markovianPaths_.at(decision_graph_id);
-        const auto path_piece_it = std::find_if(path_pieces.begin(), path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
-        CHECK( path_piece_it != path_pieces.end(), "Invalid path piece lookup!" );
-        const auto& witness_path_piece = *path_piece_it;
+        const auto& witness_path_piece = markovianPaths_.at(decision_graph_id);
 
         for(uint s=0; s < witness_path_piece.d0 - markovian_path_k_order_; ++s)
         {
@@ -456,10 +446,7 @@ arr KOMOPlanner::getMarkovianPathTree( const Policy & policy ) const
         if(p->id() != 0)
         {
           const auto parent_decision_graph_id = nodeIdToDecisionGraphId.at(p->id());
-          const auto& parent_path_pieces = markovianPaths_.at(parent_decision_graph_id);
-          const auto parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [this](const auto& piece) { return piece.d0 >= config_.microSteps_ + markovian_path_k_order_; });
-          CHECK( parent_path_piece_it != parent_path_pieces.end(), "Invalid path piece lookup!" );
-          const auto& witness_parent_path_piece = *parent_path_piece_it;
+          const auto& witness_parent_path_piece = markovianPaths_.at(parent_decision_graph_id);
 //          std::cout << "check transition " << p->data().decisionGraphNodeId << "->" << q->data().decisionGraphNodeId << " (" << p->id() << "->" << q->id() << ")" << std::endl;
 //          std::cout << witness_path_piece(0).q << " vs. " << witness_parent_path_piece(-2).q << std::endl;
 //          std::cout << witness_path_piece(1).q << " vs. " << witness_parent_path_piece(-1).q << std::endl;
@@ -696,116 +683,109 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
   if( markovianPathCosts_.find( node->data().decisionGraphNodeId ) == markovianPathCosts_.end() )
   {
     const auto N = node->data().beliefState.size();
-    effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ] = rai::Array< rai::KinematicWorld >( N );
-    markovianPaths_[ node->data().decisionGraphNodeId ] = rai::Array< rai::Array< rai::KinematicWorld > >( N );
     markovianPathCosts_      [ node->data().decisionGraphNodeId ] = 0;
     markovianPathConstraints_[ node->data().decisionGraphNodeId ] = 0;
 
-    for( auto w = 0; w < N; ++w )
+    const auto w_it = std::find_if(node->data().beliefState.begin(), node->data().beliefState.end(), [](const double p) { return p > eps; });
+    const auto w = std::distance(node->data().beliefState.begin(), w_it);
+
+    if(!node->isRoot()) CHECK( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId ) != effMarkovianPathKinematics_.end(), "no parent effective kinematic!" );
+
+    rai::KinematicWorld kin = node->isRoot() ? *( startKinematics_( w ) ) : ( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId )->second );
+
+    // create komo
+    auto komo = komoFactory_.createKomo();
+
+    // set-up komo
+    komo->setModel( kin, true/*, false, true, false, false*/ );
+    komo->setTiming( 1.0, config_.microSteps_, config_.secPerPhase_, 2 );
+    komo->setSquaredQAccelerations();
+    komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
+
+    komo->groundInit();
+    komo->groundTasks( 0, node->data().leadingKomoArgs );
+
+    komo->reset();
+
+    // apply correct prefix
+    if(!node->isRoot())
     {
-      if( node->data().beliefState[ w ] > eps )
+      std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
+
+      const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second;
+
+      for(auto s = 0; s < komo->k_order; ++s)
       {
-        if(!node->isRoot()) CHECK( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId ) != effMarkovianPathKinematics_.end(), "no parent effective kinematic!" );
+        const auto& kin = parent_path_piece( -int(komo->k_order) + s );
+        komo->configurations(s)->setJointState(kin.q);
+      }
+    }
 
-        rai::KinematicWorld kin = node->isRoot() ? *( startKinematics_( w ) ) : ( effMarkovianPathKinematics_.find( node->parent()->data().decisionGraphNodeId )->second( w ) );
+    // run
+    try {
+      komo->verbose = 0;
+      komo->run();
+    } catch( const char* msg ){
+      cout << "KOMO FAILED: " << msg <<endl;
+    }
 
-        // create komo
-        auto komo = komoFactory_.createKomo();
-
-        // set-up komo
-        komo->setModel( kin, true/*, false, true, false, false*/ );
-        komo->setTiming( 1.0, config_.microSteps_, config_.secPerPhase_, 2 );
-        komo->setSquaredQAccelerations();
-        komo->setFixSwitchedObjects( -1., -1., 3e1 ); // exact meaning?
-
-        komo->groundInit();
-        komo->groundTasks( 0, node->data().leadingKomoArgs );
-
-        komo->reset();
-
-        // apply correct prefix
-        if(!node->isRoot())
-        {
-          std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
-
-          const auto& parent_path_pieces = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second;
-          const auto& parent_path_piece_it = std::find_if(parent_path_pieces.begin(), parent_path_pieces.end(), [](const auto& piece) { return piece.d0 > 0; } );
-          const auto& parent_path_piece = *parent_path_piece_it;
-
-          for(auto s = 0; s < komo->k_order; ++s)
-          {
-            const auto& kin = parent_path_piece( -int(komo->k_order) + s );
-            komo->configurations(s)->setJointState(kin.q);
-          }
-        }
-
-        // run
-        try {
-          komo->verbose = 0;
-          komo->run();
-        } catch( const char* msg ){
-          cout << "KOMO FAILED: " << msg <<endl;
-        }
-
-        if( node->id() == 4 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
-        {
+    if( node->id() == 4 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
+    {
 //          for(const auto& f: komo->world.frames)
 //          {
 //            std::cout << f->name << "--->---" << (f->parent ? f->parent->name : "" ) << std::endl;
 //          }
 
-          //komo->getReport(true);
-          //komo->configurations.last()->watch(true);
-          //komo->displayTrajectory();
+      //komo->getReport(true);
+      //komo->configurations.last()->watch(true);
+      //komo->displayTrajectory();
 
-            //komo->saveTrajectory( std::to_string( node->id() ) );
-            //komo->plotVelocity( std::to_string( node->id() ) );
-           //rai::wait();
-        }
-
-        const Graph result = komo->getReport();
-
-        const double cost = GetCost(result, config_.taskIrrelevantForPolicyCost);
-        const double constraints = result.get<double>( { "total", "constraints" } );
-
-        //const double cost2 = getCost(komo);
-
-        std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
-
-        markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;
-        markovianPathConstraints_[ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * constraints;
-
-        // what to do with the cost and constraints here??
-        if( constraints >= config_.maxConstraint_ )
-        {
-          feasible = false;
-
-          //komo->getReport(true);
-          //komo->configurations.last()->watch(true);
-          //komo->displayTrajectory();
-        }
-
-        // update effective kinematic
-        effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) = *komo->configurations.last();
-
-        // copy path
-        for( auto s = 0; s < komo->configurations.N; ++s )
-        {
-          rai::KinematicWorld kin( *komo->configurations( s ) );
-          markovianPaths_[ node->data().decisionGraphNodeId ]( w ).append( kin );
-        }
-
-        // update switch
-        for( rai::KinematicSwitch * sw: komo->switches )
-        {
-          if( sw->timeOfApplication >=2 ) sw->apply( effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ) );
-        }
-        effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ]( w ).getJointState();
-
-        // free
-        freeKomo( komo );
-      }
+        //komo->saveTrajectory( std::to_string( node->id() ) );
+        //komo->plotVelocity( std::to_string( node->id() ) );
+       //rai::wait();
     }
+
+    const Graph result = komo->getReport();
+
+    const double cost = GetCost(result, config_.taskIrrelevantForPolicyCost);
+    const double constraints = result.get<double>( { "total", "constraints" } );
+
+    //const double cost2 = getCost(komo);
+
+    std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
+
+    markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;
+    markovianPathConstraints_[ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * constraints;
+
+    // what to do with the cost and constraints here??
+    if( constraints >= config_.maxConstraint_ )
+    {
+      feasible = false;
+
+      //komo->getReport(true);
+      //komo->configurations.last()->watch(true);
+      //komo->displayTrajectory();
+    }
+
+    // update effective kinematic
+    effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ] = *komo->configurations.last();
+
+    // copy path
+    for( auto s = 0; s < komo->configurations.N; ++s )
+    {
+      rai::KinematicWorld kin( *komo->configurations( s ) );
+      markovianPaths_[ node->data().decisionGraphNodeId ].append( kin );
+    }
+
+    // update switch
+    for( rai::KinematicSwitch * sw: komo->switches )
+    {
+      if( sw->timeOfApplication >=2 ) sw->apply( effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ] );
+    }
+    effMarkovianPathKinematics_[ node->data().decisionGraphNodeId ].getJointState();
+
+    // free
+    freeKomo( komo );
   }
   // solve for next nodes if this one was feasible
   if( feasible )
