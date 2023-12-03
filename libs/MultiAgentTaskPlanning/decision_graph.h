@@ -48,7 +48,6 @@ struct NodeData
   NodeData()
     : states()
     , beliefState()
-    //, leadingArtifact()
     , terminal( false )
     , agentId( 0 )
     , nodeType( NodeType::ACTION )
@@ -58,13 +57,11 @@ struct NodeData
 
   NodeData( const std::vector< std::string > & states,
             const std::vector< double      > & beliefState,
-            //const std::string leadingArtifact,
             bool terminal,
             uint agentId,
             NodeType nodeType )
     : states( states )
     , beliefState( beliefState )
-    //, leadingArtifact( leadingArtifact )
     , terminal( terminal )
     , agentId( agentId )
     , nodeType( nodeType )
@@ -74,8 +71,7 @@ struct NodeData
 
   std::vector< std::string > states;
   std::vector< double      > beliefState;
-  //std::string leadingArtifact; // leading action of leading observation
-  //
+
   bool terminal;
   uint agentId;
   NodeType nodeType;

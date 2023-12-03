@@ -42,11 +42,6 @@ void GraphPlanner::solve()
 
   //graph_.saveGraphToFile( "graph.gv" );
 
-//  if( rewards_.empty() )
-//  {
-//    initializeRewards();
-//  }
-
   valueIteration();
 
   decideOnDecisionGraphCopy();
@@ -118,8 +113,6 @@ void GraphPlanner::integrate( const Policy & policy )
       }
     }
   }
-
-  // go through
 }
 
 // getters
@@ -149,11 +142,6 @@ void GraphPlanner::buildGraph( bool graph )
   graph_.build( maxDepth_, graph );
 
   std::cout << "GraphPlanner::buildGraph.. end, size of graph:" << graph_.size() << std::endl;
-}
-
-void GraphPlanner::initializeRewards()
-{
-  //rewards_ = std::vector< double >( graph_.nodes().size() * graph_.nodes().size(), r0_ );
 }
 
 PolicyNodeData GraphPlanner::decisionGraphtoPolicyData( const NodeData & dData, uint id ) const

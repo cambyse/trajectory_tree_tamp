@@ -170,9 +170,9 @@ std::queue< GraphNode< NodeData >::ptr > DecisionGraph::expand( const GraphNode<
 
           // outcome.p
           // node after observation, will have to choose between several actions
-          auto p    = std::get<0>(outcome);
-          auto data = std::get<1>(outcome);
-          auto observation = std::get<2>(outcome);
+          const auto& p    = std::get<0>(outcome);
+          const auto& data = std::get<1>(outcome);
+          const auto& observation = std::get<2>(outcome);
           const auto childChildData = GraphNodeDataType( data.states, data.beliefState, data.terminal, nextAgentId, NodeData::NodeType::ACTION );
 
           bool nodeNeedsToBeCreated = true;
