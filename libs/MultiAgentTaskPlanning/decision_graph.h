@@ -159,9 +159,9 @@ public:
   //void backtrack( const GraphNode< NodeData >::ptr& node, const double expectedReward );
   //
   GraphNodeType::ptr root() const { return root_; }
-  std::vector< std::weak_ptr< GraphNodeType > > nodes() const { return nodes_; }
-  std::list< std::weak_ptr< GraphNodeType > > terminalNodes() const { return terminalNodes_; }
-  std::vector< EdgeDataType > edges() const { return edges_; }
+  const std::vector< std::weak_ptr< GraphNodeType > >& nodes() const { return nodes_; }
+  const std::list< std::weak_ptr< GraphNodeType > >& terminalNodes() const { return terminalNodes_; }
+  const std::vector< EdgeDataType >& edges() const { return edges_; }
 
   void _addNode( const std::weak_ptr< GraphNodeType > & node ); // for tests only!!
   void _addEdge( uint child, uint parent, double p, const std::string & artifact ); // for tests only!!

@@ -194,7 +194,7 @@ void GraphPlanner::buildPolicy()
 
     for( const auto& v : u->children() )
     {
-      auto edge = decidedGraph_.edges()[ v->id() ][ u->id() ];
+      const auto& edge = decidedGraph_.edges()[ v->id() ].at( u->id() );
       PolicyNodeData data = decisionGraphtoPolicyData( v->data(), v->id() );
       data.leadingKomoArgs = decisionArtifactToKomoArgs( edge.second );
       data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
@@ -205,7 +205,7 @@ void GraphPlanner::buildPolicy()
 
       for( const auto& w : v->children() ) // skip obs nodes
       {
-        auto edge = decidedGraph_.edges()[ w->id() ][ v->id() ];
+        const auto& edge = decidedGraph_.edges()[ v->id() ].at( u->id() );
         Q.push( std::make_pair( w, vSke ) );
       }
     }
@@ -243,11 +243,11 @@ void MCTSPlanner::solve()
     expandMCTS();
   }
 
+  buildPolicy();
+
 //  valueIteration();
 
 //  decideOnDecisionGraphCopy();
-
-//  buildPolicy();
 }
 
 void MCTSPlanner::integrate( const Policy & policy )
@@ -271,6 +271,64 @@ void MCTSPlanner::expandMCTS()
   //void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps );
 
   tree_.expandMCTS( rewards_.R0(), nIterMin_, nIterMax_, rollOutMaxSteps_, explorationTermC_ );
+}
+
+void MCTSPlanner::buildPolicy()
+{
+  std::cout << "MCTSPlanner::buildPolicy.." << std::endl;
+
+  using NodeTypePtr = std::shared_ptr< DecisionGraph::GraphNodeType >;
+
+  std::stack< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
+  //std::queue< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
+
+  // create policy root node from decision graph node
+  const auto& root = tree_.root();
+  PolicyNodeData rootData;
+  rootData.beliefState = root->data().beliefState;
+
+  const auto& policyRoot = GraphNode< PolicyNodeData >::root( rootData );
+
+  Q.push( std::make_pair( tree_.root(), policyRoot ) );
+
+  while( ! Q.empty() )
+  {
+    auto uPair = Q.top();
+    Q.pop();
+
+    const auto& u     = uPair.first;
+    const auto& uSke = uPair.second;
+
+    if( u->children().empty() )
+      continue;
+
+    const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
+
+    const auto& edge = tree_.edges()[ v->id() ].at( u->id() );
+    PolicyNodeData data;// = decisionGraphtoPolicyData( v->data(), v->id() );
+    data.beliefState = v->data().beliefState;
+    data.markovianReturn = rewards_.R0();
+    data.decisionGraphNodeId = v->id();
+    data.leadingKomoArgs = decisionArtifactToKomoArgs( edge.second );
+    //data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
+    data.p = transitionProbability(uSke->data().beliefState, data.beliefState);
+    auto vSke = uSke->makeChild( data );
+
+//      //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
+
+    for( const auto& w : v->children() ) // skip obs nodes
+    {
+      const auto& edge = tree_.edges()[ w->id() ].at( v->id() );
+      Q.push( std::make_pair( w, vSke ) );
+    }
+  }
+
+  policy_ = Policy( policyRoot );
+
+  //policy_.setValue( values_[ decisionGraph().root()->id() ] );
+  //CHECK(policy_.value() > std::numeric_limits<double>::lowest(), "extracted policy seems to be infeasible (infinite costs)!");
+
+  std::cout << "MCTSPlanner::buildPolicy.. end (value=" << policy_.value() << ")" << std::endl;
 }
 
 }

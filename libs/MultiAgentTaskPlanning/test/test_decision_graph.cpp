@@ -214,7 +214,7 @@ TEST(DecisionGraph, expandedLeadingAction) {
   DecisionGraph graph( p.engine(), p.possibleStartStates(), p.egoBeliefState() );
   graph.expand( graph.root() );
 
-  auto leadingAction = graph.edges() [ 1 ][ 0 ].second;
+  auto leadingAction = graph.edges() [ 1 ].at( 0 ).second;
   ASSERT_NE( leadingAction.find( "look lanes" ), std::string::npos );
 }
 
@@ -225,7 +225,7 @@ TEST(DecisionGraph, expandedLeadingObservation0) {
   graph.expand( graph.root() );
   auto childChild = graph.root()->children().back()->children().back();
 
-  auto leadingObservation = graph.edges() [ childChild->id() ][ 0 ].second;
+  auto leadingObservation = graph.edges() [ childChild->id() ].at( 0 ).second;
   ASSERT_EQ( leadingObservation, "" );
 }
 
@@ -236,7 +236,7 @@ TEST(DecisionGraph, expandedLeadingObservation1) {
   graph.expand( graph.root() );
   auto childChild = graph.root()->children().front()->children().front();
 
-  auto leadingObservation = graph.edges() [ childChild->id() ][ 1 ].second;
+  auto leadingObservation = graph.edges() [ childChild->id() ].at( 1 ).second;
   ASSERT_NE( leadingObservation.find( "free lane_2" ), std::string::npos );
 }
 
@@ -247,7 +247,7 @@ TEST(DecisionGraph, expandedLeadingObservation2) {
   graph.expand( graph.root() );
   auto childChild = graph.root()->children().front()->children().back();
 
-  auto leadingObservation = graph.edges() [ childChild->id() ][ 0 ].second;;
+  auto leadingObservation = graph.edges() [ childChild->id() ].at( 0 ).second;;
   ASSERT_EQ( leadingObservation, "" );
 }
 

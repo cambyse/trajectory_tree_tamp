@@ -94,6 +94,9 @@ public:
   void expandMCTS();
 
 private:
+  void buildPolicy();
+
+private:
   LogicParser parser_;
   DecisionGraph tree_;
   Policy policy_;
