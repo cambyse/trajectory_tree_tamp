@@ -76,9 +76,14 @@ void display_robot()
 void plan()
 {
   {
-  matp::MCTSPlanner tp;
-  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-  tp.solve();
+    matp::MCTSPlanner tp;
+
+    tp.setR0( -1.0 );
+    tp.setNIterMinMax( 50, 100 );
+    tp.setRollOutMaxSteps( 50 );
+
+    tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+    tp.solve();
   }
   //
   matp::GraphPlanner tp;

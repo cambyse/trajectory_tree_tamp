@@ -268,7 +268,9 @@ Policy MCTSPlanner::getPolicy() const
 
 void MCTSPlanner::expandMCTS()
 {
-  tree_.expandMCTS();
+  //void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps );
+
+  tree_.expandMCTS( rewards_.R0(), nIterMin_, nIterMax_, rollOutMaxSteps_, explorationTermC_ );
 }
 
 }

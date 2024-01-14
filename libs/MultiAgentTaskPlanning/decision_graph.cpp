@@ -261,7 +261,7 @@ double priorityV0(const GraphNode< NodeData >::ptr& node)
 
 
 //
-double priority( const GraphNode< NodeData >::ptr& node )
+double priority( const GraphNode< NodeData >::ptr& node, const double c )
 {
   const auto& node_data = node->data();
 
@@ -284,14 +284,9 @@ double priority( const GraphNode< NodeData >::ptr& node )
     return std::numeric_limits<double>::infinity();
   }
 
-  const double priority = node_data.expectedRewardToGoal + 1.0 * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) ); // TODO: Use constant for explo
+  const double priority = node_data.expectedRewardToGoal + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) ); // TODO: Use constant for explo
 
   std::cout << "[priority] of " << node->id() << " = " << priority << std::endl;
-
-  if(std::isnan(priority))
-  {
-    int a{0};
-  }
 
   return priority;
 }
@@ -331,13 +326,13 @@ std::string getNotObservableFact( const std::string& fullState )
   return "";
 }
 
-GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::ptr& node )
+GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::ptr& node, const double c )
 {
   double max_prio{std::numeric_limits<double>::lowest()};
   GraphNode< NodeData >::ptr best_uct_child{};
   for( const auto& child : node->children() )
   {
-    const auto prio = priority( child );
+    const auto prio = priority( child, c );
 
     if( prio > max_prio )
     {
@@ -349,28 +344,25 @@ GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::p
   return best_uct_child;
 }
 
-void DecisionGraph::expandMCTS()
+void DecisionGraph::expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps, const double c )
 {
   // reference https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf Alg 1.
   CHECK( engine_.agentNumber() == 1, "MCTS works here only for one agent" );
 
-  const std::size_t n_it_min{50};
-  const std::size_t n_it_max{60};
-
-  std::size_t n_it{0};
+  std::size_t n_iter{0};
 
   std::unordered_set< uint > expandedNodesIds;
 
-  while( ( root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest() || n_it < n_it_min ) && n_it < n_it_max )
+  while( ( root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest() || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
-    std::cout << "\n-------" << n_it << "-------" << std::endl;
+    std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
     // sample state
     const auto stateIndex = sampleStateIndex( root_->data().beliefState );
 
-    simulate( root_, stateIndex, 0, expandedNodesIds );
+    simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, c, expandedNodesIds );
 
-    const auto max_reward_child_it = std::max_element( root_->children().cbegin(), root_->children().cend(), [](const auto& lhs, const auto& rhs) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
+    const auto max_reward_child_it = std::max_element( root_->children().cbegin(), root_->children().cend(), []( const auto& lhs, const auto& rhs ) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
     root_->data().expectedRewardToGoal = (*max_reward_child_it)->data().expectedRewardToGoal;
 
     // save current MCTS tree
@@ -378,7 +370,7 @@ void DecisionGraph::expandMCTS()
     //ss << "decision_graph_" << n_it << ".gv";
     //saveMCTSTreeToFile( ss.str(), getNotObservableFact( root_->data().states[stateIndex] ) );
 
-    n_it++;
+    n_iter++;
   }
 
   std::stringstream ss;
@@ -386,7 +378,13 @@ void DecisionGraph::expandMCTS()
   saveMCTSTreeToFile( ss.str(), "" );
 }
 
-double DecisionGraph::simulate( const GraphNodeType::ptr& node, const std::size_t stateIndex, const std::size_t depth, std::unordered_set< uint > & expandedNodesIds )
+double DecisionGraph::simulate( const GraphNodeType::ptr& node,
+                                const std::size_t stateIndex,
+                                const std::size_t depth,
+                                const double r0,
+                                const std::size_t rolloutMaxSteps,
+                                const double c,
+                                std::unordered_set< uint > & expandedNodesIds )
 {
   std::cout << "[simulate] Simulate from node: " << node->id() << std::endl;
 
@@ -429,7 +427,7 @@ double DecisionGraph::simulate( const GraphNodeType::ptr& node, const std::size_
 
     std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
 
-    return rollOut( states, rollOutBeliefState, 20 );
+    return rollOut( states, rollOutBeliefState, 0, rolloutMaxSteps );
   }
 
   if( node->children().empty() )
@@ -438,7 +436,7 @@ double DecisionGraph::simulate( const GraphNodeType::ptr& node, const std::size_
   }
 
   // Choose best UCT action based on UCB
-  const auto best_uct_child = getMostPromisingChild( node );
+  const auto best_uct_child = getMostPromisingChild( node, c );
 
   std::cout << "[simulate] node " << best_uct_child->id() << " is most promising so far.." << std::endl;
 
@@ -496,7 +494,7 @@ double DecisionGraph::simulate( const GraphNodeType::ptr& node, const std::size_
 
   std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
-  double reward = -1.0 + simulate( action_node_after_observation, stateIndex, depth + 1, expandedNodesIds ); // TODO: change with R0
+  double reward = r0 + simulate( action_node_after_observation, stateIndex, depth + 1, r0, rolloutMaxSteps, c, expandedNodesIds );
 
   // increments mc counters
   node->data().n_rollouts++;
@@ -605,10 +603,10 @@ void DecisionGraph::saveMCTSTreeToFile( const std::string & filename, const std:
 //  }
 //}
 
-double DecisionGraph::rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const int max_depth )
+double DecisionGraph::rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const std::size_t steps, const std::size_t rolloutMaxSteps )
 {
   std::stringstream ss;
-  for(auto i = max_depth; i < 20; ++i)
+  for(auto i = 0; i < steps; ++i)
   {
     ss << "-";
   }
@@ -616,9 +614,8 @@ double DecisionGraph::rollOut( const std::vector< std::string > & states, const 
   const std::string prefix = ss.str();
 
   CHECK( engine_.agentNumber() == 1, "not supported for multi agent");
-  CHECK( max_depth >= 0, "invalid depth");
 
-  if( max_depth == 0 )
+  if( steps == rolloutMaxSteps )
   {
     return 0.0; // TODO, find some heuristic here?
   }
@@ -649,11 +646,11 @@ double DecisionGraph::rollOut( const std::vector< std::string > & states, const 
 
     if(!nodeData.terminal)
     {
-      simulatedReward += p * rollOut(nodeData.states, nodeData.beliefState, max_depth - 1);
+      simulatedReward += p * rollOut(nodeData.states, nodeData.beliefState, steps + 1, rolloutMaxSteps);
     }
     else
     {
-      std::cout << "  [rollOut] reached a terminal state!" << std::endl;
+      std::cout << "  [rollOut] reached a TERMINAL STATE!" << std::endl;
     }
   }
 

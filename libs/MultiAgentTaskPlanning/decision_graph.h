@@ -143,13 +143,19 @@ public:
   void build( int maxSteps, bool graph = false );
   std::queue< GraphNodeType::ptr > expand( const GraphNodeType::ptr & node );
   // mcts building
-  void expandMCTS();
-  double simulate( const GraphNodeType::ptr& node, const std::size_t stateIndex, const std::size_t depth, std::unordered_set< uint > & expandedNodesIds );
+  void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps, const double c );
+  double simulate( const GraphNodeType::ptr& node,
+                   const std::size_t stateIndex,
+                   const std::size_t depth,
+                   const double r0,
+                   const std::size_t rolloutMaxSteps,
+                   const double c,
+                   std::unordered_set< uint > & expandedNodesIds );
   void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
 
   //
   //void expandMCTSv0();
-  double rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const int max_depth );
+  double rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const std::size_t steps, const std::size_t rolloutMaxSteps );
   //void backtrack( const GraphNode< NodeData >::ptr& node, const double expectedReward );
   //
   GraphNodeType::ptr root() const { return root_; }

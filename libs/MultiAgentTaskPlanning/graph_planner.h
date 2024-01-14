@@ -81,6 +81,12 @@ public:
   virtual void solve() override;
   virtual void integrate( const Policy & policy ) override;
 
+  // other setters
+  void setR0( double r0 ) { rewards_.setR0(r0); }
+  void setNIterMinMax( std::size_t nMin, std::size_t nMax ) { nIterMin_ = nMin; nIterMax_ = nMax; }
+  void setRollOutMaxSteps( std::size_t nMaxSteps ) { rollOutMaxSteps_ = nMaxSteps; }
+  void setExplorationTerm( double c ) { explorationTermC_ = c; }
+
   // getters
   virtual bool terminated() const override;
   Policy getPolicy() const override;
@@ -96,6 +102,12 @@ private:
   mutable Rewards rewards_;// current state of rewards
   std::vector< double > values_;
   DecisionGraph decidedGraph_;
+
+  // MCTS parameters
+  std::size_t nIterMin_{0};
+  std::size_t nIterMax_{50};
+  std::size_t rollOutMaxSteps_{50};
+  double explorationTermC_{1.0};
 };
 
 } // namespace matp
