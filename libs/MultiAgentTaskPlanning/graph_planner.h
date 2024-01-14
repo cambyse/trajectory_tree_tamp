@@ -73,4 +73,29 @@ private:
   DecisionGraph decidedGraph_;
 };
 
+class MCTSPlanner : public TaskPlanner
+{
+public:
+  // modifiers
+  virtual void setFol( const std::string & descrition ) override;
+  virtual void solve() override;
+  virtual void integrate( const Policy & policy ) override;
+
+  // getters
+  virtual bool terminated() const override;
+  Policy getPolicy() const override;
+
+  void expandMCTS();
+
+private:
+  LogicParser parser_;
+  DecisionGraph tree_;
+  Policy policy_;
+
+  // value iteration
+  mutable Rewards rewards_;// current state of rewards
+  std::vector< double > values_;
+  DecisionGraph decidedGraph_;
+};
+
 } // namespace matp

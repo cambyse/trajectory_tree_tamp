@@ -45,7 +45,7 @@ public:
   static ptr root( const T & data ) { graphCounter_++; return ptr( new GraphNode< T >( data ) ); }
 
   bool isRoot() const { return parent() == nullptr; }
-  std::list< ptr > children() const { return children_; }
+  const std::list< ptr >& children() const { return children_; }
   ptr parent() const
   {
     if( parents_.size() == 0 )

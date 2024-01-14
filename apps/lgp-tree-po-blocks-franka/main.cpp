@@ -75,12 +75,18 @@ void display_robot()
 
 void plan()
 {
+  {
+  matp::MCTSPlanner tp;
+  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+  tp.solve();
+  }
+  //
   matp::GraphPlanner tp;
   mp::KOMOPlanner mp;
 
   // set planning parameters
   tp.setR0( -1.0 ); //-1.0, -0.5
-  tp.setMaxDepth( 20 );
+  tp.setMaxDepth( 6 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );
@@ -104,7 +110,7 @@ void plan()
   mp.registerTask( "unstack"      , groundTreeUnStack );
 
   /// BUILD DECISION GRAPH
-  tp.buildGraph(true);
+  tp.buildGraph(false);
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
@@ -144,17 +150,15 @@ void plan()
   //policy.load("policy-0");
 #endif
   // default method
-  mp.display(policy, 200);
+  //mp.display(policy, 200);
 
-  /// JOINT OPTIMIZATION
-  // single joint optimization
-//  {
-//    auto po     = MotionPlanningParameters( policy.id() );
-//    po.setParam( "type", "jointSparse" );
-//    mp.solveAndInform( po, policy ); // it displays
-//  }
+  {
+    auto po     = MotionPlanningParameters( policy.id() );
+    po.setParam( "type", "EvaluateMarkovianCosts" );
+    mp.solveAndInform( po, policy );
+  }
 
-  /// JOINT OPTIMIZATION
+  /// DECOMPOSED SPARSE OPTIMIZATION
   // adsm
   {
     auto po     = MotionPlanningParameters( policy.id() );

@@ -237,6 +237,13 @@ void plan()
   }
 }
 
+void planMCTS()
+{
+  matp::MCTSPlanner tp;
+  tp.setFol( "LGP-1-block-6-sides-fol.g" );
+  tp.solve();
+}
+
 //===========================================================================
 
 int main(int argc,char **argv)
@@ -247,7 +254,9 @@ int main(int argc,char **argv)
 
   //display_robot();
 
-  plan();
+  //plan();
+
+  planMCTS();
 
   return 0;
 }

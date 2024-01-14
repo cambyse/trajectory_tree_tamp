@@ -27,5 +27,4 @@ private:
   std::ostream & ss_;
   std::list< std::pair< POGraphNode::ptr, POGraphNode::ptr > > savedEdges_;
 };
-
 }

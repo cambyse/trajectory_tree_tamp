@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include <logic_engine.h>
 
@@ -65,6 +66,9 @@ struct NodeData
     , terminal( terminal )
     , agentId( agentId )
     , nodeType( nodeType )
+    // mcst
+    , expectedRewardToGoal{ std::numeric_limits<double>::lowest()}
+    , n_rollouts(0)
   {
     computeHash();
   }
@@ -75,6 +79,12 @@ struct NodeData
   bool terminal;
   uint agentId;
   NodeType nodeType;
+
+  // mcts
+  double expectedRewardToGoal;
+  std::size_t n_rollouts;
+  std::string leadingAction;
+  //
 
   std::size_t hash() const
   {
@@ -110,6 +120,8 @@ bool sameState ( const NodeData & a, const NodeData & b );
 
 std::ostream& operator<<(std::ostream& stream, NodeData const& data);
 
+std::size_t sampleStateIndex( const std::vector< double >& bs );
+
 class DecisionGraph
 {
 public:
@@ -127,8 +139,19 @@ public:
   DecisionGraph( const LogicEngine &, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState );
   bool empty() const { return nodes_.size() <= 1; } // root node
   std::size_t size() const { return nodes_.size(); }
+  // breadth-first building
   void build( int maxSteps, bool graph = false );
   std::queue< GraphNodeType::ptr > expand( const GraphNodeType::ptr & node );
+  // mcts building
+  void expandMCTS();
+  double simulate( const GraphNodeType::ptr& node, const std::size_t stateIndex, const std::size_t depth, std::unordered_set< uint > & expandedNodesIds );
+  void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
+
+  //
+  //void expandMCTSv0();
+  double rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const int max_depth );
+  //void backtrack( const GraphNode< NodeData >::ptr& node, const double expectedReward );
+  //
   GraphNodeType::ptr root() const { return root_; }
   std::vector< std::weak_ptr< GraphNodeType > > nodes() const { return nodes_; }
   std::list< std::weak_ptr< GraphNodeType > > terminalNodes() const { return terminalNodes_; }
@@ -143,7 +166,11 @@ public:
 
   // public for testing purpose
   std::vector< std::string > getCommonPossibleActions( const GraphNodeType::ptr & node, uint agentId ) const;
+  std::vector< std::string > getCommonPossibleActions( const std::vector< std::string > & states, const std::vector< double >& bs, uint agentId ) const;
+
   std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const GraphNodeType::ptr & node, const std::string & action ) const;
+  std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId ) const;
+
 
 private:
   void copy( const DecisionGraph & );

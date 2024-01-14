@@ -224,4 +224,51 @@ uint GraphPlanner::fromToIndex( uint from, uint to ) const
   return from * graph_.size() + to;
 }
 
+///
+
+// modifiers
+void MCTSPlanner::setFol( const std::string & descrition )
+{
+  if( ! boost::filesystem::exists( descrition ) ) throw FolFileNotFound();
+
+  parser_.parse( descrition );
+  tree_ = DecisionGraph( parser_.engine(), parser_.possibleStartStates(), parser_.egoBeliefState() );
+}
+
+
+void MCTSPlanner::solve()
+{
+  if( tree_.empty() )
+  {
+    expandMCTS();
+  }
+
+//  valueIteration();
+
+//  decideOnDecisionGraphCopy();
+
+//  buildPolicy();
+}
+
+void MCTSPlanner::integrate( const Policy & policy )
+{
+
+}
+
+// getters
+bool MCTSPlanner::terminated() const
+{
+  return false;
+}
+
+Policy MCTSPlanner::getPolicy() const
+{
+  return policy_;
+}
+
+void MCTSPlanner::expandMCTS()
+{
+  tree_.expandMCTS();
+}
+
 }

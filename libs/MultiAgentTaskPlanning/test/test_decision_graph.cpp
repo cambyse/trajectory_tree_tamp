@@ -447,6 +447,20 @@ TEST(DecisionGraph, copyOfGraph) {
   EXPECT_EQ( graph.size(), graphCopy.size() );
 }
 
+// MCTS related stuff
+
+TEST(DecisionGraph, sampleStateIndex)
+{
+  const std::vector<double> beliefState{0.5, 0.4, 0.1};
+
+  for(auto i{0}; i < 50; ++i)
+  {
+    std::size_t stateIndex = sampleStateIndex( beliefState );
+
+    EXPECT_LE( stateIndex, beliefState.size() );
+  }
+}
+
 //
 int main(int argc, char **argv)
 {
