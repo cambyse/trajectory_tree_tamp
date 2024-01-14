@@ -1,4 +1,5 @@
 #include <graph_planner.h>
+#include <utils.h>
 
 #include <gtest/gtest.h>
 
@@ -331,26 +332,6 @@ TEST_F(GraphPlannerTest, compareNumberOfNodesOfDecidedGraphAndPolicy) {
   EXPECT_EQ( decided.size(), 8 );
 }
 
-class MCTSPlannerTest : public ::testing::Test {
- protected:
-  MCTSPlanner tp;
-};
-
-TEST_F(MCTSPlannerTest, MCTS)
-{
-  {
-  GraphPlanner gp;
-  gp.setFol( "data/LGP-overtaking-single-agent-2w.g" );
-  gp.buildGraph( false );
-  gp.saveGraphToFile( "decision_graph.gv" );
-  generatePngImage( "decision_graph.gv" );
-  }
-
-  //tp.setFol( "data/LGP-overtaking-single-agent-2w.g" );
-  //tp.setFol( "data/LGP-3-blocks-1-side-fol.g" );
-  tp.setFol( "data/LGP-2-blocks-1-side-fol.g" );
-  tp.solve();
-}
 //
 int main(int argc, char **argv)
 {

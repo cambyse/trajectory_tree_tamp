@@ -120,8 +120,6 @@ bool sameState ( const NodeData & a, const NodeData & b );
 
 std::ostream& operator<<(std::ostream& stream, NodeData const& data);
 
-std::size_t sampleStateIndex( const std::vector< double >& bs );
-
 class DecisionGraph
 {
 public:
@@ -139,25 +137,11 @@ public:
   DecisionGraph( const LogicEngine &, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState );
   bool empty() const { return nodes_.size() <= 1; } // root node
   std::size_t size() const { return nodes_.size(); }
+
   // breadth-first building
   void build( int maxSteps, bool graph = false );
   std::queue< GraphNodeType::ptr > expand( const GraphNodeType::ptr & node );
-  // mcts building
-  void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps, const double c );
-  double simulate( const GraphNodeType::ptr& node,
-                   const std::size_t stateIndex,
-                   const std::size_t depth,
-                   const double r0,
-                   const std::size_t rolloutMaxSteps,
-                   const double c,
-                   std::unordered_set< uint > & expandedNodesIds );
-  void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
 
-  //
-  //void expandMCTSv0();
-  double rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const std::size_t steps, const std::size_t rolloutMaxSteps );
-  //void backtrack( const GraphNode< NodeData >::ptr& node, const double expectedReward );
-  //
   GraphNodeType::ptr root() const { return root_; }
   const std::vector< std::weak_ptr< GraphNodeType > >& nodes() const { return nodes_; }
   const std::list< std::weak_ptr< GraphNodeType > >& terminalNodes() const { return terminalNodes_; }
@@ -177,11 +161,10 @@ public:
   std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const GraphNodeType::ptr & node, const std::string & action ) const;
   std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId ) const;
 
-
-private:
+protected:
   void copy( const DecisionGraph & );
 
-private:
+protected:
   mutable LogicEngine engine_;
   // nodes
   GraphNodeType::ptr root_;
@@ -192,4 +175,5 @@ private:
   // edges
   std::vector< EdgeDataType > edges_;// child-id -> <p, leading artifact> p = // probability to reach this node given the parent, usage edges_[child_id] -> gives a map of from->p
 };
+
 } // namespace matp

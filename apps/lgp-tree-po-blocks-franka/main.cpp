@@ -6,6 +6,8 @@
 #include <Kin/kinViewer.h>
 
 #include <graph_planner.h>
+#include <mcts_planner.h>
+#include <mcts_planner.h>
 
 #include <komo_planner.h>
 #include <approx_shape_to_sphere.h>
