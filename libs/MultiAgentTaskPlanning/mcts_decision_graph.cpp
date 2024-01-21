@@ -92,6 +92,19 @@ GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::p
   return best_uct_child;
 }
 
+std::size_t getHash( const std::string& state )
+{
+  const auto facts = matp::getFilteredFacts(state);
+
+  std::size_t hash{0};
+  for(const auto& fact: facts)
+  {
+    hash += std::hash<std::string>()(fact);
+  }
+
+  return hash;
+}
+
 MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
   : engine_( engine )
   , root_()
@@ -102,6 +115,8 @@ MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vec
     for( auto & s : filteredStartStates )
     {
       s = concatenateFacts( getFilteredFacts( s ) );
+      const auto hash = getHash( s );
+      states_[ hash ] = s;
     }
 
     root_ = GraphNode< NodeData >::root( NodeData( filteredStartStates, egoBeliefState, false, 0, NodeData::NodeType::ACTION ) );
@@ -173,6 +188,11 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
     const auto& states = node->data().states;
     const auto& beliefState = node->data().beliefState;
 
+    for( const auto& state: states )
+    {
+      states_[ getHash( state ) ] = state;
+    }
+
     // expand node (using bs and not sampled state)
     const auto& actions = getCommonPossibleActions( states, beliefState, 0, engine_ );
 
@@ -230,6 +250,11 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
       {
         terminalNodes_.push_back( childChild );
       }
+
+      for( const auto& state: data.states )
+      {
+        states_[ getHash( state ) ] = state;
+      }
     }
 
     expandedNodesIds.insert( best_uct_child->id() );
@@ -279,36 +304,44 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
 
 double MCTSDecisionGraph::rollOutOneWorld( const std::string & state, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
 {
-  CHECK( engine_.agentNumber() == 1, "not supported for multi agent");
+  const auto state_h = getHash( state );
 
+  return rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose );
+}
+
+double MCTSDecisionGraph::rollOutOneWorld( const std::size_t state_h,
+                        const double r0,
+                        const std::size_t steps,
+                        const std::size_t rolloutMaxSteps,
+                        const bool verbose ) const
+{
   if( steps == rolloutMaxSteps )
   {
     return 0.0; // TODO, find some heuristic here?
   }
 
-  const auto& actions = getPossibleActions( state );
+  const auto numberOfActions = getNumberOfPossibleActions( state_h );
 
-  if( actions.empty() )
+  if( numberOfActions == 0 )
   {
     return 0.0;
   }
 
   // choose action
-  const auto action_index = rand() %  actions.size();
-  const auto& action = actions[action_index];
+  const auto action_i = rand() %  numberOfActions;
 
-  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions.size() << " possible actions, choosing: " << action_index << " : " << action << std::endl;
+  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << numberOfActions << " possible actions, choosing: " << action_i << " : " << stateToActions_.at( state_h ).at( action_i ) << std::endl;
 
-  const auto outcome = getOutcome( state, action );
+  const auto outcome = getOutcome( state_h, action_i );
 
   double simulatedReward{ r0 };
 
-  const auto& nextState = std::get<0>(outcome);
+  const auto& next_h = std::get<0>(outcome);
   const auto terminal = std::get<1>(outcome);
 
   if(!terminal)
   {
-    simulatedReward += rollOutOneWorld( nextState, r0, steps + 1, rolloutMaxSteps, verbose );
+    simulatedReward += rollOutOneWorld( next_h, r0, steps + 1, rolloutMaxSteps, verbose );
   }
   else
   {
@@ -320,6 +353,19 @@ double MCTSDecisionGraph::rollOutOneWorld( const std::string & state, const doub
   return simulatedReward;
 }
 
+std::size_t MCTSDecisionGraph::getNumberOfPossibleActions( const std::size_t state_h ) const
+{
+  const auto actions_it = stateToActions_.find( state_h );
+  if( actions_it == stateToActions_.end() )
+  {
+    const auto& state = states_.at( state_h );
+
+    stateToActions_[ state_h ] = getPossibleActions( state );;
+  }
+
+  return stateToActions_.at( state_h ).size();
+}
+
 std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::string & state ) const
 {
   LogicEngine & engine = engine_;
@@ -327,6 +373,33 @@ std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::str
   engine.setState( state );
 
   return engine.getPossibleActions( 0 );
+}
+
+std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t state_h, const std::size_t action_i ) const
+{
+  const auto stateActionKey = std::make_pair( state_h, action_i );
+
+  const auto stateAction_it = stateActionToNextState_.find( stateActionKey );
+
+  if( stateAction_it == stateActionToNextState_.end() )
+  {
+    const auto& state = states_.at( state_h );
+    const auto& action = stateToActions_.at( state_h ).at( action_i );
+    const auto outcome = getOutcome( state, action );
+
+    const auto nextState = std::get<0>(outcome);
+    const auto terminal = std::get<1>(outcome);
+
+    const auto next_h = getHash( nextState );
+
+    states_[ next_h ] = nextState;
+    stateActionToNextState_[ stateActionKey ] = next_h;
+    terminal_[ next_h ] = terminal;
+  }
+
+  return std::make_tuple( stateActionToNextState_.at( stateActionKey ), // state
+                          terminal_.at( stateActionToNextState_.at( stateActionKey ) ) // terminality
+                        );
 }
 
 std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string & state, const std::string& action ) const

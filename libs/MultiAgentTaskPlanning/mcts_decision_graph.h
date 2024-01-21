@@ -16,6 +16,15 @@ double priorityUCT( const GraphNode< NodeData >::ptr& node, const double c, bool
 std::size_t sampleStateIndex( const std::vector< double >& bs );
 std::string getNotObservableFact( const std::string& fullState );
 GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::ptr& node, const double c, const bool verbose );
+std::size_t getHash( const std::string& state );
+
+struct StateHashActionHasher
+{
+  std::size_t operator()(const std::pair<std::size_t, std::size_t> & state_action_pair) const
+  {
+    return state_action_pair.first << state_action_pair.second;
+  }
+};
 
 class MCTSDecisionGraph
 {
@@ -39,8 +48,15 @@ public:
                           const std::size_t steps,
                           const std::size_t rolloutMaxSteps,
                           const bool verbose ) const;
+  double rollOutOneWorld( const std::size_t state_h,
+                          const double r0,
+                          const std::size_t steps,
+                          const std::size_t rolloutMaxSteps,
+                          const bool verbose ) const;
 
+  std::size_t getNumberOfPossibleActions( const std::size_t state_h ) const;
   std::vector< std::string > getPossibleActions( const std::string & state ) const;
+  std::tuple< std::size_t, bool > getOutcome( const std::size_t state_h, const std::size_t action_i ) const;
   std::tuple< std::string, bool > getOutcome( const std::string& state, const std::string& action ) const;
 //  double rollOut( const std::vector< std::string > & states,
 //                  const std::vector< double >& bs,
@@ -52,14 +68,17 @@ public:
 
   // for printing
   DecisionGraph::GraphNodeType::ptr root() const { return root_; }
-  const std::vector< std::weak_ptr< DecisionGraph::GraphNodeType > >& nodes() const { NIY; }
-  const std::list< std::weak_ptr< DecisionGraph::GraphNodeType > >& terminalNodes() const { terminalNodes_; }
-  const std::vector< DecisionGraph::EdgeDataType >& edges() const { NIY; }
-
+  const std::list< std::weak_ptr< DecisionGraph::GraphNodeType > >& terminalNodes() const { return terminalNodes_; }
 
 private:
   mutable LogicEngine engine_;
   DecisionGraph::GraphNodeType::ptr root_;
   std::list< std::weak_ptr< DecisionGraph::GraphNodeType > > terminalNodes_;
+
+  // caching to speed-up
+  mutable std::unordered_map< std::size_t, std::string > states_;                        // state_h -> states
+  mutable std::unordered_map< std::size_t, std::vector< std::string > > stateToActions_; // state_h -> actions
+  mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionToNextState_; // state_h, action_i -> next_h
+  mutable std::unordered_map< std::size_t, bool > terminal_;
 };
 } // namespace matp
