@@ -112,7 +112,7 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
 
   std::unordered_set< uint > expandedNodesIds;
 
-  while( ( root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest() || n_iter < n_iter_min ) && n_iter < n_iter_max )
+  while( (  terminalNodes_.empty() /*root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest()*/ || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
     std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
@@ -187,7 +187,7 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
 
     if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
 
-    return rollOut( states, rollOutBeliefState, 0, r0, rolloutMaxSteps, verbose );
+    return rollOut( states, rollOutBeliefState, r0, 0, rolloutMaxSteps, verbose );
   }
 
   if( node->children().empty() )
@@ -254,7 +254,7 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
 
   if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
-  double reward = r0 + simulate( action_node_after_observation, stateIndex, depth + 1, r0, rolloutMaxSteps, c, expandedNodesIds, verbose );
+  const double reward = r0 + simulate( action_node_after_observation, stateIndex, depth + 1, r0, rolloutMaxSteps, c, expandedNodesIds, verbose );
 
   // increments mc counters
   node->data().n_rollouts++;

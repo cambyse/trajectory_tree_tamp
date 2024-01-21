@@ -31,9 +31,10 @@ public:
   bool successfullyParsed() const { return successfullyParsed_; }
   uint agentNumber() const;
   uint totalActionsNumber( uint agentId ) const;
-  std::vector< std::string > possibleStartStates() const { return startStates_; }
-  std::vector< double >      egoBeliefState() { return egoBeliefState_; }
-  LogicEngine engine() const { return engine_; }
+  const std::vector< std::string >& possibleStartStates() const { return startStates_; }
+  const std::vector< double >&      egoBeliefState() { return egoBeliefState_; }
+  const LogicEngine& engine() const { return engine_; }
+  LogicEngine& engine() { return engine_; }
 
 private:
   void buildPossibleStartStates( const std::string & description );

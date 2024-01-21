@@ -34,7 +34,9 @@ public:
   void setNIterMinMax( std::size_t nMin, std::size_t nMax ) { nIterMin_ = nMin; nIterMax_ = nMax; }
   void setRollOutMaxSteps( std::size_t nMaxSteps ) { rollOutMaxSteps_ = nMaxSteps; }
   void setExplorationTerm( double c ) { explorationTermC_ = c; }
-  void setVerbose( bool verbose ) { verbose_ = true; };
+  void setVerbose( bool verbose ) { verbose_ = verbose; };
+
+  void saveMCTSGraphToFile( const std::string & filename ) const { tree_.saveMCTSTreeToFile( filename, "" ); }
 
   // getters
   virtual bool terminated() const override;
