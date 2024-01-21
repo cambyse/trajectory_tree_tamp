@@ -326,43 +326,7 @@ std::vector< std::string > DecisionGraph::getCommonPossibleActions( const GraphN
   const auto& states = node->data().states;
   const auto& bs     = node->data().beliefState;
 
-  return getCommonPossibleActions( states, bs, agentId );
-}
-
-std::vector< std::string > DecisionGraph::getCommonPossibleActions( const std::vector< std::string > & states, const std::vector< double >& bs, uint agentId ) const
-{
-  LogicEngine & engine = engine_;
-
-  /// get possible actions
-  std::vector< std::string > possibleActions;
-  for( auto w = 0; w < bs.size(); ++w )
-  {
-    if( bs[ w ] > 0 )
-    {
-      const auto& startState = states[ w ];
-      engine.setState( startState );
-
-      const auto newActions = engine.getPossibleActions( agentId );
-
-      if( possibleActions.empty() )
-      {
-        possibleActions = newActions;
-      }
-      else
-      {
-        std::vector< std::string > newPossibleActions;
-
-        // each action in the new possible actions is has to be previously in the previous possible actions
-        std::set_intersection( possibleActions.begin(), possibleActions.end(),
-                               newActions.begin(), newActions.end(),
-                               std::back_inserter( newPossibleActions ) );
-
-        possibleActions = newPossibleActions;
-      }
-    }
-  }
-
-  return possibleActions;
+  return matp::getCommonPossibleActions( states, bs, agentId, engine_ );
 }
 
 std::vector< std::tuple< double, NodeData, std::string > > DecisionGraph::getPossibleOutcomes( const GraphNode< NodeData >::ptr & node, const std::string & action ) const
@@ -370,87 +334,7 @@ std::vector< std::tuple< double, NodeData, std::string > > DecisionGraph::getPos
   const auto& bs     = node->data().beliefState;
   const auto& states = node->data().states;
 
-  return getPossibleOutcomes( states, bs, action, node->data().agentId );
-}
-
-std::vector< std::tuple< double, NodeData, std::string > > DecisionGraph::getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId ) const
-{
-  std::vector< std::tuple< double, NodeData, std::string > > outcomes;
-
-  LogicEngine & engine = engine_; // copy to be const
-
-  //        observable facts                                    world state
-  std::map< std::set< std::string >, std::vector< std::pair< uint, std::string > > > observableStatesToStates;
-  std::map< std::set< std::string >, bool > terminalOutcome;
-  std::set< std::string > factIntersection;
-
-  for( auto w = 0; w < bs.size(); ++w )
-  {
-    if( bs[ w ] > 0 )
-    {
-      const auto& startState = states[ w ];
-      engine.setState( startState );
-
-      //std::cout << "start state:" << startState << std::endl; // tmp camille
-      //std::cout << "action:" << action << std::endl; // tmp camille
-
-      engine.transition( action );
-
-      const auto _result          = engine.getState();
-      const auto facts            = getFilteredFacts( _result );// without komo and action tags
-      const auto result           = concatenateFacts( facts );
-      const auto observableFacts  = getObservableFacts( facts );
-      const auto terminal         = engine.isTerminal();
-
-      //std::cout << "result:" << result << std::endl; // tmp camille
-
-      std::set< std::string > newIntersection;
-
-      if( factIntersection.empty() )
-      {
-        newIntersection = facts;
-      }
-      else
-      {
-        std::set_intersection( facts.begin(), facts.end(), factIntersection.begin(), factIntersection.end(),
-                               std::inserter( newIntersection, newIntersection.begin() ) );
-      }
-
-      // store results
-      factIntersection = newIntersection;
-      observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, result ) );
-      terminalOutcome         [ observableFacts ] = terminal;
-    }
-  }
-
-  //
-  for( auto observableResultPair : observableStatesToStates )
-  {
-    std::vector< std::string > states( bs.size(), "" );
-    std::vector< double > newBs( bs.size(), 0 );
-
-    const auto & worldToOutcomes = observableResultPair.second;
-    auto observationFacts = getEmergingFacts( factIntersection, observableResultPair.first );
-    auto observation      = concatenateFacts( observationFacts );
-    auto terminal         = terminalOutcome[ observableResultPair.first ];
-
-    double p = 0;
-    for( const auto & worldOutcome :  worldToOutcomes )
-    {
-      auto w = worldOutcome.first;
-      auto state = worldOutcome.second;
-
-      p += bs[ w ];
-      states[ w ] = state;
-      newBs[ w ] = bs[ w ];
-    }
-
-    newBs = normalizeBs( newBs );
-
-    outcomes.push_back( std::make_tuple( p, NodeData( states, newBs, terminal, agentId, NodeData::NodeType::OBSERVATION ), observation ) );
-  }
-
-  return outcomes;
+  return matp::getPossibleOutcomes( states, bs, action, node->data().agentId, engine_ );
 }
 
 void DecisionGraph::copy( const DecisionGraph & graph )
@@ -529,6 +413,118 @@ void DecisionGraph::copy( const DecisionGraph & graph )
       }
     }
   }
+}
+
+std::vector< std::string > getCommonPossibleActions( const std::vector< std::string > & states, const std::vector< double >& bs, uint agentId, LogicEngine& engine )
+{
+  /// get possible actions
+  std::vector< std::string > possibleActions;
+  for( auto w = 0; w < bs.size(); ++w )
+  {
+    if( bs[ w ] > 0 )
+    {
+      const auto& startState = states[ w ];
+      engine.setState( startState );
+
+      const auto newActions = engine.getPossibleActions( agentId );
+
+      if( possibleActions.empty() )
+      {
+        possibleActions = newActions;
+      }
+      else
+      {
+        std::vector< std::string > newPossibleActions;
+
+        // each action in the new possible actions is has to be previously in the previous possible actions
+        std::set_intersection( possibleActions.begin(), possibleActions.end(),
+                               newActions.begin(), newActions.end(),
+                               std::back_inserter( newPossibleActions ) );
+
+        possibleActions = newPossibleActions;
+      }
+    }
+  }
+
+  return possibleActions;
+}
+
+std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId, LogicEngine& engine )
+{
+  std::vector< std::tuple< double, NodeData, std::string > > outcomes;
+
+  //        observable facts                                    world state
+  std::map< std::set< std::string >, std::vector< std::pair< uint, std::string > > > observableStatesToStates;
+  std::map< std::set< std::string >, bool > terminalOutcome;
+  std::set< std::string > factIntersection;
+
+  for( auto w = 0; w < bs.size(); ++w )
+  {
+    if( bs[ w ] > 0 )
+    {
+      const auto& startState = states[ w ];
+      engine.setState( startState );
+
+      //std::cout << "start state:" << startState << std::endl; // tmp camille
+      //std::cout << "action:" << action << std::endl; // tmp camille
+
+      engine.transition( action );
+
+      const auto _result          = engine.getState();
+      const auto facts            = getFilteredFacts( _result );// without komo and action tags
+      const auto result           = concatenateFacts( facts );
+      const auto observableFacts  = getObservableFacts( facts );
+      const auto terminal         = engine.isTerminal();
+
+      //std::cout << "result:" << result << std::endl; // tmp camille
+
+      std::set< std::string > newIntersection;
+
+      if( factIntersection.empty() )
+      {
+        newIntersection = facts;
+      }
+      else
+      {
+        std::set_intersection( facts.begin(), facts.end(), factIntersection.begin(), factIntersection.end(),
+                               std::inserter( newIntersection, newIntersection.begin() ) );
+      }
+
+      // store results
+      factIntersection = newIntersection;
+      observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, result ) );
+      terminalOutcome         [ observableFacts ] = terminal;
+    }
+  }
+
+  //
+  for( auto observableResultPair : observableStatesToStates )
+  {
+    std::vector< std::string > states( bs.size(), "" );
+    std::vector< double > newBs( bs.size(), 0 );
+
+    const auto & worldToOutcomes = observableResultPair.second;
+    auto observationFacts = getEmergingFacts( factIntersection, observableResultPair.first );
+    auto observation      = concatenateFacts( observationFacts );
+    auto terminal         = terminalOutcome[ observableResultPair.first ];
+
+    double p = 0;
+    for( const auto & worldOutcome :  worldToOutcomes )
+    {
+      auto w = worldOutcome.first;
+      auto state = worldOutcome.second;
+
+      p += bs[ w ];
+      states[ w ] = state;
+      newBs[ w ] = bs[ w ];
+    }
+
+    newBs = normalizeBs( newBs );
+
+    outcomes.push_back( std::make_tuple( p, NodeData( states, newBs, terminal, agentId, NodeData::NodeType::OBSERVATION ), observation ) );
+  }
+
+  return outcomes;
 }
 
 } // namespace matp

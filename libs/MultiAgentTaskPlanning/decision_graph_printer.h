@@ -3,6 +3,7 @@
 #include <fstream>
 
 #include <decision_graph.h>
+#include <mcts_decision_graph.h>
 
 namespace matp
 {
@@ -38,7 +39,7 @@ public:
 
   }
 
-  void print( const DecisionGraph & graph );
+  void print( const MCTSDecisionGraph & graph );
 
 private:
   void saveTreeFrom( const DecisionGraph::GraphNodeType::ptr & node );

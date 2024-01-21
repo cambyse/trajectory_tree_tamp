@@ -93,9 +93,18 @@ GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::p
 }
 
 MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
-  : DecisionGraph( engine, startStates, egoBeliefState )
+  : engine_( engine )
+  , root_()
 {
+    // filter states before creating root
+    std::vector< std::string > filteredStartStates = startStates;
 
+    for( auto & s : filteredStartStates )
+    {
+      s = concatenateFacts( getFilteredFacts( s ) );
+    }
+
+    root_ = GraphNode< NodeData >::root( NodeData( filteredStartStates, egoBeliefState, false, 0, NodeData::NodeType::ACTION ) );
 }
 
 void MCTSDecisionGraph::expandMCTS( const double r0,
@@ -137,14 +146,14 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
   //saveMCTSTreeToFile( ss.str(), "" );
 }
 
-double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
-                                const std::size_t stateIndex,
-                                const std::size_t depth,
-                                const double r0,
-                                const std::size_t rolloutMaxSteps,
-                                const double c,
-                                std::unordered_set< uint > & expandedNodesIds,
-                                const bool verbose )
+double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& node,
+                                    const std::size_t stateIndex,
+                                    const std::size_t depth,
+                                    const double r0,
+                                    const std::size_t rolloutMaxSteps,
+                                    const double c,
+                                    std::unordered_set< uint > & expandedNodesIds,
+                                    const bool verbose )
 {
   if(verbose) std::cout << "[simulate] Simulate from node: " << node->id() << std::endl;
 
@@ -165,16 +174,13 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
     const auto& beliefState = node->data().beliefState;
 
     // expand node (using bs and not sampled state)
-    const auto& actions = getCommonPossibleActions( states, beliefState, 0 );
+    const auto& actions = getCommonPossibleActions( states, beliefState, 0, engine_ );
 
     for( const auto& action : actions )
     {
       // node after action, will receive one or several observations
-      auto child = node->makeChild( GraphNodeDataType( states, beliefState, false, 0, NodeData::NodeType::OBSERVATION ) );
+      auto child = node->makeChild( DecisionGraph::GraphNodeDataType( states, beliefState, false, 0, NodeData::NodeType::OBSERVATION ) );
       child->data().leadingAction = action;
-      nodes_.push_back( child );
-      edges_.push_back( { { node->id(), std::make_pair( 1.0, action ) } } );
-      CHECK_EQ( edges_.size() - 1, child->id(), "corruption in edge data structure" );
 
       if(verbose) std::cout << "[simulate] created " << child->id() << std::endl;
     }
@@ -187,7 +193,7 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
 
     if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
 
-    return rollOut( states, rollOutBeliefState, r0, 0, rolloutMaxSteps, verbose );
+    return rollOutOneWorld( node->data().states[stateIndex] , r0, 0, rolloutMaxSteps, verbose );
   }
 
   if( node->children().empty() )
@@ -207,21 +213,16 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
     CHECK( best_uct_child->children().empty(), "A non-expanded node should not have children!" );
     // expand observations - we expand just once
     // check outcomes after taking best action
-    const auto outcomes = getPossibleOutcomes( node, best_uct_child->data().leadingAction );
+    const auto outcomes = matp::getPossibleOutcomes( node->data().states, node->data().beliefState, best_uct_child->data().leadingAction, 0, engine_ );
 
     for(const auto& outcome: outcomes)
     {
       const auto& p    = std::get<0>(outcome);
       const auto& data = std::get<1>(outcome);
       const auto& observation = std::get<2>(outcome);
-      const auto childChildData = GraphNodeDataType( data.states, data.beliefState, data.terminal, 0, NodeData::NodeType::ACTION );
+      const auto childChildData = DecisionGraph::GraphNodeDataType( data.states, data.beliefState, data.terminal, 0, NodeData::NodeType::ACTION );
 
       const auto childChild = best_uct_child->makeChild( childChildData );
-
-      hash_to_id_[ childChild->data().hash() ].push_back( childChild->id() );
-      nodes_.push_back( childChild );
-      edges_.push_back( { { best_uct_child->id(), std::make_pair( p, observation ) } } );
-      CHECK_EQ( edges_.size() - 1, childChild->id(), "corruption in edge data structure" );
 
       if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << observation << ")" << std::endl;
 
@@ -237,7 +238,7 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
   CHECK( !best_uct_child->children().empty(), "Should at least have one outcome!" );
 
   // Get observation based on sampled state! in our logic, there should be one possible action only!
-  std::vector< std::pair< GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
+  std::vector< std::pair< DecisionGraph::GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
   for( auto& child_after_observation : best_uct_child->children() )
   {
     double p = child_after_observation->data().beliefState[stateIndex];
@@ -276,7 +277,7 @@ double MCTSDecisionGraph::simulate( const GraphNodeType::ptr& node,
   return reward;
 }
 
-double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
+double MCTSDecisionGraph::rollOutOneWorld( const std::string & state, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
 {
   CHECK( engine_.agentNumber() == 1, "not supported for multi agent");
 
@@ -285,7 +286,7 @@ double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, co
     return 0.0; // TODO, find some heuristic here?
   }
 
-  const auto& actions = getCommonPossibleActions( states, bs, 0 );
+  const auto& actions = getPossibleActions( state );
 
   if( actions.empty() )
   {
@@ -298,25 +299,20 @@ double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, co
 
   if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions.size() << " possible actions, choosing: " << action_index << " : " << action << std::endl;
 
-  const auto outcomes = getPossibleOutcomes( states, bs, action, 0 );
+  const auto outcome = getOutcome( state, action );
 
   double simulatedReward{ r0 };
 
-  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << " outcomes.size(): " << outcomes.size() << std::endl;
+  const auto& nextState = std::get<0>(outcome);
+  const auto terminal = std::get<1>(outcome);
 
-  for(const auto &outcome: outcomes)
+  if(!terminal)
   {
-    const auto p = std::get<0>(outcome);
-    const auto& nodeData = std::get<1>(outcome);
-
-    if(!nodeData.terminal)
-    {
-      simulatedReward += p * rollOut( nodeData.states, nodeData.beliefState, r0, steps + 1, rolloutMaxSteps, verbose );
-    }
-    else
-    {
-      if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
-    }
+    simulatedReward += rollOutOneWorld( nextState, r0, steps + 1, rolloutMaxSteps, verbose );
+  }
+  else
+  {
+    if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
   }
 
   if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
@@ -324,6 +320,72 @@ double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, co
   return simulatedReward;
 }
 
+std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::string & state ) const
+{
+  LogicEngine & engine = engine_;
+
+  engine.setState( state );
+
+  return engine.getPossibleActions( 0 );
+}
+
+std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string & state, const std::string& action ) const
+{
+  LogicEngine & engine = engine_;
+
+  engine.setState( state );
+  engine.transition( action );
+
+  return std::make_tuple( engine.getState(), engine.isTerminal() );
+}
+
+//double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
+//{
+//  CHECK( engine_.agentNumber() == 1, "not supported for multi agent");
+
+//  if( steps == rolloutMaxSteps )
+//  {
+//    return 0.0; // TODO, find some heuristic here?
+//  }
+
+//  const auto& actions = getCommonPossibleActions( states, bs, 0 );
+
+//  if( actions.empty() )
+//  {
+//    return 0.0;
+//  }
+
+//  // choose action
+//  const auto action_index = rand() %  actions.size();
+//  const auto& action = actions[action_index];
+
+//  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions.size() << " possible actions, choosing: " << action_index << " : " << action << std::endl;
+
+//  const auto outcomes = getPossibleOutcomes( states, bs, action, 0 );
+
+//  double simulatedReward{ r0 };
+
+//  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << " outcomes.size(): " << outcomes.size() << std::endl;
+
+//  for(const auto &outcome: outcomes)
+//  {
+//    const auto p = std::get<0>(outcome);
+//    const auto& nodeData = std::get<1>(outcome);
+
+//    if(!nodeData.terminal)
+//    {
+//      simulatedReward += p * rollOut( nodeData.states, nodeData.beliefState, r0, steps + 1, rolloutMaxSteps, verbose );
+//    }
+//    else
+//    {
+//      if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
+//    }
+//  }
+
+//  if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
+
+//  return simulatedReward;
+//}
 
 void MCTSDecisionGraph::saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const
 {

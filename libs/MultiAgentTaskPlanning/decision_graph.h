@@ -157,10 +157,8 @@ public:
 
   // public for testing purpose
   std::vector< std::string > getCommonPossibleActions( const GraphNodeType::ptr & node, uint agentId ) const;
-  std::vector< std::string > getCommonPossibleActions( const std::vector< std::string > & states, const std::vector< double >& bs, uint agentId ) const;
 
   std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const GraphNodeType::ptr & node, const std::string & action ) const;
-  std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId ) const;
 
 protected:
   void copy( const DecisionGraph & );
@@ -176,5 +174,9 @@ protected:
   // edges
   std::vector< EdgeDataType > edges_;// child-id -> <p, leading artifact> p = // probability to reach this node given the parent, usage edges_[child_id] -> gives a map of from->p
 };
+
+std::vector< std::string > getCommonPossibleActions( const std::vector< std::string > & states, const std::vector< double >& bs, uint agentId, LogicEngine& engine );
+std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const std::vector< std::string > & states, const std::vector< double >& bs, const std::string & action, const uint agentId, LogicEngine& engine );
+
 
 } // namespace matp

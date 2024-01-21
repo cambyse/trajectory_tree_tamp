@@ -84,12 +84,11 @@ void MCTSPlanner::buildPolicy()
 
     const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
 
-    const auto& edge = tree_.edges()[ v->id() ].at( u->id() );
     PolicyNodeData data;// = decisionGraphtoPolicyData( v->data(), v->id() );
     data.beliefState = v->data().beliefState;
     data.markovianReturn = rewards_.R0();
     data.decisionGraphNodeId = v->id();
-    data.leadingKomoArgs = decisionArtifactToKomoArgs( edge.second );
+    data.leadingKomoArgs = decisionArtifactToKomoArgs( v->data().leadingAction );
     //data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
     data.p = transitionProbability(uSke->data().beliefState, data.beliefState);
     auto vSke = uSke->makeChild( data );
@@ -98,7 +97,6 @@ void MCTSPlanner::buildPolicy()
 
     for( const auto& w : v->children() ) // skip obs nodes
     {
-      const auto& edge = tree_.edges()[ w->id() ].at( v->id() );
       Q.push( std::make_pair( w, vSke ) );
     }
   }

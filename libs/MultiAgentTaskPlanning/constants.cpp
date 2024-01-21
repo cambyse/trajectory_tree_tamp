@@ -94,37 +94,6 @@ std::set< std::string > getFilteredFacts( const std::string & state )
   return facts;
 }
 
-//std::vector< std::string > sortFacts( const std::vector< std::string > & facts )
-//{
-//  std::vector< std::string > sortedFacts = facts;
-
-//  std::sort( sortedFacts.begin(), sortedFacts.end() );
-
-//  return sortedFacts;
-//}
-
-
-//std::string concatenateFacts( const std::set< std::string >  & facts )
-//{
-//  std::string filteredResult("{");
-
-//  bool first = true;
-//  for( auto fact : facts )
-//  {
-//    if( ! first )
-//    {
-//      filteredResult.append(",");
-//    }
-//    filteredResult.append(fact);
-
-//    first = false;
-//  }
-
-//  filteredResult.append( "}" );
-
-//  return filteredResult;
-//}
-
 bool isObservable( const std::string & fact )
 {
   if( fact.find( notObservableTag_ ) != std::string::npos )
@@ -137,14 +106,10 @@ bool isObservable( const std::string & fact )
 
 std::string getStateStr( FOL_World & fol )
 {
-//  std::stringstream ss;
-//  fol.write_state( ss );
-//  return ss.str();
-
   std::stringstream ss;
 
   ss << "{";
-  for( auto fact : *fol.getState() )
+  for( const auto fact : *fol.getState() )
   {
     std::stringstream sss;
     sss << *fact;
@@ -209,7 +174,7 @@ std::set< std::string > getEmergingFacts( const std::set< std::string > & inters
 {
   std::set< std::string > observations = fullFacts;
 
-  for( auto fact : intersectingFacts )
+  for( const auto& fact : intersectingFacts )
   {
     observations.erase( fact );
   }

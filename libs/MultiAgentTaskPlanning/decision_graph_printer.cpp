@@ -122,8 +122,7 @@ std::string GraphPrinter::extractActionLabel( const std::string & leadingArtifac
 }
 
 
-
-void MCTSTreePrinter::print( const DecisionGraph & graph )
+void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
 {
   if( ! graph.root() )
   {
@@ -144,7 +143,6 @@ void MCTSTreePrinter::print( const DecisionGraph & graph )
 
     if( n )
     {
-
       if( n->data().agentId == 0 )
       {
         ss_ << n->id() << " [shape=square, style=filled, fillcolor=" << ( n->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
@@ -212,9 +210,9 @@ void MCTSTreePrinter::saveTreeFrom( const DecisionGraph::GraphNodeType::ptr & no
     std::stringstream ss;
     std::string label;
 
-    auto edge = edges_[ c->id()][ node->id() ];
-    auto p = edge.first;
-    auto leadingArtifact = edge.second;
+    const auto& edge = edges_.at( c->id()).at( node->id() );
+    const auto p = edge.first;
+    const auto& leadingArtifact = edge.second;
 
     if( node->data().nodeType == NodeData::NodeType::ACTION )
     {

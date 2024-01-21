@@ -44,7 +44,7 @@ uint LogicEngine::totalActionsNumber( uint agentId ) const
   }
 }
 
-std::vector<std::string> LogicEngine::getPossibleActions( uint agentId )
+std::vector<std::string> LogicEngine::getPossibleActions( uint agentId ) const
 {
   if( ! initialized() ) throw NotInitialized();
 
@@ -59,21 +59,21 @@ std::vector<std::string> LogicEngine::getPossibleActions( uint agentId )
 
   const std::string state = getState();
 
-  if( state.find("observed side_0") != std::string::npos &&
-      state.find("observed side_1") != std::string::npos &&
-      state.find("observed side_2") != std::string::npos &&
-      state.find("observed side_3") != std::string::npos &&
-      state.find("observed side_4") != std::string::npos &&
-      state.find("colored side_5") != std::string::npos &&
-      state.find("flipped TRUE") != std::string::npos //&&
+//  if( state.find("observed side_0") != std::string::npos &&
+//      state.find("observed side_1") != std::string::npos &&
+//      state.find("observed side_2") != std::string::npos &&
+//      state.find("observed side_3") != std::string::npos &&
+//      state.find("observed side_4") != std::string::npos &&
+//      state.find("colored side_5") != std::string::npos &&
+//      state.find("flipped TRUE") != std::string::npos //&&
 
-      //state.find("hand_empty): true") == std::string::npos &&
-      //state.find("identified") == std::string::npos
+//      //state.find("hand_empty): true") == std::string::npos &&
+//      //state.find("identified") == std::string::npos
 
-      )
-  {
-    int a{0};
-  }
+//      )
+//  {
+//    int a{0};
+//  }
   //
   //std::cout << "ACTIONS:" << std::endl;
   for( const auto& action : actions )
@@ -120,6 +120,11 @@ std::string LogicEngine::getState() const
 {
   return getStateStr( *engine_ );
 }
+
+//StateAndHash LogicEngine::getStateAndHash() const
+//{
+//  return getStateAndHashStr( *engine_ );
+//}
 
 void LogicEngine::parseNumberOfAgents()
 {

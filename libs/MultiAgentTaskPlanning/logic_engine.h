@@ -31,10 +31,11 @@ public:
   bool isTerminal()  const { return engine_->is_terminal_state(); }
   uint agentNumber() const { return agentNumber_; }
   uint totalActionsNumber( uint agentId ) const;
-  std::vector<std::string> getPossibleActions( uint agentId );
+  std::vector<std::string> getPossibleActions( uint agentId ) const;
   void transition( const std::string & action );
   void setState( const std::string & state );
   std::string getState() const;
+  //StateAndHash getStateAndHash() const;
   void resetState() { engine_->reset_state(); } // provided for test convinience
 private:
   void parseNumberOfAgents();
