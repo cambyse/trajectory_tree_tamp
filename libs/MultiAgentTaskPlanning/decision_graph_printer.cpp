@@ -1,4 +1,5 @@
 #include <decision_graph_printer.h>
+#include <belief_state.h>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -129,7 +130,7 @@ void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
     return;
   }
 
-  edges_ = graph.edges();
+  //edges_ = graph.edges();
 
   ss_ << "digraph g{" << std::endl;
   ss_ << "labelloc=\"t\"" << std::endl;
@@ -137,56 +138,57 @@ void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
   ss_ << "bgcolor=\"transparent\"";
   ss_ << "{" << std::endl;
   ss_ << graph.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
-  for( auto weakN : graph.nodes() )
-  {
-    auto n = weakN.lock();
 
-    if( n )
-    {
-      if( n->data().agentId == 0 )
-      {
-        ss_ << n->id() << " [shape=square, style=filled, fillcolor=" << ( n->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
-      }
-      else
-      {
-        ss_ << n->id() << " [shape=circle]" << std::endl;
-      }
+//  for( auto weakN : graph.nodes() )
+//  {
+//    auto n = weakN.lock();
 
-      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
-      {
-        ss_ << n->id() << " [shape=diamond]" << std::endl;
-      }
+//    if( n )
+//    {
+//      if( n->data().agentId == 0 )
+//      {
+//        ss_ << n->id() << " [shape=square, style=filled, fillcolor=" << ( n->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
+//      }
+//      else
+//      {
+//        ss_ << n->id() << " [shape=circle]" << std::endl;
+//      }
 
-      std::stringstream ss;
-      ss << std::fixed;
-      ss << std::setprecision(2);
-      ss << "id: " << n->id() << std::endl;
-      ss << n->data().n_rollouts << std::endl;
+//      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
+//      {
+//        ss_ << n->id() << " [shape=diamond]" << std::endl;
+//      }
 
-      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
-      {
-        if( n->data().expectedRewardToGoal >= -1000 ) // TODO change that
-        {
-          ss << n->data().expectedRewardToGoal;
-        }
-        else
-        {
-          ss << "-inf";
-        }
-      }
+//      std::stringstream ss;
+//      ss << std::fixed;
+//      ss << std::setprecision(2);
+//      ss << "id: " << n->id() << std::endl;
+//      ss << n->data().n_rollouts << std::endl;
 
-      ss_ << n->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
-    }
-  }
-  for( auto weakN : graph.terminalNodes() )
-  {
-    auto n = weakN.lock();
+//      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
+//      {
+//        if( n->data().expectedRewardToGoal >= -1000 ) // TODO change that
+//        {
+//          ss << n->data().expectedRewardToGoal;
+//        }
+//        else
+//        {
+//          ss << "-inf";
+//        }
+//      }
 
-    if( n )
-    {
-      ss_ << n->id() << " [style=filled, fillcolor=green]" << std::endl;
-    }
-  }
+//      ss_ << n->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
+//    }
+//  }
+//  for( auto weakN : graph.terminalNodes() )
+//  {
+//    auto n = weakN.lock();
+
+//    if( n )
+//    {
+//      ss_ << n->id() << " [style=filled, fillcolor=green]" << std::endl;
+//    }
+//  }
   ss_ << "}" << std::endl;
 
   saveTreeFrom( graph.root() );
@@ -194,53 +196,93 @@ void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
   ss_ << "}" << std::endl;
 }
 
-void MCTSTreePrinter::saveTreeFrom( const DecisionGraph::GraphNodeType::ptr & node )
+void MCTSTreePrinter::printNode( const DecisionGraph::GraphNodeType::ptr & node )
 {
-  if( printedNodes_.count( node->id() ) != 0 )
+  if( node->data().agentId == 0 )
   {
-    return;
+    ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
   }
   else
   {
-    printedNodes_.insert( node->id() );
+    ss_ << node->id() << " [shape=circle]" << std::endl;
   }
 
-  for( auto c : node->children() )
+  if( node->data().nodeType == NodeData::NodeType::OBSERVATION )
   {
-    std::stringstream ss;
-    std::string label;
+    ss_ << node->id() << " [shape=diamond]" << std::endl;
+  }
 
-    const auto& edge = edges_.at( c->id()).at( node->id() );
-    const auto p = edge.first;
-    const auto& leadingArtifact = edge.second;
+  std::stringstream ss;
+  ss << std::fixed;
+  ss << std::setprecision(2);
+  ss << "id: " << node->id() << std::endl;
+  ss << node->data().n_rollouts << std::endl;
 
-    if( node->data().nodeType == NodeData::NodeType::ACTION )
+  if( node->data().nodeType == NodeData::NodeType::OBSERVATION )
+  {
+    if( node->data().expectedRewardToGoal >= -1000 ) // TODO change that
     {
-      auto agentLabel = agentPrefix_ + std::to_string( node->data().agentId ) + agentSuffix_;
-      auto actionLabel = extractActionLabel( leadingArtifact, node->data().agentId );
-
-      boost::replace_all(agentLabel, "__", "");
-      boost::replace_all(actionLabel, "(", "");
-      boost::replace_all(actionLabel, ")", "");
-
-      ss << agentLabel << std::endl;
-      ss << actionLabel;
-
-      label = ss.str();
-      boost::replace_all(label, "{", "");
+      ss << node->data().expectedRewardToGoal;
     }
     else
     {
-      if( ! leadingArtifact.empty() )
-      {
-        ss << leadingArtifact << std::endl;
-      }
-      ss << p;
-
-      label = ss.str();
+      ss << "-inf";
     }
+  }
 
-    ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
+  ss_ << node->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
+
+  if(node->data().terminal)
+  {
+    ss_ << node->id() << " [style=filled, fillcolor=green]" << std::endl;
+  }
+}
+
+void MCTSTreePrinter::printEdge( const DecisionGraph::GraphNodeType::ptr & node, const DecisionGraph::GraphNodeType::ptr & c )
+{
+  std::stringstream ss;
+  std::string label;
+
+  const auto p = transitionProbability(node->data().beliefState, c->data().beliefState);
+  const auto& leadingArtifact = c->data().leadingAction;
+
+  if( node->data().nodeType == NodeData::NodeType::ACTION )
+  {
+    auto agentLabel = agentPrefix_ + std::to_string( node->data().agentId ) + agentSuffix_;
+    auto actionLabel = extractActionLabel( leadingArtifact, node->data().agentId );
+
+    boost::replace_all(agentLabel, "__", "");
+    boost::replace_all(actionLabel, "(", "");
+    boost::replace_all(actionLabel, ")", "");
+
+    ss << agentLabel << std::endl;
+    ss << actionLabel;
+
+    label = ss.str();
+    boost::replace_all(label, "{", "");
+  }
+  else
+  {
+    if( ! leadingArtifact.empty() )
+    {
+      ss << leadingArtifact << std::endl;
+    }
+    ss << p;
+
+    label = ss.str();
+  }
+
+  ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
+}
+
+void MCTSTreePrinter::saveTreeFrom( const DecisionGraph::GraphNodeType::ptr & node )
+{
+  printNode(node);
+
+  // print edge
+  for( const auto& c : node->children() )
+  {
+    printEdge(node, c);
 
     saveTreeFrom( c );
   }
