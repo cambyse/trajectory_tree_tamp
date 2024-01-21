@@ -165,13 +165,16 @@ void MCTSTreePrinter::print( const DecisionGraph & graph )
       ss << "id: " << n->id() << std::endl;
       ss << n->data().n_rollouts << std::endl;
 
-      if( n->data().expectedRewardToGoal >= -1000 ) // TODO change that
+      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
       {
-        ss << n->data().expectedRewardToGoal;
-      }
-      else
-      {
-        ss << "-inf";
+        if( n->data().expectedRewardToGoal >= -1000 ) // TODO change that
+        {
+          ss << n->data().expectedRewardToGoal;
+        }
+        else
+        {
+          ss << "-inf";
+        }
       }
 
       ss_ << n->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;

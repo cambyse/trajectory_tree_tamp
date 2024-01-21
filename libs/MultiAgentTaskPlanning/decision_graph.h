@@ -69,6 +69,7 @@ struct NodeData
     // mcst
     , expectedRewardToGoal{ std::numeric_limits<double>::lowest()}
     , n_rollouts(0)
+    , leadingAction{}
   {
     computeHash();
   }

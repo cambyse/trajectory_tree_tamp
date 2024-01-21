@@ -162,7 +162,7 @@ std::queue< GraphNode< NodeData >::ptr > DecisionGraph::expand( const GraphNode<
         CHECK_EQ( edges_.size() - 1, child->id(), "corruption in edge data structure" );
 
         // for each outcome
-        auto outcomes = getPossibleOutcomes( node, action );
+        const auto outcomes = getPossibleOutcomes( node, action );
         for( const auto& outcome : outcomes )
         {
           CHECK( node->data().agentId == agentId, "Corruption in the queue!" );
@@ -339,10 +339,10 @@ std::vector< std::string > DecisionGraph::getCommonPossibleActions( const std::v
   {
     if( bs[ w ] > 0 )
     {
-      auto startState = states[ w ];
+      const auto& startState = states[ w ];
       engine.setState( startState );
 
-      auto newActions = engine.getPossibleActions( agentId );
+      const auto newActions = engine.getPossibleActions( agentId );
 
       if( possibleActions.empty() )
       {
