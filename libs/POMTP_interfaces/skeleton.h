@@ -52,6 +52,7 @@ struct PolicyNodeData
   double markovianReturn = 0;
   double p = 0; // probability to reach this node given the parent
   uint decisionGraphNodeId = 0; // id of the corresponding node in decision graph
+  bool terminal{false};
 
   friend class boost::serialization::access;
   template<class Archive>
@@ -63,6 +64,7 @@ struct PolicyNodeData
     ar & markovianReturn;
     ar & p;
     ar & decisionGraphNodeId;
+    ar & terminal;
   }
 };
 

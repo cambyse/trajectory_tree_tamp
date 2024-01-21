@@ -11,6 +11,17 @@ static double m_inf() { return std::numeric_limits< double >::lowest(); }
 
 namespace matp
 {
+namespace{
+double getPolicyNodePriority( const DecisionGraph::GraphNodeType::ptr& node )
+{
+  if( !node->data().isPotentialSymbolicSolution )
+  {
+    return std::numeric_limits<double>::lowest();
+  }
+
+  return node->data().expectedRewardToGoal;
+}
+}
 
 void MCTSPlanner::setFol( const std::string & descrition )
 {
@@ -50,7 +61,13 @@ void MCTSPlanner::expandMCTS()
 {
   //void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps );
 
-  tree_.expandMCTS( rewards_.R0(), nIterMin_, nIterMax_, rollOutMaxSteps_, explorationTermC_, verbose_ );
+  tree_.expandMCTS( rewards_.R0(),
+                    nIterMin_,
+                    nIterMax_,
+                    rollOutMaxSteps_,
+                    nRollOutsPerSimulation_,
+                    explorationTermC_,
+                    verbose_ );
 }
 
 void MCTSPlanner::buildPolicy()
@@ -60,7 +77,6 @@ void MCTSPlanner::buildPolicy()
   using NodeTypePtr = std::shared_ptr< DecisionGraph::GraphNodeType >;
 
   std::stack< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
-  //std::queue< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
 
   // create policy root node from decision graph node
   const auto& root = tree_.root();
@@ -79,10 +95,19 @@ void MCTSPlanner::buildPolicy()
     const auto& u     = uPair.first;
     const auto& uSke = uPair.second;
 
-    if( u->children().empty() )
-      continue;
+    if( uSke->id() == 18 )
+    {
+      int a = 0;
+    }
 
-    const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
+    if( u->children().empty() )
+    {
+      CHECK(u->data().terminal, "final policy node should be terminal!");
+      uSke->data().terminal = u->data().terminal;
+      continue;
+    }
+
+    const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return getPolicyNodePriority(lhs) < getPolicyNodePriority(rhs); });
 
     PolicyNodeData data;// = decisionGraphtoPolicyData( v->data(), v->id() );
     data.beliefState = v->data().beliefState;
@@ -92,8 +117,17 @@ void MCTSPlanner::buildPolicy()
     //data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
     data.p = transitionProbability(uSke->data().beliefState, data.beliefState);
     auto vSke = uSke->makeChild( data );
+    //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
+//    if( vSke->id() == 18 )
+//    {
+//      int a = 0;
+//    }
 
-//      //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
+    if( v->children().empty() )
+    {
+      CHECK(v->data().terminal, "final policy node should be terminal!");
+      uSke->data().terminal = v->data().terminal;
+    }
 
     for( const auto& w : v->children() ) // skip obs nodes
     {

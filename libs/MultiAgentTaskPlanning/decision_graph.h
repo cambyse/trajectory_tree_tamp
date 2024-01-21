@@ -70,6 +70,7 @@ struct NodeData
     , expectedRewardToGoal{ std::numeric_limits<double>::lowest()}
     , n_rollouts(0)
     , leadingAction{}
+    , isPotentialSymbolicSolution{false}
   {
     computeHash();
   }
@@ -85,6 +86,7 @@ struct NodeData
   double expectedRewardToGoal;
   std::size_t n_rollouts;
   std::string leadingAction;
+  bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
   //
 
   std::size_t hash() const

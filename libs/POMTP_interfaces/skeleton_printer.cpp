@@ -14,13 +14,13 @@ void PolicyPrinter::print( const Policy & Policy )
   ss_ << "{" << std::endl;
   ss_ << Policy.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
 
-  for( auto n : Policy.leaves() )
-  {
-    if( n )
-    {
-      ss_ << n->id() << " [style=filled, fillcolor=green]" << std::endl;
-    }
-  }
+//  for( auto n : Policy.leaves() )
+//  {
+//    if( n )
+//    {
+//      ss_ << n->id() << " [style=filled, fillcolor=green]" << std::endl;
+//    }
+//  }
   ss_ << "}" << std::endl;
 
   saveGraphFrom( Policy.root() );
@@ -30,6 +30,11 @@ void PolicyPrinter::print( const Policy & Policy )
 
 void PolicyPrinter::saveGraphFrom( const Policy::GraphNodeType::ptr & node )
 {
+  if( node->data().terminal )
+  {
+    ss_ << node->id() << " [style=filled, fillcolor=green]" << std::endl;
+  }
+
   for( auto c : node->children() )
   {
     std::stringstream ss;

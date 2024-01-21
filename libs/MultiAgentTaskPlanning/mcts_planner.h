@@ -32,6 +32,7 @@ public:
   // other setters
   void setR0( double r0 ) { rewards_.setR0(r0); }
   void setNIterMinMax( std::size_t nMin, std::size_t nMax ) { nIterMin_ = nMin; nIterMax_ = nMax; }
+  void setNumberRollOutPerSimulation( std::size_t n ) { nRollOutsPerSimulation_ = n; }
   void setRollOutMaxSteps( std::size_t nMaxSteps ) { rollOutMaxSteps_ = nMaxSteps; }
   void setExplorationTerm( double c ) { explorationTermC_ = c; }
   void setVerbose( bool verbose ) { verbose_ = verbose; };
@@ -60,7 +61,8 @@ private:
   // MCTS parameters
   std::size_t nIterMin_{0};
   std::size_t nIterMax_{50};
-  std::size_t rollOutMaxSteps_{50};
+  std::size_t nRollOutsPerSimulation_{5};
+  std::size_t rollOutMaxSteps_{30};
   double explorationTermC_{1.0};
 
   // debug

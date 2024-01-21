@@ -4,6 +4,7 @@
 #include <queue>
 #include <algorithm>
 #include <unordered_set>
+#include <numeric>
 #include <decision_graph_printer.h>
 
 namespace matp
@@ -105,9 +106,44 @@ std::size_t getHash( const std::string& state )
   return hash;
 }
 
+void backtrackIsPotentialSymbolicSolution( const GraphNode< NodeData >::ptr& node )
+{
+  CHECK( node->data().nodeType == NodeData::NodeType::ACTION, "we should only backtrack from action nodes!" );
+
+  if( node->parents().empty() )
+  {
+    return;
+  }
+
+  CHECK( node->parents().size() == 1, "MCTS works here for trees only!" );
+
+  const auto observationParent = node->parents().front().lock();
+
+  const auto observationParentIsSolved = std::accumulate(observationParent->children().begin(),
+                                                         observationParent->children().end(),
+                                                         true,
+                                                         [](bool solved, const GraphNode< NodeData >::ptr& n) { return solved && n->data().isPotentialSymbolicSolution; });
+
+  observationParent->data().isPotentialSymbolicSolution = observationParentIsSolved;
+
+  CHECK( observationParent->parents().size() == 1, "MCTS works here for trees only!" );
+
+  if(observationParentIsSolved)
+  {
+    const auto actionParent =  observationParent->parents().front().lock();
+
+    actionParent->data().isPotentialSymbolicSolution = true;
+
+    //std::cout << "Set " << actionParent->id() << " is on potential solution!" << std::endl;
+
+    backtrackIsPotentialSymbolicSolution( actionParent );
+  }
+}
+
 MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
   : engine_( engine )
   , root_()
+  , lastSetStateEngine_(0)
 {
     // filter states before creating root
     std::vector< std::string > filteredStartStates = startStates;
@@ -126,6 +162,7 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
                                 const std::size_t n_iter_min,
                                 const std::size_t n_iter_max,
                                 const std::size_t rolloutMaxSteps,
+                                const std::size_t nRolloutsPerSimulation,
                                 const double c,
                                 const bool verbose )
 {
@@ -136,17 +173,14 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
 
   std::unordered_set< uint > expandedNodesIds;
 
-  while( (  terminalNodes_.empty() /*root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest()*/ || n_iter < n_iter_min ) && n_iter < n_iter_max )
+  while( (  !root_->data().isPotentialSymbolicSolution /*root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest()*/ || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
     std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
     // sample state
     const auto stateIndex = sampleStateIndex( root_->data().beliefState );
 
-    simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, c, expandedNodesIds, verbose );
-
-    const auto max_reward_child_it = std::max_element( root_->children().cbegin(), root_->children().cend(), []( const auto& lhs, const auto& rhs ) { return lhs->data().expectedRewardToGoal < rhs->data().expectedRewardToGoal; });
-    root_->data().expectedRewardToGoal = (*max_reward_child_it)->data().expectedRewardToGoal;
+    simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
 
     // save current MCTS tree
     //std::stringstream ss;
@@ -166,10 +200,12 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
                                     const std::size_t depth,
                                     const double r0,
                                     const std::size_t rolloutMaxSteps,
+                                    const std::size_t nRolloutsPerSimulation,
                                     const double c,
                                     std::unordered_set< uint > & expandedNodesIds,
                                     const bool verbose )
 {
+  /// Note: Here we enter with action nodes only! leafs are always action nodes
   if(verbose) std::cout << "[simulate] Simulate from node: " << node->id() << std::endl;
 
   const auto node_id_it = expandedNodesIds.find( node->id() );
@@ -177,6 +213,15 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
   if( node->data().terminal )
   {
     if(verbose) std::cout << "[simulate] Already terminal! no costs" << std::endl;
+
+    //std::cout << "stateIndex:" << stateIndex << " node:" << node->id() << std::endl;
+
+    if( ! node->data().isPotentialSymbolicSolution )
+    {
+      node->data().isPotentialSymbolicSolution = true;
+      backtrackIsPotentialSymbolicSolution( node );
+      node->data().n_rollouts = std::numeric_limits<std::size_t>::max(); // no need for additional rollouts to estimate reward from this node!
+    }
 
     return 0.0;
   }
@@ -213,7 +258,7 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
 
     if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
 
-    return rollOutOneWorld( node->data().states[stateIndex] , r0, 0, rolloutMaxSteps, verbose );
+    return rollOutOneWorld( node->data().states[stateIndex] , r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
   }
 
   if( node->children().empty() )
@@ -280,7 +325,15 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
 
   if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
-  const double reward = r0 + simulate( action_node_after_observation, stateIndex, depth + 1, r0, rolloutMaxSteps, c, expandedNodesIds, verbose );
+  const double reward = r0 + simulate( action_node_after_observation,
+                                       stateIndex,
+                                       depth + 1,
+                                       r0,
+                                       rolloutMaxSteps,
+                                       nRolloutsPerSimulation,
+                                       c,
+                                       expandedNodesIds,
+                                       verbose );
 
   // increments mc counters
   node->data().n_rollouts++;
@@ -302,11 +355,23 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
   return reward;
 }
 
-double MCTSDecisionGraph::rollOutOneWorld( const std::string & state, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
+double MCTSDecisionGraph::rollOutOneWorld( const std::string & state,
+                                           const double r0,
+                                           const std::size_t steps,
+                                           const std::size_t rolloutMaxSteps,
+                                           const std::size_t nRolloutsPerSimulation,
+                                           const bool verbose ) const
 {
   const auto state_h = getHash( state );
 
-  return rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose );
+  double maxRewards = std::numeric_limits<double>::lowest();
+  for(std::size_t i{0}; i < nRolloutsPerSimulation; ++i)
+  {
+    maxRewards = std::max(maxRewards,
+                          rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose ));
+  }
+
+  return maxRewards;
 }
 
 double MCTSDecisionGraph::rollOutOneWorld( const std::size_t state_h,
@@ -360,17 +425,18 @@ std::size_t MCTSDecisionGraph::getNumberOfPossibleActions( const std::size_t sta
   {
     const auto& state = states_.at( state_h );
 
-    stateToActions_[ state_h ] = getPossibleActions( state );;
+    stateToActions_[ state_h ] = getPossibleActions( state, state_h );
   }
 
   return stateToActions_.at( state_h ).size();
 }
 
-std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::string & state ) const
+std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::string & state, const std::size_t state_h ) const
 {
   LogicEngine & engine = engine_;
 
   engine.setState( state );
+  lastSetStateEngine_ = state_h;
 
   return engine.getPossibleActions( 0 );
 }
@@ -385,7 +451,8 @@ std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t
   {
     const auto& state = states_.at( state_h );
     const auto& action = stateToActions_.at( state_h ).at( action_i );
-    const auto outcome = getOutcome( state, action );
+    const auto outcome = getOutcome( state, state_h, action );
+    lastSetStateEngine_ = state_h;
 
     const auto nextState = std::get<0>(outcome);
     const auto terminal = std::get<1>(outcome);
@@ -402,11 +469,14 @@ std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t
                         );
 }
 
-std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string & state, const std::string& action ) const
+std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string & state, const std::size_t state_h, const std::string& action ) const
 {
   LogicEngine & engine = engine_;
 
-  engine.setState( state );
+  if( state_h != lastSetStateEngine_ )
+  {
+    engine.setState( state );
+  }
   engine.transition( action );
 
   return std::make_tuple( engine.getState(), engine.isTerminal() );
