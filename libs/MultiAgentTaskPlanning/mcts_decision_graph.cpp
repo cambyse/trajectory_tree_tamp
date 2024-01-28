@@ -9,8 +9,36 @@
 
 namespace matp
 {
+namespace
+{
+std::vector < double > normalizeBs( const std::vector < double > & bs )
+{
+  std::vector < double > newBs = bs;
 
-double priorityUCT( const GraphNode< NodeData >::ptr& node, const double c, bool verbose )
+  auto sumfunc = []( const std::vector < double > bs ) -> double
+  {
+    double sum = 0;
+    for( auto p : bs )
+    {
+      sum += p;
+    }
+    return sum;
+  };
+
+  const auto sum = sumfunc( bs );
+
+  for( auto w = 0; w < bs.size(); ++w )
+  {
+    newBs[ w ] = bs[ w ] / sum;
+  }
+
+  CHECK( fabs( sumfunc( newBs ) - 1.0 ) < 0.00001, "" );
+
+  return newBs;
+}
+}
+
+double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, bool verbose )
 {
   const auto& node_data = node->data();
 
@@ -18,7 +46,7 @@ double priorityUCT( const GraphNode< NodeData >::ptr& node, const double c, bool
   if( node->parent() )
   {
     CHECK( node->parent() != nullptr, "node shouldn't be a root node!" );
-    CHECK( node->parent()->data().nodeType == NodeData::NodeType::ACTION, "wrong node type!" );
+    CHECK( node->parent()->data().nodeType == MCTSNodeData::NodeType::ACTION, "wrong node type!" );
 
     const auto& action_parent = node->parent();
     const auto& parent_node_data = action_parent->data();
@@ -75,10 +103,10 @@ std::string getNotObservableFact( const std::string& fullState )
   return "";
 }
 
-GraphNode< NodeData >::ptr getMostPromisingChild( const GraphNode< NodeData >::ptr& node, const double c, const bool verbose )
+GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeData >::ptr& node, const double c, const bool verbose )
 {
   double max_prio{std::numeric_limits<double>::lowest()};
-  GraphNode< NodeData >::ptr best_uct_child{};
+  GraphNode< MCTSNodeData >::ptr best_uct_child{};
   for( const auto& child : node->children() )
   {
     const auto prio = priorityUCT( child, c, verbose );
@@ -106,9 +134,33 @@ std::size_t getHash( const std::string& state )
   return hash;
 }
 
-void backtrackIsPotentialSymbolicSolution( const GraphNode< NodeData >::ptr& node )
+std::size_t getHash( const std::vector< double >& beliefState )
 {
-  CHECK( node->data().nodeType == NodeData::NodeType::ACTION, "we should only backtrack from action nodes!" );
+  std::size_t hash{0};
+
+  for( auto w{0}; w < beliefState.size(); ++w )
+  {
+    hash += std::hash<double>()(beliefState[w]) << w;
+  }
+
+  return hash;
+}
+
+std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size_t beliefState_h )
+{
+  std::size_t hash{0};
+
+  for( auto w{0}; w < states_h.size(); ++w )
+  {
+    hash += states_h[w] << w;
+  }
+
+  return hash + beliefState_h;
+}
+
+void backtrackIsPotentialSymbolicSolution( const GraphNode< MCTSNodeData >::ptr& node )
+{
+  CHECK( node->data().nodeType == MCTSNodeData::NodeType::ACTION, "we should only backtrack from action nodes!" );
 
   if( node->parents().empty() )
   {
@@ -122,7 +174,7 @@ void backtrackIsPotentialSymbolicSolution( const GraphNode< NodeData >::ptr& nod
   const auto observationParentIsSolved = std::accumulate(observationParent->children().begin(),
                                                          observationParent->children().end(),
                                                          true,
-                                                         [](bool solved, const GraphNode< NodeData >::ptr& n) { return solved && n->data().isPotentialSymbolicSolution; });
+                                                         [](bool solved, const auto& n) { return solved && n->data().isPotentialSymbolicSolution; });
 
   observationParent->data().isPotentialSymbolicSolution = observationParentIsSolved;
 
@@ -147,15 +199,24 @@ MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vec
 {
     // filter states before creating root
     std::vector< std::string > filteredStartStates = startStates;
-
+    std::vector< std::size_t > states_h;
+    states_h.reserve( startStates.size() );
     for( auto & s : filteredStartStates )
     {
       s = concatenateFacts( getFilteredFacts( s ) );
       const auto hash = getHash( s );
       states_[ hash ] = s;
+      states_h.push_back( hash );
     }
 
-    root_ = GraphNode< NodeData >::root( NodeData( filteredStartStates, egoBeliefState, false, 0, NodeData::NodeType::ACTION ) );
+    const auto bs_h = getHash( egoBeliefState );
+    beliefStates_[ bs_h ] = egoBeliefState;
+
+    const auto node_h = getHash( states_h, bs_h );
+
+    root_ = GraphNode< MCTSNodeData >::root( GraphNodeDataType( states_h, bs_h, node_h, false, MCTSNodeData::NodeType::ACTION ) );
+
+    nodesData_[ node_h ] = root_->data();
 }
 
 void MCTSDecisionGraph::expandMCTS( const double r0,
@@ -173,12 +234,13 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
 
   std::unordered_set< uint > expandedNodesIds;
 
-  while( (  !root_->data().isPotentialSymbolicSolution /*root_->data().expectedRewardToGoal <= std::numeric_limits<double>::lowest()*/ || n_iter < n_iter_min ) && n_iter < n_iter_max )
+  while( (  !root_->data().isPotentialSymbolicSolution || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
     std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
     // sample state
-    const auto stateIndex = sampleStateIndex( root_->data().beliefState );
+    const auto& beliefState = beliefStates_.at( root_->data().beliefState_h );
+    const auto stateIndex = sampleStateIndex( beliefState );
 
     simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
 
@@ -195,7 +257,7 @@ void MCTSDecisionGraph::expandMCTS( const double r0,
   //saveMCTSTreeToFile( ss.str(), "" );
 }
 
-double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& node,
+double MCTSDecisionGraph::simulate( const MCTSDecisionGraph::GraphNodeType::ptr& node,
                                     const std::size_t stateIndex,
                                     const std::size_t depth,
                                     const double r0,
@@ -231,35 +293,33 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
   {
     if(verbose) std::cout << "[simulate] not expanded, so expand.." << std::endl;
 
-    const auto& states = node->data().states;
-    const auto& beliefState = node->data().beliefState;
-
-    for( const auto& state: states )
-    {
-      states_[ getHash( state ) ] = state;
-    }
+    const auto& states_h = node->data().states_h;
+    const auto& beliefState_h = node->data().beliefState_h;
+    const auto node_h = node->data().node_h;
 
     // expand node (using bs and not sampled state)
-    const auto& actions = getCommonPossibleActions( states, beliefState, 0, engine_ );
+    const auto& actions_h = getCommonPossibleActions( node_h );
 
-    for( const auto& action : actions )
+    for( const auto& action_h : actions_h )
     {
       // node after action, will receive one or several observations
-      auto child = node->makeChild( DecisionGraph::GraphNodeDataType( states, beliefState, false, 0, NodeData::NodeType::OBSERVATION ) );
-      child->data().leadingAction = action;
+      auto child = node->makeChild( GraphNodeDataType( states_h, beliefState_h, node_h, false, MCTSNodeData::NodeType::OBSERVATION ) );
+      child->data().leadingAction_h = action_h;
+      child->data().leadingProbability = 1.0;
 
       if(verbose) std::cout << "[simulate] created " << child->id() << std::endl;
     }
 
     std::vector<double> rollOutBeliefState;
-    rollOutBeliefState.resize( beliefState.size() );
+    rollOutBeliefState.resize( beliefStates_.at( beliefState_h ).size() );
     rollOutBeliefState[ stateIndex ] = 1.0;
 
     expandedNodesIds.insert( node->id() );
 
     if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
 
-    return rollOutOneWorld( node->data().states[stateIndex] , r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
+    const auto& rollOutState_h = nodesData_.at( node->data().node_h ).states_h[ stateIndex ];
+    return rollOutOneWorld( rollOutState_h, r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
   }
 
   if( node->children().empty() )
@@ -280,27 +340,18 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
     CHECK( best_uct_child->children().empty(), "A non-expanded node should not have children!" );
     // expand observations - we expand just once
     // check outcomes after taking best action
-    const auto outcomes = matp::getPossibleOutcomes( node->data().states, node->data().beliefState, best_uct_child->data().leadingAction, 0, engine_ );
+    const auto outcomes_h = getPossibleOutcomes( node->data().node_h, best_uct_child->data().leadingAction_h );
 
-    for(const auto& outcome: outcomes)
+    for( const auto& outcome_h: outcomes_h )
     {
-      const auto& p    = std::get<0>(outcome);
-      const auto& data = std::get<1>(outcome);
-      const auto& observation = std::get<2>(outcome);
-      const auto childChildData = DecisionGraph::GraphNodeDataType( data.states, data.beliefState, data.terminal, 0, NodeData::NodeType::ACTION );
+      const auto& outcome = nodesData_.at( outcome_h );
+      const auto childChild = best_uct_child->makeChild( outcome );
 
-      const auto childChild = best_uct_child->makeChild( childChildData );
+      if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << observations_.at( outcome.leadingObservation_h ) << ")" << std::endl;
 
-      if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << observation << ")" << std::endl;
-
-      if( data.terminal )
+      if( outcome.terminal )
       {
         terminalNodes_.push_back( childChild );
-      }
-
-      for( const auto& state: data.states )
-      {
-        states_[ getHash( state ) ] = state;
       }
     }
 
@@ -310,10 +361,11 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
   CHECK( !best_uct_child->children().empty(), "Should at least have one outcome!" );
 
   // 4. Get observation based on sampled state. Since we sample one state only there should be one possible outcome only
-  std::vector< std::pair< DecisionGraph::GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
+  std::vector< std::pair< GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
   for( auto& child_after_observation : best_uct_child->children() )
   {
-    double p = child_after_observation->data().beliefState[stateIndex];
+    const auto& childBeliefState = beliefStates_.at( child_after_observation->data().beliefState_h );
+    double p = childBeliefState[stateIndex];
 
     if( p > 0.0 )
     {
@@ -357,15 +409,13 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
   return reward;
 }
 
-double MCTSDecisionGraph::rollOutOneWorld( const std::string & state,
+double MCTSDecisionGraph::rollOutOneWorld( const std::size_t state_h,
                                            const double r0,
                                            const std::size_t steps,
                                            const std::size_t rolloutMaxSteps,
                                            const std::size_t nRolloutsPerSimulation,
                                            const bool verbose ) const
 {
-  const auto state_h = getHash( state );
-
   double maxRewards = std::numeric_limits<double>::lowest();
   for(std::size_t i{0}; i < nRolloutsPerSimulation; ++i)
   {
@@ -420,6 +470,285 @@ double MCTSDecisionGraph::rollOutOneWorld( const std::size_t state_h,
   return simulatedReward;
 }
 
+std::vector< std::size_t > MCTSDecisionGraph::getCommonPossibleActions( const std::size_t node_h ) const
+{
+  CHECK(nodesData_.find( node_h ) != nodesData_.end(), "");
+
+  // if in cache we return cahce content
+  const auto node_cache_it = nodeHToActions_.find( node_h );
+  if( node_cache_it != nodeHToActions_.end() )
+  {
+    return nodeHToActions_.at( node_h );
+  }
+
+  const auto& nodeData = nodesData_.at( node_h );
+
+  std::vector< std::size_t > actions_h;
+  for( auto w{0}; w < nodeData.states_h.size(); w++ )
+  {
+    const auto p = beliefStates_.at( nodeData.beliefState_h )[w];
+
+    if(p < 1.0e-6)
+    {
+        continue;
+    }
+
+    const auto state_h = nodeData.states_h[w];
+    const auto actions_it = stateToActionsH_.find( state_h );
+
+    // if actions are in cache, simply lookup
+    if( actions_it != stateToActionsH_.end() )
+    {
+      for(const auto action_h: actions_it->second)
+      {
+        // use set?
+        if( std::find(actions_h.begin(), actions_h.end(), action_h) == actions_h.end()  )
+        {
+          actions_h.push_back( action_h );
+        }
+      }
+    }
+    else
+    {
+      const auto& state = states_.at( state_h );
+
+      const auto actions = getPossibleActions( state, state_h );
+
+      for( const auto& action: actions )
+      {
+        const auto action_h = std::hash<std::string>()(action);
+        // use set?
+        if( std::find( actions_h.begin(), actions_h.end(), action_h ) == actions_h.end() )
+        {
+          actions_h.push_back( action_h );
+          stateToActionsH_[ state_h ].push_back( action_h );
+        }
+
+        if( actions_.find( action_h ) == actions_.end() )
+        {
+          actions_[ action_h ] = action;
+        }
+      }
+    }
+  }
+
+  nodeHToActions_[node_h] = actions_h;
+
+  return actions_h;
+}
+
+std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::size_t node_h,
+                                                                   const std::size_t action_h ) const
+{
+  std::vector< std::size_t > outcomes;
+
+  const auto key = std::make_pair( node_h, action_h );
+  const auto outcomeCache_it = nodeHActionToNodesH_.find( key );
+
+  if( outcomeCache_it != nodeHActionToNodesH_.end() )
+  {
+    return outcomeCache_it->second;
+  }
+
+  const auto& nodeData = nodesData_.at( node_h );
+  const auto& beliefState = beliefStates_.at( nodeData.beliefState_h );
+
+  //        observable facts                                    world state
+  std::map< std::set< std::string >, std::vector< std::pair< uint, std::size_t > > > observableStatesToStates;
+  std::map< std::set< std::string >, bool > terminalOutcome;
+  std::set< std::string > factIntersection;
+
+  for( auto w = 0; w < beliefState.size(); ++w )
+  {
+    if( beliefState[ w ] > 0 )
+    {
+      const auto state_h = nodeData.states_h[w];
+
+      std::size_t nextState_h{0};
+
+      const auto stateActionKey = std::make_pair( state_h, action_h );
+      const auto c_it = stateActionHToNextState_.find( stateActionKey );
+      if( false && c_it != stateActionHToNextState_.end() )
+      {
+        nextState_h = c_it->second;
+      }
+      else
+      {
+        const auto& state = states_.at( state_h );
+
+        if( lastSetStateEngine_ != state_h )
+        {
+          engine_.setState( state );
+        }
+
+        const auto& action = actions_.at( action_h );
+        engine_.transition( action );
+        const auto _result = engine_.getState();                  // concatenation
+
+        const auto facts            = getFilteredFacts( _result );// split, filtering (without komo and decision tags)
+        const auto observableFacts  = getObservableFacts( facts );// filtering
+        const auto result           = concatenateFacts( facts );  // concatenation (filtered)
+        const auto terminal         = engine_.isTerminal();
+
+        std::set< std::string > newIntersection;
+
+        if( factIntersection.empty() )
+        {
+          newIntersection = facts;
+        }
+        else
+        {
+          std::set_intersection( facts.begin(), facts.end(), factIntersection.begin(), factIntersection.end(),
+                                 std::inserter( newIntersection, newIntersection.begin() ) );
+
+        }
+
+        // store results
+        const auto nextState_h = getHash( result ); // no decision // split, filtering
+        factIntersection = newIntersection;
+        observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, nextState_h ) );
+        terminalOutcome         [ observableFacts ] = terminal;
+
+        // cache action transition
+        if( states_.find( nextState_h ) == states_.end() )
+        {
+          states_[ nextState_h ] = result;
+        }
+        stateActionHToNextState_[ stateActionKey ] = nextState_h;
+
+        lastSetStateEngine_ = nextState_h;
+      }
+    }
+  }
+
+  for( const auto& observableResultPair : observableStatesToStates )
+  {
+    std::vector< std::size_t > states_h( beliefState.size(), 0 );
+    std::vector< double > newBs( beliefState.size(), 0 );
+
+    const auto & worldToOutcomes = observableResultPair.second;
+    const auto observationFacts = getEmergingFacts( factIntersection, observableResultPair.first );
+    const auto observation      = concatenateFacts( observationFacts );
+    const auto terminal         = terminalOutcome[ observableResultPair.first ];
+
+    double p = 0;
+    for( const auto & worldOutcome :  worldToOutcomes )
+    {
+      auto w = worldOutcome.first;
+      auto state = worldOutcome.second;
+
+      p += beliefState[ w ];
+      states_h[ w ] = state;
+      newBs[ w ] = beliefState[ w ];
+    }
+
+    newBs = normalizeBs( newBs );
+
+    const auto observation_h = getHash( observation );
+
+    if( observations_.find( observation_h ) == observations_.end() )
+    {
+      observations_[ observation_h ] = observation;
+    }
+
+    const auto beliefState_h = getHash( newBs );
+    const auto node_h = getHash( states_h, beliefState_h );
+
+    if( beliefStates_.find( beliefState_h ) == beliefStates_.end() )
+    {
+      beliefStates_[ beliefState_h ] = newBs;
+    }
+
+    if( nodesData_.find( node_h ) == nodesData_.end() )
+    {
+      MCTSNodeData nodeData( states_h, beliefState_h, node_h, terminal, MCTSNodeData::NodeType::ACTION );
+      nodeData.leadingObservation_h = observation_h;
+      nodeData.leadingProbability = p;
+      nodesData_[ node_h ] = nodeData;
+    }
+
+    outcomes.push_back( node_h );
+  }
+
+  if(outcomes.empty())
+  {
+    int a{0};
+  }
+
+  return outcomes;
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  //        observable facts                                    world state
+//  std::map< std::set< std::string >, std::vector< std::pair< uint, std::string > > > observableStatesToStates;
+//  std::map< std::set< std::string >, bool > terminalOutcome;
+//  std::set< std::string > factIntersection;
+
+//  for( auto w = 0; w < bs.size(); ++w )
+//  {
+//    if( bs[ w ] > 0 )
+//    {
+//      const auto& startState = states[ w ];
+//      engine.setState( startState );
+
+//      //std::cout << "start state:" << startState << std::endl; // tmp camille
+//      //std::cout << "action:" << action << std::endl; // tmp camille
+
+//      engine.transition( action );
+
+//      const auto _result          = engine.getState();
+//      const auto facts            = getFilteredFacts( _result );// without komo and action tags
+//      const auto result           = concatenateFacts( facts );
+//      const auto observableFacts  = getObservableFacts( facts );
+//      const auto terminal         = engine.isTerminal();
+
+//      //std::cout << "result:" << result << std::endl; // tmp camille
+
+//      std::set< std::string > newIntersection;
+
+//      if( factIntersection.empty() )
+//      {
+//        newIntersection = facts;
+//      }
+//      else
+//      {
+//        std::set_intersection( facts.begin(), facts.end(), factIntersection.begin(), factIntersection.end(),
+//                               std::inserter( newIntersection, newIntersection.begin() ) );
+//      }
+
+//      // store results
+//      factIntersection = newIntersection;
+//      observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, result ) );
+//      terminalOutcome         [ observableFacts ] = terminal;
+//    }
+//  }
+
+//  //
+//  for( auto observableResultPair : observableStatesToStates )
+//  {
+//    std::vector< std::string > states( bs.size(), "" );
+//    std::vector< double > newBs( bs.size(), 0 );
+
+//    const auto & worldToOutcomes = observableResultPair.second;
+//    auto observationFacts = getEmergingFacts( factIntersection, observableResultPair.first );
+//    auto observation      = concatenateFacts( observationFacts );
+//    auto terminal         = terminalOutcome[ observableResultPair.first ];
+
+//    double p = 0;
+//    for( const auto & worldOutcome :  worldToOutcomes )
+//    {
+//      auto w = worldOutcome.first;
+//      auto state = worldOutcome.second;
+
+//      p += bs[ w ];
+//      states[ w ] = state;
+//      newBs[ w ] = bs[ w ];
+//    }
+
+//    newBs = normalizeBs( newBs );
+
+//    outcomes.push_back( std::make_tuple( p, NodeData( states, newBs, terminal, agentId, NodeData::NodeType::OBSERVATION ), observation ) );
+//  }
+}
+
 std::size_t MCTSDecisionGraph::getNumberOfPossibleActions( const std::size_t state_h ) const
 {
   const auto actions_it = stateToActions_.find( state_h );
@@ -459,7 +788,7 @@ std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t
     const auto nextState = std::get<0>(outcome);
     const auto terminal = std::get<1>(outcome);
 
-    const auto next_h = getHash( nextState );
+    const auto next_h = getHash( nextState ); // with decision?
 
     states_[ next_h ] = nextState;
     stateActionToNextState_[ stateActionKey ] = next_h;
@@ -483,54 +812,6 @@ std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string
 
   return std::make_tuple( engine.getState(), engine.isTerminal() );
 }
-
-//double MCTSDecisionGraph::rollOut( const std::vector< std::string > & states, const std::vector< double >& bs, const double r0, const std::size_t steps, const std::size_t rolloutMaxSteps, const bool verbose ) const
-//{
-//  CHECK( engine_.agentNumber() == 1, "not supported for multi agent");
-
-//  if( steps == rolloutMaxSteps )
-//  {
-//    return 0.0; // TODO, find some heuristic here?
-//  }
-
-//  const auto& actions = getCommonPossibleActions( states, bs, 0 );
-
-//  if( actions.empty() )
-//  {
-//    return 0.0;
-//  }
-
-//  // choose action
-//  const auto action_index = rand() %  actions.size();
-//  const auto& action = actions[action_index];
-
-//  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions.size() << " possible actions, choosing: " << action_index << " : " << action << std::endl;
-
-//  const auto outcomes = getPossibleOutcomes( states, bs, action, 0 );
-
-//  double simulatedReward{ r0 };
-
-//  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << " outcomes.size(): " << outcomes.size() << std::endl;
-
-//  for(const auto &outcome: outcomes)
-//  {
-//    const auto p = std::get<0>(outcome);
-//    const auto& nodeData = std::get<1>(outcome);
-
-//    if(!nodeData.terminal)
-//    {
-//      simulatedReward += p * rollOut( nodeData.states, nodeData.beliefState, r0, steps + 1, rolloutMaxSteps, verbose );
-//    }
-//    else
-//    {
-//      if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
-//    }
-//  }
-
-//  if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
-
-//  return simulatedReward;
-//}
 
 void MCTSDecisionGraph::saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const
 {
@@ -561,6 +842,5 @@ void MCTSDecisionGraph::saveMCTSTreeToFile( const std::string & filename, const 
 
   system( ss.str().c_str() );
 }
-///
 
 } // namespace matp

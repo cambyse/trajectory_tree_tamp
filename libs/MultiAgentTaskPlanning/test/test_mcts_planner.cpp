@@ -7,6 +7,17 @@
 
 using namespace matp;
 
+static void savePolicyToFile( const Policy & policy, const std::string & suffix = "" )
+{
+  std::stringstream namess, skenamess;
+
+  namess << "policy-" << policy.id() << suffix;
+  policy.save( namess.str() );
+
+  namess << ".gv";
+  policy.saveToGraphFile( namess.str() );
+}
+
 static void generatePngImage( const std::string & name )
 {
   std::string nameCopy( name );
@@ -30,8 +41,23 @@ class MCTSPlannerTest : public ::testing::Test {
 
 TEST_F(MCTSPlannerTest, MCTS)
 {
-  tp.setFol( "data/LGP-2-blocks-1-side-fol.g" );
+  tp.setR0( -1.0 );
+  tp.setNIterMinMax( 1000, 1000000 ); //10 000
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setExplorationTerm( 15 ); // 20
+  tp.setVerbose( false );
+
+
+  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
   tp.solve();
+  const auto policy = tp.getPolicy();
+
+  savePolicyToFile( policy, "-mcts" );
+
+  EXPECT_EQ( policy.leaves().size(), 2 );
+  EXPECT_EQ( policy.leaves().front()->id(), 3 );
+  EXPECT_EQ( policy.leaves().back()->id(), 5 );
 }
 //
 int main(int argc, char **argv)

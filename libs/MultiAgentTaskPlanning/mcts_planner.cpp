@@ -12,7 +12,7 @@ static double m_inf() { return std::numeric_limits< double >::lowest(); }
 namespace matp
 {
 namespace{
-double getPolicyNodePriority( const DecisionGraph::GraphNodeType::ptr& node )
+double getPolicyNodePriority( const MCTSDecisionGraph::GraphNodeType::ptr& node )
 {
   if( !node->data().isPotentialSymbolicSolution )
   {
@@ -74,14 +74,14 @@ void MCTSPlanner::buildPolicy()
 {
   std::cout << "MCTSPlanner::buildPolicy.." << std::endl;
 
-  using NodeTypePtr = std::shared_ptr< DecisionGraph::GraphNodeType >;
+  using NodeTypePtr = std::shared_ptr< MCTSDecisionGraph::GraphNodeType >;
 
   std::stack< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
 
   // create policy root node from decision graph node
   const auto& root = tree_.root();
   PolicyNodeData rootData;
-  rootData.beliefState = root->data().beliefState;
+  rootData.beliefState = tree_.beliefStates_.at( root->data().beliefState_h );
 
   const auto& policyRoot = GraphNode< PolicyNodeData >::root( rootData );
 
@@ -110,12 +110,12 @@ void MCTSPlanner::buildPolicy()
     const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return getPolicyNodePriority(lhs) < getPolicyNodePriority(rhs); });
 
     PolicyNodeData data;// = decisionGraphtoPolicyData( v->data(), v->id() );
-    data.beliefState = v->data().beliefState;
+    data.beliefState = tree_.beliefStates_.at( v->data().beliefState_h );
     data.markovianReturn = rewards_.R0();
     data.decisionGraphNodeId = v->id();
-    data.leadingKomoArgs = decisionArtifactToKomoArgs( v->data().leadingAction );
+    data.leadingKomoArgs = decisionArtifactToKomoArgs( tree_.actions_.at( v->data().leadingAction_h ) );
     //data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
-    data.p = transitionProbability(uSke->data().beliefState, data.beliefState);
+    data.p = transitionProbability( uSke->data().beliefState, data.beliefState );
     auto vSke = uSke->makeChild( data );
     //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
 //    if( vSke->id() == 18 )

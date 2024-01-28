@@ -121,11 +121,6 @@ std::string LogicEngine::getState() const
   return getStateStr( *engine_ );
 }
 
-//StateAndHash LogicEngine::getStateAndHash() const
-//{
-//  return getStateAndHashStr( *engine_ );
-//}
-
 void LogicEngine::parseNumberOfAgents()
 {
   Graph KB;

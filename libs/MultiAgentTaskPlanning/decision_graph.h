@@ -87,6 +87,9 @@ struct NodeData
   std::size_t n_rollouts;
   std::string leadingAction;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
+  std::vector<std::size_t> states_h;
+  std::size_t belief_state_h;
+  std::size_t node_h;
   //
 
   std::size_t hash() const
@@ -108,7 +111,7 @@ private:
       if( p > 10e-8 )
       {
         hash_+=std::hash<std::string>()(s);
-        hash_+=std::hash<double>()(p);
+        hash_+=std::hash<double>()(p); // not unique?
       }
     }
     hash_+=std::hash<bool>()(terminal);

@@ -72,7 +72,6 @@ StringA nodeToStringA( Node * facts )
 
 std::set< std::string > getFilteredFacts( const std::string & state )
 {
-  //std::string filteredResult("{");
   std::set< std::string > facts;
 
   using tokenizer = boost::tokenizer<boost::char_separator<char> >;
@@ -148,7 +147,7 @@ std::set< std::string > getObservableFacts( const std::set< std::string > & fact
 {
   std::set< std::string > observableFacts;
 
-  for( auto fact : facts )
+  for( const auto& fact : facts )
   {
     if( isObservable( fact ) )
     {

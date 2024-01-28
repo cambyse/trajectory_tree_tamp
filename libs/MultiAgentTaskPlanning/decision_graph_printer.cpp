@@ -196,18 +196,12 @@ void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
   ss_ << "}" << std::endl;
 }
 
-void MCTSTreePrinter::printNode( const DecisionGraph::GraphNodeType::ptr & node )
+void MCTSTreePrinter::printNode( const MCTSDecisionGraph::GraphNodeType::ptr & node )
 {
-  if( node->data().agentId == 0 )
-  {
-    ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
-  }
-  else
-  {
-    ss_ << node->id() << " [shape=circle]" << std::endl;
-  }
 
-  if( node->data().nodeType == NodeData::NodeType::OBSERVATION )
+  ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
+
+  if( node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION )
   {
     ss_ << node->id() << " [shape=diamond]" << std::endl;
   }
@@ -218,7 +212,7 @@ void MCTSTreePrinter::printNode( const DecisionGraph::GraphNodeType::ptr & node 
   ss << "id: " << node->id() << std::endl;
   ss << node->data().n_rollouts << std::endl;
 
-  if( node->data().nodeType == NodeData::NodeType::OBSERVATION )
+  if( node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION )
   {
     if( node->data().value >= -1000 ) // TODO change that
     {
@@ -238,44 +232,44 @@ void MCTSTreePrinter::printNode( const DecisionGraph::GraphNodeType::ptr & node 
   }
 }
 
-void MCTSTreePrinter::printEdge( const DecisionGraph::GraphNodeType::ptr & node, const DecisionGraph::GraphNodeType::ptr & c )
+void MCTSTreePrinter::printEdge( const MCTSDecisionGraph::GraphNodeType::ptr & node, const MCTSDecisionGraph::GraphNodeType::ptr & c )
 {
-  std::stringstream ss;
-  std::string label;
+//  std::stringstream ss;
+//  std::string label;
 
-  const auto p = transitionProbability(node->data().beliefState, c->data().beliefState);
-  const auto& leadingArtifact = c->data().leadingAction;
+//  const auto p = transitionProbability(node->data().beliefState, c->data().beliefState);
+//  const auto& leadingArtifact = c->data().leadingAction;
 
-  if( node->data().nodeType == NodeData::NodeType::ACTION )
-  {
-    auto agentLabel = agentPrefix_ + std::to_string( node->data().agentId ) + agentSuffix_;
-    auto actionLabel = extractActionLabel( leadingArtifact, node->data().agentId );
+//  if( node->data().nodeType == MCTSNodeData::NodeType::ACTION )
+//  {
+//    auto agentLabel = agentPrefix_ + std::to_string( 0 ) + agentSuffix_;
+//    auto actionLabel = extractActionLabel( leadingArtifact, 0 );
 
-    boost::replace_all(agentLabel, "__", "");
-    boost::replace_all(actionLabel, "(", "");
-    boost::replace_all(actionLabel, ")", "");
+//    boost::replace_all(agentLabel, "__", "");
+//    boost::replace_all(actionLabel, "(", "");
+//    boost::replace_all(actionLabel, ")", "");
 
-    ss << agentLabel << std::endl;
-    ss << actionLabel;
+//    ss << agentLabel << std::endl;
+//    ss << actionLabel;
 
-    label = ss.str();
-    boost::replace_all(label, "{", "");
-  }
-  else
-  {
-    if( ! leadingArtifact.empty() )
-    {
-      ss << leadingArtifact << std::endl;
-    }
-    ss << p;
+//    label = ss.str();
+//    boost::replace_all(label, "{", "");
+//  }
+//  else
+//  {
+//    if( ! leadingArtifact.empty() )
+//    {
+//      ss << leadingArtifact << std::endl;
+//    }
+//    ss << p;
 
-    label = ss.str();
-  }
+//    label = ss.str();
+//  }
 
-  ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
+//  ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
 }
 
-void MCTSTreePrinter::saveTreeFrom( const DecisionGraph::GraphNodeType::ptr & node )
+void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionGraph::GraphNodeType::ptr & node )
 {
   printNode(node);
 
