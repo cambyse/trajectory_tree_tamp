@@ -161,12 +161,11 @@ public:
   mutable std::unordered_map< std::size_t, std::vector< std::string > > stateToActions_; // state_h -> actions
   mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionToNextState_; // state_h, action_i -> next_h
   mutable std::size_t lastSetStateEngine_;
+  mutable std::unordered_map< std::size_t, bool > terminal_;
 
   // caching to speed-up expansion
   // getHash( states, bs ) -> belief_state_h
   // belief_states: belief_state_h -> states, bs
   // actions: action_h -> action
-
-  mutable std::unordered_map< std::size_t, bool > terminal_;
 };
 } // namespace matp

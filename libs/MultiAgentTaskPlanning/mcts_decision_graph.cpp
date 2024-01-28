@@ -566,7 +566,7 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
 
       const auto stateActionKey = std::make_pair( state_h, action_h );
       const auto c_it = stateActionHToNextState_.find( stateActionKey );
-      if( false && c_it != stateActionHToNextState_.end() )
+      if( c_it != stateActionHToNextState_.end() )
       {
         nextState_h = c_it->second;
       }
@@ -581,40 +581,45 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
 
         const auto& action = actions_.at( action_h );
         engine_.transition( action );
-        const auto nextState = engine_.getFacts();                  // concatenation
-        //const auto facts            = getFilteredFacts( _result );// split, filtering (without komo and decision tags)
-        const auto observableFacts  = getObservableFacts( nextState );// filtering
-        //const auto result           = concatenateFacts( facts );  // concatenation (filtered)
-        const auto terminal         = engine_.isTerminal();
+        const auto nextState = engine_.getFacts();
+        nextState_h = getHash( nextState ); // no decision // split, filtering
+        lastSetStateEngine_ = nextState_h;
 
-        std::set< std::string > newIntersection;
-
-        if( factIntersection.empty() )
-        {
-          newIntersection = nextState;
-        }
-        else
-        {
-          std::set_intersection( nextState.begin(), nextState.end(), factIntersection.begin(), factIntersection.end(),
-                                 std::inserter( newIntersection, newIntersection.begin() ) );
-
-        }
-
-        // store results
-        const auto nextState_h = getHash( nextState ); // no decision // split, filtering
-        factIntersection = newIntersection;
-        observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, nextState_h ) );
-        terminalOutcome         [ observableFacts ] = terminal;
-
-        // cache action transition
-        if( states_.find( nextState_h ) == states_.end() )
+        // update cache
+        if( states_.find(nextState_h) == states_.end() )
         {
           states_[ nextState_h ] = nextState;
         }
-        stateActionHToNextState_[ stateActionKey ] = nextState_h;
 
-        lastSetStateEngine_ = nextState_h;
+        if( terminal_.find(nextState_h) == terminal_.end() )
+        {
+          terminal_[nextState_h] = engine_.isTerminal();
+        }
+
+        stateActionHToNextState_[ stateActionKey ] = nextState_h;
       }
+
+      const auto& nextState = states_.at( nextState_h );
+      const auto observableFacts  = getObservableFacts( nextState );// filtering
+      const auto terminal         = terminal_.at( nextState_h );
+
+      std::set< std::string > newIntersection;
+
+      if( factIntersection.empty() )
+      {
+        newIntersection = nextState;
+      }
+      else
+      {
+        std::set_intersection( nextState.begin(), nextState.end(), factIntersection.begin(), factIntersection.end(),
+                               std::inserter( newIntersection, newIntersection.begin() ) );
+
+      }
+
+      // store results
+      factIntersection = newIntersection;
+      observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, nextState_h ) );
+      terminalOutcome         [ observableFacts ] = terminal;
     }
   }
 
@@ -784,7 +789,7 @@ std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t
     const auto nextState = std::get<0>(outcome);
     const auto terminal = std::get<1>(outcome);
 
-    const auto next_h = getHash( nextState ); // with decision?
+    const auto next_h = getHash( nextState );
 
     states_[ next_h ] = nextState;
     stateActionToNextState_[ stateActionKey ] = next_h;
