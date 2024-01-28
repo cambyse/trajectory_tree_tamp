@@ -19,7 +19,7 @@ double getPolicyNodePriority( const DecisionGraph::GraphNodeType::ptr& node )
     return std::numeric_limits<double>::lowest();
   }
 
-  return node->data().expectedRewardToGoal;
+  return node->data().value;
 }
 }
 

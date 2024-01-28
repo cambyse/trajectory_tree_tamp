@@ -220,9 +220,9 @@ void MCTSTreePrinter::printNode( const DecisionGraph::GraphNodeType::ptr & node 
 
   if( node->data().nodeType == NodeData::NodeType::OBSERVATION )
   {
-    if( node->data().expectedRewardToGoal >= -1000 ) // TODO change that
+    if( node->data().value >= -1000 ) // TODO change that
     {
-      ss << node->data().expectedRewardToGoal;
+      ss << node->data().value;
     }
     else
     {

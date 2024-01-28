@@ -33,7 +33,7 @@ double priorityUCT( const GraphNode< NodeData >::ptr& node, const double c, bool
     return std::numeric_limits<double>::infinity();
   }
 
-  const double priority = node_data.expectedRewardToGoal + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) ); // TODO: Use constant for explo
+  const double priority = node_data.value + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) );
 
   if( verbose ) std::cout << "[priority] of " << node->id() << " = " << priority << std::endl;
 
@@ -226,6 +226,7 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
     return 0.0;
   }
 
+  // 1. EXPAND to create new node (observation) nodes corresponding to the outocome after each possible actions
   if( node_id_it == expandedNodesIds.end() )
   {
     if(verbose) std::cout << "[simulate] not expanded, so expand.." << std::endl;
@@ -266,11 +267,12 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
     return 0.0;
   }
 
-  // Choose best UCT action based on UCB
+  // 2. Choose best UCT action based on UCB
   const auto best_uct_child = getMostPromisingChild( node, c, verbose );
 
   if(verbose) std::cout << "[simulate] node " << best_uct_child->id() << " is most promising so far.." << std::endl;
 
+  // 3. Expand from the chosen node by simulating all possible received observations
   if( expandedNodesIds.find( best_uct_child->id() ) == expandedNodesIds.end() )
   {
     if(verbose) std::cout << "[simulate] not expanded, so expand based on possible observations.." << std::endl;
@@ -307,7 +309,7 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
 
   CHECK( !best_uct_child->children().empty(), "Should at least have one outcome!" );
 
-  // Get observation based on sampled state! in our logic, there should be one possible action only!
+  // 4. Get observation based on sampled state. Since we sample one state only there should be one possible outcome only
   std::vector< std::pair< DecisionGraph::GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
   for( auto& child_after_observation : best_uct_child->children() )
   {
@@ -318,11 +320,11 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
       candidates.push_back( std::make_pair( child_after_observation, p ) );
     }
   }
-
   CHECK( candidates.size() == 1, "We don't have a probabilistic observation model!" );
 
   auto& action_node_after_observation = candidates.front().first;
 
+  // 5. Rollout after from chosen action + received observation
   if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
   const double reward = r0 + simulate( action_node_after_observation,
@@ -341,16 +343,16 @@ double MCTSDecisionGraph::simulate( const DecisionGraph::GraphNodeType::ptr& nod
 
   if(best_uct_child->data().n_rollouts == 1)
   {
-    best_uct_child->data().expectedRewardToGoal = reward;
+    best_uct_child->data().value = reward;
   }
   else
   {
-    best_uct_child->data().expectedRewardToGoal = best_uct_child->data().expectedRewardToGoal + (reward - best_uct_child->data().expectedRewardToGoal) / best_uct_child->data().n_rollouts;
+    best_uct_child->data().value = best_uct_child->data().value + (reward - best_uct_child->data().value) / best_uct_child->data().n_rollouts;
   }
 
   if(verbose) std::cout << "[simulation] simulation counter of " << node->id() << ": " << node->data().n_rollouts << std::endl;
   if(verbose) std::cout << "[simulation] simulation counter of " << best_uct_child->id() << ": " << best_uct_child->data().n_rollouts << std::endl;
-  if(verbose) std::cout << "[simulation] reward of " << best_uct_child->id() << ": " << best_uct_child->data().expectedRewardToGoal << std::endl;
+  if(verbose) std::cout << "[simulation] reward of " << best_uct_child->id() << ": " << best_uct_child->data().value << std::endl;
 
   return reward;
 }

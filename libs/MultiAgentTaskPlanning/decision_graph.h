@@ -67,7 +67,7 @@ struct NodeData
     , agentId( agentId )
     , nodeType( nodeType )
     // mcst
-    , expectedRewardToGoal{ std::numeric_limits<double>::lowest()}
+    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts(0)
     , leadingAction{}
     , isPotentialSymbolicSolution{false}
@@ -83,7 +83,7 @@ struct NodeData
   NodeType nodeType;
 
   // mcts
-  double expectedRewardToGoal;
+  double value;
   std::size_t n_rollouts;
   std::string leadingAction;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
@@ -159,7 +159,6 @@ public:
 
   // public for testing purpose
   std::vector< std::string > getCommonPossibleActions( const GraphNodeType::ptr & node, uint agentId ) const;
-
   std::vector< std::tuple< double, NodeData, std::string > > getPossibleOutcomes( const GraphNodeType::ptr & node, const std::string & action ) const;
 
 protected:
