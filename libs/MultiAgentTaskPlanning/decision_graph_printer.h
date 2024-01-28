@@ -42,11 +42,10 @@ public:
   void print( const MCTSDecisionGraph & graph );
 
 private:
-  void printNode( const MCTSDecisionGraph::GraphNodeType::ptr & node );
-  void printEdge( const MCTSDecisionGraph::GraphNodeType::ptr & node, const MCTSDecisionGraph::GraphNodeType::ptr & c );
+  void printNode( const MCTSDecisionGraph::GraphNodeType::ptr & node, const MCTSDecisionGraph & graph );
+  void printEdge( const MCTSDecisionGraph::GraphNodeType::ptr & node, const MCTSDecisionGraph::GraphNodeType::ptr & c, const MCTSDecisionGraph & graph );
 
-  void saveTreeFrom( const MCTSDecisionGraph::GraphNodeType::ptr & node );
-  std::string extractActionLabel( const std::string & leadingArtifact, uint agentId ) const;
+  void saveTreeFrom( const MCTSDecisionGraph::GraphNodeType::ptr & node, const MCTSDecisionGraph & graph );
 
 private:
   std::ostream & ss_;

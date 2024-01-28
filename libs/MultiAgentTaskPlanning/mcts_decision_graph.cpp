@@ -54,6 +54,11 @@ double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, 
     parent_n_rollouts = parent_node_data.n_rollouts;
   }
 
+  if( node_data.terminal )
+  {
+    return std::numeric_limits<double>::lowest();
+  }
+
   if( node_data.n_rollouts == 0 )
   {
     if( verbose ) std::cout << "[priority] of " << node->id() << " = " << std::numeric_limits<double>::infinity() << std::endl;
@@ -276,13 +281,6 @@ double MCTSDecisionGraph::simulate( const MCTSDecisionGraph::GraphNodeType::ptr&
 
     //std::cout << "stateIndex:" << stateIndex << " node:" << node->id() << std::endl;
 
-    if( ! node->data().isPotentialSymbolicSolution )
-    {
-      node->data().isPotentialSymbolicSolution = true;
-      backtrackIsPotentialSymbolicSolution( node );
-      node->data().n_rollouts = std::numeric_limits<std::size_t>::max(); // no need for additional rollouts to estimate reward from this node!
-    }
-
     return 0.0;
   }
 
@@ -350,7 +348,15 @@ double MCTSDecisionGraph::simulate( const MCTSDecisionGraph::GraphNodeType::ptr&
       if( outcome.terminal )
       {
         terminalNodes_.push_back( childChild );
+        childChild->data().isPotentialSymbolicSolution = true;
       }
+    }
+
+    // backtracking must be done after adding all nodes
+    for(const auto& c: best_uct_child->children() )
+    {
+      if(c->data().terminal)
+        backtrackIsPotentialSymbolicSolution( c );
     }
 
     expandedNodesIds.insert( best_uct_child->id() );
@@ -435,19 +441,20 @@ double MCTSDecisionGraph::rollOutOneWorld( const std::size_t state_h,
     return 0.0; // TODO, find some heuristic here?
   }
 
-  const auto numberOfActions = getNumberOfPossibleActions( state_h );
+  const auto& actions_h = getPossibleActions( state_h );
 
-  if( numberOfActions == 0 )
+  if( actions_h.size() == 0 )
   {
     return 0.0;
   }
 
   // choose action
-  const auto action_i = rand() %  numberOfActions;
+  const auto action_i = rand() %  actions_h.size();
+  const auto action_h = actions_h[ action_i ];
 
-  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << numberOfActions << " possible actions, choosing: " << action_i << " : " << stateToActions_.at( state_h ).at( action_i ) << std::endl;
+  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, choosing: " << action_i << " : " << actions_.at( action_h ) << std::endl;
 
-  const auto outcome = getOutcome( state_h, action_i );
+  const auto outcome = getOutcome( state_h, action_h );
 
   double simulatedReward{ r0 };
 
@@ -671,10 +678,8 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
     outcomes.push_back( node_h );
   }
 
-  if(outcomes.empty())
-  {
-    int a{0};
-  }
+  // update final cache
+  nodeHActionToNodesH_[ key ] = outcomes;
 
   return outcomes;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -750,54 +755,64 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
 //  }
 }
 
-std::size_t MCTSDecisionGraph::getNumberOfPossibleActions( const std::size_t state_h ) const
+const std::vector< std::size_t >& MCTSDecisionGraph::getPossibleActions( const std::size_t state_h ) const
 {
-  const auto actions_it = stateToActions_.find( state_h );
-  if( actions_it == stateToActions_.end() )
+  const auto actions_it = stateToActionsH_.find( state_h );
+  if( actions_it == stateToActionsH_.end() )
   {
     const auto& state = states_.at( state_h );
+    const auto actions = getPossibleActions( state, state_h );
 
-    stateToActions_[ state_h ] = getPossibleActions( state, state_h );
+    std::vector< std::size_t > actions_h;
+    for(const auto& action: actions)
+    {
+      const auto action_h = std::hash< std::string >()( action );
+      actions_h.push_back(action_h);
+      if(actions_.find(action_h) == actions_.end())
+      {
+        actions_[action_h] = action;
+      }
+    }
+
+    stateToActionsH_[ state_h ] = actions_h;
   }
 
-  return stateToActions_.at( state_h ).size();
+  return stateToActionsH_.at( state_h );
 }
 
 std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::set<std::string> & state, const std::size_t state_h ) const
 {
-  LogicEngine & engine = engine_;
-
-  engine.setFacts( state );
+  engine_.setFacts( state );
   lastSetStateEngine_ = state_h;
 
-  return engine.getPossibleActions( 0 );
+  return engine_.getPossibleActions( 0 );
 }
 
-std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t state_h, const std::size_t action_i ) const
+std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t state_h, const std::size_t action_h ) const
 {
-  const auto stateActionKey = std::make_pair( state_h, action_i );
+  const auto stateActionKey = std::make_pair( state_h, action_h );
 
-  const auto stateAction_it = stateActionToNextState_.find( stateActionKey );
+  const auto stateAction_it = stateActionHToNextState_.find( stateActionKey );
 
-  if( stateAction_it == stateActionToNextState_.end() )
+  if( stateAction_it == stateActionHToNextState_.end() )
   {
     const auto& state = states_.at( state_h );
-    const auto& action = stateToActions_.at( state_h ).at( action_i );
+    const auto& action = actions_.at( action_h );
     const auto outcome = getOutcome( state, state_h, action );
-    lastSetStateEngine_ = state_h;
 
     const auto nextState = std::get<0>(outcome);
     const auto terminal = std::get<1>(outcome);
 
     const auto next_h = getHash( nextState );
 
+    lastSetStateEngine_ = next_h;
     states_[ next_h ] = nextState;
-    stateActionToNextState_[ stateActionKey ] = next_h;
+    stateActionHToNextState_[ stateActionKey ] = next_h;
     terminal_[ next_h ] = terminal;
   }
 
-  return std::make_tuple( stateActionToNextState_.at( stateActionKey ), // state
-                          terminal_.at( stateActionToNextState_.at( stateActionKey ) ) // terminality
+  return std::make_tuple( stateActionHToNextState_.at( stateActionKey ), // state
+                          terminal_.at( stateActionHToNextState_.at( stateActionKey ) ) // terminality
                         );
 }
 
