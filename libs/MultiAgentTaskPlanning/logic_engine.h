@@ -34,7 +34,9 @@ public:
   std::vector<std::string> getPossibleActions( uint agentId ) const;
   void transition( const std::string & action );
   void setState( const std::string & state );
+  void setFacts( const std::set<std::string>& );
   std::string getState() const;
+  std::set<std::string> getFacts() const;
   void resetState() { engine_->reset_state(); } // provided for test convinience
 private:
   void parseNumberOfAgents();

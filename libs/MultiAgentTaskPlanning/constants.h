@@ -28,6 +28,7 @@ std::vector< std::string > sortFacts( const std::vector< std::string > & facts )
 std::string concatenateFacts( const std::set< std::string >  & facts );
 bool isObservable( const std::string & fact );
 std::string getStateStr( FOL_World & fol );
+std::set< std::string > getFacts( FOL_World & fol );
 std::string concatenateFacts( const std::set< std::string > & facts );
 std::set< std::string > getObservableFacts( const std::set< std::string > & facts );
 std::string getObservableState( const std::string & state );

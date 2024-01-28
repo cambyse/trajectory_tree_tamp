@@ -109,6 +109,11 @@ void LogicEngine::transition( const std::string & action )
   }
 }
 
+void LogicEngine::setFacts( const std::set<std::string>& facts )
+{
+  setState( concatenateFacts( facts ) );
+}
+
 void LogicEngine::setState( const std::string & state )
 {
   auto mlrState = rai::String( state );
@@ -119,6 +124,11 @@ void LogicEngine::setState( const std::string & state )
 std::string LogicEngine::getState() const
 {
   return getStateStr( *engine_ );
+}
+
+std::set<std::string> LogicEngine::getFacts() const
+{
+  return matp::getFacts( *engine_ );
 }
 
 void LogicEngine::parseNumberOfAgents()

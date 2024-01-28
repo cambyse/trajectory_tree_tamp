@@ -121,10 +121,8 @@ GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeD
   return best_uct_child;
 }
 
-std::size_t getHash( const std::string& state )
+std::size_t getHash( const std::set<std::string>& facts )
 {
-  const auto facts = matp::getFilteredFacts(state);
-
   std::size_t hash{0};
   for(const auto& fact: facts)
   {
@@ -198,14 +196,14 @@ MCTSDecisionGraph::MCTSDecisionGraph( const LogicEngine & engine, const std::vec
   , lastSetStateEngine_(0)
 {
     // filter states before creating root
-    std::vector< std::string > filteredStartStates = startStates;
+    std::vector< std::set<std::string> > filteredStartStates;
     std::vector< std::size_t > states_h;
     states_h.reserve( startStates.size() );
-    for( auto & s : filteredStartStates )
+    for( const auto & s : startStates )
     {
-      s = concatenateFacts( getFilteredFacts( s ) );
-      const auto hash = getHash( s );
-      states_[ hash ] = s;
+      const auto facts = getFilteredFacts( s );
+      const auto hash = getHash( facts );
+      states_[ hash ] = facts;
       states_h.push_back( hash );
     }
 
@@ -347,7 +345,7 @@ double MCTSDecisionGraph::simulate( const MCTSDecisionGraph::GraphNodeType::ptr&
       const auto& outcome = nodesData_.at( outcome_h );
       const auto childChild = best_uct_child->makeChild( outcome );
 
-      if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << observations_.at( outcome.leadingObservation_h ) << ")" << std::endl;
+      if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << concatenateFacts(observations_.at( outcome.leadingObservation_h )) << ")" << std::endl;
 
       if( outcome.terminal )
       {
@@ -578,33 +576,32 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
 
         if( lastSetStateEngine_ != state_h )
         {
-          engine_.setState( state );
+          engine_.setFacts( state );
         }
 
         const auto& action = actions_.at( action_h );
         engine_.transition( action );
-        const auto _result = engine_.getState();                  // concatenation
-
-        const auto facts            = getFilteredFacts( _result );// split, filtering (without komo and decision tags)
-        const auto observableFacts  = getObservableFacts( facts );// filtering
-        const auto result           = concatenateFacts( facts );  // concatenation (filtered)
+        const auto nextState = engine_.getFacts();                  // concatenation
+        //const auto facts            = getFilteredFacts( _result );// split, filtering (without komo and decision tags)
+        const auto observableFacts  = getObservableFacts( nextState );// filtering
+        //const auto result           = concatenateFacts( facts );  // concatenation (filtered)
         const auto terminal         = engine_.isTerminal();
 
         std::set< std::string > newIntersection;
 
         if( factIntersection.empty() )
         {
-          newIntersection = facts;
+          newIntersection = nextState;
         }
         else
         {
-          std::set_intersection( facts.begin(), facts.end(), factIntersection.begin(), factIntersection.end(),
+          std::set_intersection( nextState.begin(), nextState.end(), factIntersection.begin(), factIntersection.end(),
                                  std::inserter( newIntersection, newIntersection.begin() ) );
 
         }
 
         // store results
-        const auto nextState_h = getHash( result ); // no decision // split, filtering
+        const auto nextState_h = getHash( nextState ); // no decision // split, filtering
         factIntersection = newIntersection;
         observableStatesToStates[ observableFacts ].push_back( std::make_pair( w, nextState_h ) );
         terminalOutcome         [ observableFacts ] = terminal;
@@ -612,7 +609,7 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
         // cache action transition
         if( states_.find( nextState_h ) == states_.end() )
         {
-          states_[ nextState_h ] = result;
+          states_[ nextState_h ] = nextState;
         }
         stateActionHToNextState_[ stateActionKey ] = nextState_h;
 
@@ -627,8 +624,7 @@ std::vector< std::size_t > MCTSDecisionGraph::getPossibleOutcomes( const std::si
     std::vector< double > newBs( beliefState.size(), 0 );
 
     const auto & worldToOutcomes = observableResultPair.second;
-    const auto observationFacts = getEmergingFacts( factIntersection, observableResultPair.first );
-    const auto observation      = concatenateFacts( observationFacts );
+    const auto observation = getEmergingFacts( factIntersection, observableResultPair.first );
     const auto terminal         = terminalOutcome[ observableResultPair.first ];
 
     double p = 0;
@@ -762,11 +758,11 @@ std::size_t MCTSDecisionGraph::getNumberOfPossibleActions( const std::size_t sta
   return stateToActions_.at( state_h ).size();
 }
 
-std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::string & state, const std::size_t state_h ) const
+std::vector< std::string > MCTSDecisionGraph::getPossibleActions( const std::set<std::string> & state, const std::size_t state_h ) const
 {
   LogicEngine & engine = engine_;
 
-  engine.setState( state );
+  engine.setFacts( state );
   lastSetStateEngine_ = state_h;
 
   return engine.getPossibleActions( 0 );
@@ -800,17 +796,17 @@ std::tuple< std::size_t, bool > MCTSDecisionGraph::getOutcome( const std::size_t
                         );
 }
 
-std::tuple< std::string, bool > MCTSDecisionGraph::getOutcome( const std::string & state, const std::size_t state_h, const std::string& action ) const
+std::tuple< std::set<std::string>, bool > MCTSDecisionGraph::getOutcome( const std::set<std::string> & state, const std::size_t state_h, const std::string& action ) const
 {
   LogicEngine & engine = engine_;
 
   if( state_h != lastSetStateEngine_ )
   {
-    engine.setState( state );
+    engine.setFacts( state );
   }
   engine.transition( action );
 
-  return std::make_tuple( engine.getState(), engine.isTerminal() );
+  return std::make_tuple( engine.getFacts(), engine.isTerminal() );
 }
 
 void MCTSDecisionGraph::saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const

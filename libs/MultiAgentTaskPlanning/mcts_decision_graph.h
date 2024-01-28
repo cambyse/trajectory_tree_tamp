@@ -72,7 +72,7 @@ double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, 
 std::size_t sampleStateIndex( const std::vector< double >& bs );
 std::string getNotObservableFact( const std::string& fullState );
 GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeData >::ptr& node, const double c, const bool verbose );
-std::size_t getHash( const std::string& state );
+std::size_t getHash( const std::set<std::string>& facts );
 std::size_t getHash( const std::vector< std::size_t >& beliefState );
 std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size_t beliefState_h );
 
@@ -131,9 +131,9 @@ public:
 
   // one world rollout
   std::size_t getNumberOfPossibleActions( const std::size_t state_h ) const; // using cache
-  std::vector< std::string > getPossibleActions( const std::string & state, const std::size_t state_h ) const;
+  std::vector< std::string > getPossibleActions( const std::set<std::string> & state, const std::size_t state_h ) const;
   std::tuple< std::size_t, bool > getOutcome( const std::size_t state_h, const std::size_t action_i ) const; // using cache
-  std::tuple< std::string, bool > getOutcome( const std::string& state, const std::size_t state_h, const std::string& action ) const;
+  std::tuple< std::set<std::string>, bool > getOutcome( const std::set<std::string>& state, const std::size_t state_h, const std::string& action ) const;
 
   void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
 
@@ -149,7 +149,7 @@ public:
   // upper level caching
   mutable std::unordered_map< std::size_t, GraphNodeDataType > nodesData_; // node_h -> node data (only action nodes)
   mutable std::unordered_map< std::size_t, std::string > actions_; // action_h -> action
-  mutable std::unordered_map< std::size_t, std::string > observations_; // action_h -> action
+  mutable std::unordered_map< std::size_t, std::set<std::string> > observations_; // observation_h -> observation
   mutable std::unordered_map< std::size_t, std::vector< double > > beliefStates_;
   mutable std::unordered_map< std::size_t, std::vector< std::size_t > > nodeHToActions_; // id -> actions h
   mutable std::unordered_map< std::size_t, std::vector< std::size_t > > stateToActionsH_; // state_h -> actions_h
@@ -157,7 +157,7 @@ public:
   mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionHToNextState_; // state_h, action_h -> next_h
 
   // caching to speed-up rollouts
-  mutable std::unordered_map< std::size_t, std::string > states_;                        // state_h -> states
+  mutable std::unordered_map< std::size_t, std::set<std::string> > states_;                        // state_h -> states
   mutable std::unordered_map< std::size_t, std::vector< std::string > > stateToActions_; // state_h -> actions
   mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionToNextState_; // state_h, action_i -> next_h
   mutable std::size_t lastSetStateEngine_;

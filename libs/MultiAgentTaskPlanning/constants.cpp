@@ -126,6 +126,25 @@ std::string getStateStr( FOL_World & fol )
   return ss.str();
 }
 
+std::set< std::string > getFacts( FOL_World & fol )
+{
+  std::set< std::string > facts;
+
+  for( const auto fact : *fol.getState() )
+  {
+    std::stringstream sss;
+    sss << *fact;
+    auto factsStr = sss.str();
+
+    if( ( factsStr.find( "decision(") == std::string::npos ) && ( factsStr.find( "komo") == std::string::npos ) )
+    {
+       facts.insert( factsStr );
+    }
+  }
+
+  return facts;
+}
+
 std::string concatenateFacts( const std::set< std::string > & facts )
 {
   if( facts.empty() )
