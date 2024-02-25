@@ -66,11 +66,6 @@ struct NodeData
     , terminal( terminal )
     , agentId( agentId )
     , nodeType( nodeType )
-    // mcst
-    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
-    , n_rollouts(0)
-    , leadingAction{}
-    , isPotentialSymbolicSolution{false}
   {
     computeHash();
   }
@@ -81,16 +76,6 @@ struct NodeData
   bool terminal;
   uint agentId;
   NodeType nodeType;
-
-  // mcts
-  double value;
-  std::size_t n_rollouts;
-  std::string leadingAction;
-  bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
-  std::vector<std::size_t> states_h;
-  std::size_t belief_state_h;
-  std::size_t node_h;
-  //
 
   std::size_t hash() const
   {

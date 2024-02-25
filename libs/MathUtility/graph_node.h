@@ -81,7 +81,7 @@ public:
   uint id() const { return id_; }
   void setId( uint id ) { id_ = id; }
   uint depth() const { /*CHECK(parents_.size() == 0 || parents_.size() == 1, "ambiguous call to a node depth in a graph");*/ return depth_; }
-  T data() const { return data_; }
+  const T& data() const { return data_; }
   T& data() { return data_; }
 
   ptr makeChild( const T & data, uint id )
