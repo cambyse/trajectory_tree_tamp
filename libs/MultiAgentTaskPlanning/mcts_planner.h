@@ -13,14 +13,14 @@
 #include <task_planner.h>
 
 #include <logic_parser.h>
-#include <mcts_decision_graph.h>
+#include <mcts_decision_tree.h>
 
 #include <value_iteration.h>
 #include <decide_on_graph.h>
 
 namespace matp
 {
-
+// implemented based on https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf
 class MCTSPlanner : public TaskPlanner
 {
 public:
@@ -50,13 +50,11 @@ private:
 
 private:
   LogicParser parser_;
-  MCTSDecisionGraph tree_;
+  MCTSDecisionTree tree_;
   Policy policy_;
 
   // value iteration
   mutable Rewards rewards_;// current state of rewards
-  std::vector< double > values_;
-  DecisionGraph decidedGraph_;
 
   // MCTS parameters
   std::size_t nIterMin_{0};

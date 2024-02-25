@@ -42,7 +42,7 @@ class MCTSPlannerTest : public ::testing::Test {
 TEST_F(MCTSPlannerTest, MCTS)
 {
   tp.setR0( -1.0 );
-  tp.setNIterMinMax( 1000, 1000000 ); //10 000
+  tp.setNIterMinMax( 1000, 1000000 );
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
   tp.setExplorationTerm( 15 ); // 20

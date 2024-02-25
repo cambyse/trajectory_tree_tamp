@@ -77,17 +77,25 @@ void display_robot()
 
 void plan()
 {
+  if(1)
   {
     matp::MCTSPlanner tp;
 
     tp.setR0( -1.0 );
-    tp.setNIterMinMax( 50, 100 );
+    tp.setNIterMinMax( 5000, 1000000 ); //10 000
     tp.setRollOutMaxSteps( 50 );
+    tp.setNumberRollOutPerSimulation( 1 );
+    tp.setExplorationTerm( 15 ); // 20
+    tp.setVerbose( false );
 
-    tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+    tp.setFol( "LGP-3-blocks-1-side-fol.g" );
     tp.solve();
-    auto policy = tp.getPolicy();
+    //tp.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
+
+    const auto policy = tp.getPolicy();
     savePolicyToFile( policy, "-mcts" );
+
+    return;
   }
   //
   matp::GraphPlanner tp;
@@ -95,7 +103,7 @@ void plan()
 
   // set planning parameters
   tp.setR0( -1.0 ); //-1.0, -0.5
-  tp.setMaxDepth( 6 );
+  tp.setMaxDepth( 8 );
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );

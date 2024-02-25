@@ -12,7 +12,7 @@ static double m_inf() { return std::numeric_limits< double >::lowest(); }
 namespace matp
 {
 namespace{
-double getPolicyNodePriority( const MCTSDecisionGraph::GraphNodeType::ptr& node )
+double getPolicyNodePriority( const MCTSDecisionTree::GraphNodeType::ptr& node )
 {
   if( !node->data().isPotentialSymbolicSolution )
   {
@@ -28,7 +28,7 @@ void MCTSPlanner::setFol( const std::string & descrition )
   if( ! boost::filesystem::exists( descrition ) ) throw FolFileNotFound();
 
   parser_.parse( descrition );
-  tree_ = MCTSDecisionGraph( parser_.engine(), parser_.possibleStartStates(), parser_.egoBeliefState() );
+  tree_ = MCTSDecisionTree( parser_.engine(), parser_.possibleStartStates(), parser_.egoBeliefState() );
 }
 
 void MCTSPlanner::solve()
@@ -59,8 +59,6 @@ Policy MCTSPlanner::getPolicy() const
 
 void MCTSPlanner::expandMCTS()
 {
-  //void expandMCTS( const double r0, const std::size_t n_iter_min, const std::size_t n_iter_max, const std::size_t rolloutMaxSteps );
-
   tree_.expandMCTS( rewards_.R0(),
                     nIterMin_,
                     nIterMax_,
@@ -74,7 +72,7 @@ void MCTSPlanner::buildPolicy()
 {
   std::cout << "MCTSPlanner::buildPolicy.." << std::endl;
 
-  using NodeTypePtr = std::shared_ptr< MCTSDecisionGraph::GraphNodeType >;
+  using NodeTypePtr = std::shared_ptr< MCTSDecisionTree::GraphNodeType >;
 
   std::stack< std::pair< NodeTypePtr, Policy::GraphNodeTypePtr > > Q;
 
@@ -94,11 +92,6 @@ void MCTSPlanner::buildPolicy()
 
     const auto& u     = uPair.first;
     const auto& uSke = uPair.second;
-
-    if( uSke->id() == 18 )
-    {
-      int a = 0;
-    }
 
     if( u->children().empty() )
     {

@@ -1,11 +1,11 @@
-#include <mcts_decision_graph.h>
+#include <mcts_decision_tree.h>
 #include <logic_parser.h>
 
 #include <gtest/gtest.h>
 
 using namespace matp;
 
-TEST( MCTSDecisionGraph, sampleStateIndex )
+TEST( MCTSDecisionTree, sampleStateIndex )
 {
   const std::vector<double> beliefState{0.5, 0.4, 0.1};
 

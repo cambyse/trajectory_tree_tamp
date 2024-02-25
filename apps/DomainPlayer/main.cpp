@@ -110,8 +110,7 @@ void testWithLogicParserManual()
 
     engine.transition(action);
 
-    const auto state = engine.getState();
-    const auto facts = matp::getFilteredFacts(state);
+    const auto facts = engine.getFacts();
 
     std::cout << "State:" << std::endl;
 
@@ -255,7 +254,7 @@ int main(int argn, char** argv){
 
 //  testPlayFOL_World();
 
-//  testWithLogicParserManual();
+  testWithLogicParserManual();
 
-  testWithLogicParserRandomized(500000);
+//  testWithLogicParserRandomized(500000);
 }

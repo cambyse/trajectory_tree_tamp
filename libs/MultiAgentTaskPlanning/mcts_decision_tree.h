@@ -26,11 +26,11 @@ struct MCTSNodeData
     , node_h( 0 )
     , terminal( false )
     , nodeType( NodeType::ACTION )
-    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
-    , n_rollouts(0)
     , leadingAction_h( 0 )
     , leadingObservation_h( 0 )
     , leadingProbability( 0.0 )
+    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+    , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
   {
   }
@@ -39,17 +39,20 @@ struct MCTSNodeData
                 const std::size_t beliefState_h,
                 const std::size_t node_h,
                 bool terminal,
-                NodeType nodeType )
+                NodeType nodeType,
+                const std::size_t leadingAction_h,
+                const std::size_t leadingObservation_h,
+                const double leadingProbability)
     : states_h( states_h )
     , beliefState_h( beliefState_h )
     , node_h( node_h )
     , terminal( terminal )
     , nodeType( nodeType )
+    , leadingAction_h( leadingAction_h )
+    , leadingObservation_h( leadingObservation_h )
+    , leadingProbability( leadingProbability )
     , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
-    , n_rollouts(0)
-    , leadingAction_h(0)
-    , leadingObservation_h(0)
-    , leadingProbability( 0.0 )
+    , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
   {
   }
@@ -58,13 +61,13 @@ struct MCTSNodeData
   std::size_t node_h;
   bool terminal;
   NodeType nodeType;
+  std::size_t leadingAction_h;
+  std::size_t leadingObservation_h;
+  double leadingProbability;
 
   // mcts
   double value;
   std::size_t n_rollouts;
-  std::size_t leadingAction_h;
-  std::size_t leadingObservation_h;
-  double leadingProbability;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
 };
 
@@ -86,14 +89,14 @@ struct StateHashActionHasher
   }
 };
 
-class MCTSDecisionGraph
+class MCTSDecisionTree
 {
 public:
   using GraphNodeDataType = MCTSNodeData;
   using GraphNodeType = GraphNode< GraphNodeDataType >;
 
-  MCTSDecisionGraph() = default;
-  MCTSDecisionGraph( const LogicEngine &, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState );
+  MCTSDecisionTree() = default;
+  MCTSDecisionTree( const LogicEngine &, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState );
   bool empty() const { return !root_ || root_->children().empty(); }
 
   // mcts building
@@ -126,8 +129,8 @@ public:
                           const bool verbose ) const;
 
   // belief space extension
-  std::vector< std::size_t > getCommonPossibleActions( const std::size_t node_ ) const;
-  std::vector< std::size_t > getPossibleOutcomes( const std::size_t node_h, const std::size_t action_h ) const;
+  std::vector< std::size_t > getCommonPossibleActions( const std::size_t node_ ) const; // using cache
+  std::vector< std::size_t > getPossibleOutcomes( const std::size_t node_h, const std::size_t action_h ) const; // using cache
 
   // one world rollout
   const std::vector< std::size_t >& getPossibleActions( const std::size_t state_h ) const; // using cache
@@ -138,30 +141,42 @@ public:
   void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
 
   // for printing
-  MCTSDecisionGraph::GraphNodeType::ptr root() const { return root_; }
-  const std::list< std::weak_ptr< MCTSDecisionGraph::GraphNodeType > >& terminalNodes() const { return terminalNodes_; }
+  MCTSDecisionTree::GraphNodeType::ptr root() const { return root_; }
+  const std::list< std::weak_ptr< MCTSDecisionTree::GraphNodeType > >& terminalNodes() const { return terminalNodes_; }
 
   mutable LogicEngine engine_;
-  MCTSDecisionGraph::GraphNodeType::ptr root_;
-  std::list< std::weak_ptr< MCTSDecisionGraph::GraphNodeType > > terminalNodes_;
+  MCTSDecisionTree::GraphNodeType::ptr root_;
+  std::list< std::weak_ptr< MCTSDecisionTree::GraphNodeType > > terminalNodes_;
 
   // upper level caching
   // basic states, actions, observations
-  mutable std::unordered_map< std::size_t, std::set<std::string> > states_;                        // state_h -> states
-  mutable std::unordered_map< std::size_t, std::string > actions_; // action_h -> action
-  mutable std::unordered_map< std::size_t, std::set<std::string> > observations_; // observation_h -> observation
-  mutable std::unordered_map< std::size_t, std::vector< double > > beliefStates_;
-  mutable std::unordered_map< std::size_t, GraphNodeDataType > nodesData_; // node_h -> node data (only action nodes)
+  mutable std::unordered_map< std::size_t, std::set<std::string> > states_;                        // state_h -> states  (storage optimization, tree has ids only)
+  mutable std::unordered_map< std::size_t, std::string > actions_;                                 // action_h -> action (storage optimization, tree has ids only)
+  mutable std::unordered_map< std::size_t, std::set<std::string> > observations_;                  // observation_h -> observation (storage optimization, tree has ids only)
+  mutable std::unordered_map< std::size_t, std::vector< double > > beliefStates_;                  // belief_h -> belief ((storage optimization, tree has ids only))
+  mutable std::unordered_map< std::size_t, GraphNodeDataType > nodesData_;                         // node_h -> node data (only action nodes)
 
   // transitions
-  mutable std::unordered_map< std::size_t, std::vector< std::size_t > > stateToActionsH_; // state_h -> actions_h
-  mutable std::unordered_map< std::size_t, std::vector< std::size_t > > nodeHToActions_; // id -> actions h
-  mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionHToNextState_; // state_h, action_h -> next_h
-  mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::vector< std::size_t >, StateHashActionHasher > nodeHActionToNodesH_;
+  mutable std::unordered_map< std::size_t, std::vector< std::size_t > > stateToActionsH_;          // state_h -> actions_h (to speed up)
+  mutable std::unordered_map< std::size_t, std::vector< std::size_t > > nodeHToActions_;           // id -> actions h      (to speed up)
+  mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::size_t, StateHashActionHasher > stateActionHToNextState_; // state_h, action_h -> next_h (to speed up)
+  mutable std::unordered_map< std::pair< std::size_t, std::size_t >, std::vector< std::size_t >, StateHashActionHasher > nodeHActionToNodesH_; // node_h, action_h -> next_node_h (to speed up)
   mutable std::unordered_map< std::size_t, bool > terminal_;
 
   // engine state
   mutable std::size_t lastSetStateEngine_;
+
+  // debug data to measure cache efficiency
+  struct CacheUsageDetails
+  {
+    std::size_t nQueries{};
+    std::size_t nUsedCache{};
+  };
+
+  mutable CacheUsageDetails stateToActionsH_details_;
+  mutable CacheUsageDetails nodeHToActions_details_;
+  mutable CacheUsageDetails stateActionHToNextState_details_;
+  mutable CacheUsageDetails nodeHActionToNodesH_details_;
 
 };
 } // namespace matp

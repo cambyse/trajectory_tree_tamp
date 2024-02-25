@@ -123,7 +123,7 @@ std::string GraphPrinter::extractActionLabel( const std::string & leadingArtifac
 }
 
 
-void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
+void MCTSTreePrinter::print( const MCTSDecisionTree & graph )
 {
   if( ! graph.root() )
   {
@@ -196,8 +196,8 @@ void MCTSTreePrinter::print( const MCTSDecisionGraph & graph )
   ss_ << "}" << std::endl;
 }
 
-void MCTSTreePrinter::printNode( const MCTSDecisionGraph::GraphNodeType::ptr & node,
-                                 const MCTSDecisionGraph & graph )
+void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & node,
+                                 const MCTSDecisionTree & graph )
 {
   ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
 
@@ -232,9 +232,9 @@ void MCTSTreePrinter::printNode( const MCTSDecisionGraph::GraphNodeType::ptr & n
   }
 }
 
-void MCTSTreePrinter::printEdge( const MCTSDecisionGraph::GraphNodeType::ptr & node,
-                                 const MCTSDecisionGraph::GraphNodeType::ptr & c,
-                                 const MCTSDecisionGraph & graph)
+void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & node,
+                                 const MCTSDecisionTree::GraphNodeType::ptr & c,
+                                 const MCTSDecisionTree & graph)
 {
   std::stringstream ss;
   std::string label;
@@ -271,8 +271,8 @@ void MCTSTreePrinter::printEdge( const MCTSDecisionGraph::GraphNodeType::ptr & n
   ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
 }
 
-void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionGraph::GraphNodeType::ptr & node,
-                                    const MCTSDecisionGraph & graph )
+void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node,
+                                    const MCTSDecisionTree & graph )
 {
   printNode( node, graph );
 
