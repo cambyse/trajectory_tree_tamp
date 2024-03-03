@@ -164,7 +164,7 @@ void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & no
 
   if( true/*node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION*/ )
   {
-    for(const auto& value: {node->data().mcts_value, node->data().vi_value})
+    for(const auto& value: {node->data().mcts_value, values_.getOrDefault(node->id())})
     {
       if( value >= -1000 ) // TODO change that
       {
@@ -205,7 +205,8 @@ void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & fr
     boost::replace_all(actionLabel, "(", "");
     boost::replace_all(actionLabel, ")", "");
 
-    ss << actionLabel;
+    ss << actionLabel << std::endl;
+    ss << rewards_.get( from->id(), to->id() );
 
     label = ss.str();
     boost::replace_all(label, "{", "");

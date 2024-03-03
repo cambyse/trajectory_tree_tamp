@@ -12,14 +12,14 @@ static double m_inf() { return std::numeric_limits< double >::lowest(); }
 namespace matp
 {
 namespace{
-double getPolicyNodePriority( const MCTSDecisionTree::GraphNodeType::ptr& node )
+double getPolicyNodePriority( const MCTSDecisionTree::GraphNodeType::ptr& node, Values& values )
 {
   if( ! node->data().isPotentialSymbolicSolution )
   {
     return std::numeric_limits<double>::lowest();
   }
 
-  return node->data().vi_value;
+  return values.getOrDefault( node->id() );
 }
 }
 
@@ -101,14 +101,16 @@ void MCTSPlanner::buildPolicy()
       continue;
     }
 
-    const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), []( const auto& lhs, const auto& rhs ) { return getPolicyNodePriority(lhs) < getPolicyNodePriority(rhs); });
+    const auto v = *std::max_element( u->children().cbegin(), u->children().cend(), [this, &u]( const auto& lhs, const auto& rhs )
+    {
+      return rewards_.get(u->id(), lhs->id()) + getPolicyNodePriority(lhs, values_) < rewards_.get(u->id(), rhs->id()) + getPolicyNodePriority(rhs, values_);
+    });
 
     PolicyNodeData data;// = decisionGraphtoPolicyData( v->data(), v->id() );
     data.beliefState = tree_.beliefStates_.at( v->data().beliefState_h );
     data.markovianReturn = rewards_.R0();
     data.decisionGraphNodeId = v->id();
     data.leadingKomoArgs = decisionArtifactToKomoArgs( tree_.actions_.at( v->data().leadingAction_h ) );
-    //data.markovianReturn = rewards_.get( fromToIndex( u->id(), v->id() ) );
     data.p = transitionProbability( uSke->data().beliefState, data.beliefState );
     auto vSke = uSke->makeChild( data );
     //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
@@ -127,7 +129,7 @@ void MCTSPlanner::buildPolicy()
 
   policy_ = Policy( policyRoot );
 
-  //policy_.setValue( values_[ decisionGraph().root()->id() ] );
+  policy_.setValue( values_.get( 0 ) );
   //CHECK(policy_.value() > std::numeric_limits<double>::lowest(), "extracted policy seems to be infeasible (infinite costs)!");
 
   std::cout << "MCTSPlanner::buildPolicy.. end (value=" << policy_.value() << ")" << std::endl;

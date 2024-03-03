@@ -39,7 +39,7 @@ class MCTSPlannerTest : public ::testing::Test {
   MCTSPlanner tp;
 };
 
-TEST_F(MCTSPlannerTest, MCTS)
+TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeWithInfiniteCosts_ExpectPolicyChanged)
 {
   tp.setR0( -1.0 );
   tp.setNIterMinMax( 1000, 1000000 );
@@ -48,8 +48,9 @@ TEST_F(MCTSPlannerTest, MCTS)
   tp.setExplorationTerm( 15 ); // 20
   tp.setVerbose( false );
 
-
   tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  // Step 1
   tp.solve();
   const auto policy = tp.getPolicy();
 
@@ -59,6 +60,25 @@ TEST_F(MCTSPlannerTest, MCTS)
   EXPECT_EQ( policy.leaves().size(), 2 );
   EXPECT_EQ( policy.leaves().front()->id(), 3 );
   EXPECT_EQ( policy.leaves().back()->id(), 5 );
+
+  // simulate intergation of a policy
+  tp.getRewards().set( 0, policy.root()->children().front()->id() , -1000.0);
+
+  // Step 2
+  tp.solve();
+
+  const auto policy_1 = tp.getPolicy();
+
+  tp.saveMCTSGraphToFile( "decision_graph_mcts_1.gv" );
+  savePolicyToFile( policy_1, "-mcts" );
+
+  EXPECT_EQ( policy_1.leaves().size(), 2 );
+  EXPECT_EQ( policy_1.leaves().front()->id(), 3 );
+  EXPECT_EQ( policy_1.leaves().back()->id(), 5 );
+
+  // check that policy is changed
+  EXPECT_NE( policy.leaves().front()->data().decisionGraphNodeId, policy_1.leaves().front()->data().decisionGraphNodeId );
+  EXPECT_NE( policy.leaves().back()->data().decisionGraphNodeId, policy_1.leaves().back()->data().decisionGraphNodeId );
 }
 //
 int main(int argc, char **argv)

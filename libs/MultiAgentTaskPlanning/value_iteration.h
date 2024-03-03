@@ -28,7 +28,7 @@ public:
 class ValueIterationOnTreeAlgorithm
 {
 public:
-  static std::vector< double > process( const MCTSDecisionTree & decisionGraph, Rewards & rewards );
+  static Values process( const MCTSDecisionTree & decisionGraph, Rewards & rewards );
 };
 
 } // namespace matp

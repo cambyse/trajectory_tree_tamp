@@ -772,7 +772,10 @@ std::tuple< std::set<std::string>, bool > MCTSDecisionTree::getOutcome( const st
   return std::make_tuple( engine.getFacts(), engine.isTerminal() );
 }
 
-void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const
+void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename,
+                                           const std::string & mctsState,
+                                           const Rewards& rewards,
+                                           const Values& values ) const
 {
   if( ! root_ )
   {
@@ -782,7 +785,7 @@ void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename, const s
   std::ofstream file;
   file.open( filename );
 
-  MCTSTreePrinter printer( file, mctsState, 10, 27 );
+  MCTSTreePrinter printer( file, mctsState, rewards, values, 5, 0 );
   printer.print( *this );
 
   file.close();

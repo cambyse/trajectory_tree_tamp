@@ -20,6 +20,7 @@
 
 namespace matp
 {
+
 // implemented based on https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf
 class MCTSPlanner : public TaskPlanner
 {
@@ -37,11 +38,12 @@ public:
   void setExplorationTerm( double c ) { explorationTermC_ = c; }
   void setVerbose( bool verbose ) { verbose_ = verbose; };
 
-  void saveMCTSGraphToFile( const std::string & filename ) const { tree_.saveMCTSTreeToFile( filename, "" ); }
+  void saveMCTSGraphToFile( const std::string & filename ) const { tree_.saveMCTSTreeToFile( filename, "", rewards_, values_ ); }
 
   // getters
   virtual bool terminated() const override;
   Policy getPolicy() const override;
+  Rewards& getRewards() { return rewards_; }; // for testing
 
   void expandMCTS();
 
@@ -56,7 +58,7 @@ private:
 
   // value iteration
   Rewards rewards_;// current state of rewards
-  std::vector< double > values_;
+  Values values_;  // values from last value iteration pass
 
   // MCTS parameters
   std::size_t nIterMin_{0};

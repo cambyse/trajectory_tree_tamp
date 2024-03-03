@@ -4,6 +4,7 @@
 
 #include <decision_graph.h>
 #include <mcts_decision_tree.h>
+#include <decision_graph.h>
 
 namespace matp
 {
@@ -32,9 +33,17 @@ private:
 class MCTSTreePrinter
 {
 public:
-  MCTSTreePrinter( std::ostream & ss, const std::string& state, std::size_t maxDepth, std::size_t fromNodeId )
+  MCTSTreePrinter( std::ostream & ss,
+                   const std::string& state,
+                   const Rewards& rewards,
+                   const Values& values,
+                   std::size_t maxDepth,
+                   std::size_t fromNodeId
+                  )
     : ss_( ss )
     , mctsState_( state )
+    , rewards_( rewards )
+    , values_( values )
     , maxDepth_( maxDepth )
     , fromNodeId_( fromNodeId )
   {
@@ -54,6 +63,8 @@ private:
   std::string mctsState_;
   std::size_t maxDepth_;
   std::size_t fromNodeId_;
+  Values values_;
+  Rewards rewards_;
 };
 
 std::string getObservation( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph );

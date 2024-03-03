@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <graph_node.h>
 #include <logic_engine.h>
+#include <utils.h>
 
 namespace matp
 {
@@ -31,8 +32,6 @@ struct MCTSNodeData
     , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
-    , vi_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
-
   {
   }
 
@@ -53,7 +52,6 @@ struct MCTSNodeData
     , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
-    , vi_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
   {
   }
   std::vector< std::size_t > states_h;
@@ -61,6 +59,7 @@ struct MCTSNodeData
   std::size_t node_h;
   bool terminal;
   NodeType nodeType;
+
   // non-markovian -> shouldn't be cached!
   std::size_t leadingAction_h;
   double leadingProbability;
@@ -69,9 +68,6 @@ struct MCTSNodeData
   double mcts_value;
   std::size_t n_rollouts;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
-
-  // value iteration
-  double vi_value;
 };
 
 double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, bool verbose );
@@ -141,7 +137,10 @@ public:
   std::tuple< std::size_t, bool > getOutcome( const std::size_t state_h, const std::size_t action_i ) const; // using cache
   std::tuple< std::set<std::string>, bool > getOutcome( const std::set<std::string>& state, const std::size_t state_h, const std::string& action ) const;
 
-  void saveMCTSTreeToFile( const std::string & filename, const std::string & mctsState ) const;
+  void saveMCTSTreeToFile( const std::string & filename,
+                           const std::string & mctsState,
+                           const Rewards& rewards,
+                           const Values& values ) const;
 
   // for printing
   MCTSDecisionTree::GraphNodeType::ptr root() const { return root_; }
@@ -179,6 +178,5 @@ public:
   mutable CacheUsageDetails nodeHToActions_details_;
   mutable CacheUsageDetails stateActionHToNextState_details_;
   mutable CacheUsageDetails nodeHActionToNodesH_details_;
-
 };
 } // namespace matp
