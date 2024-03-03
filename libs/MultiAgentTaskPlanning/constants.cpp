@@ -162,6 +162,21 @@ std::string concatenateFacts( const std::set< std::string > & facts )
   return ss.str();
 }
 
+std::string concatenateFactsWithNewLine( const std::set< std::string > & facts )
+{
+  if( facts.empty() )
+  {
+    return "";
+  }
+
+  std::stringstream ss;
+  for( auto fact : facts )
+  {
+    ss << fact << "\n";
+  }
+  return ss.str();
+}
+
 std::set< std::string > getObservableFacts( const std::set< std::string > & facts )
 {
   std::set< std::string > observableFacts;

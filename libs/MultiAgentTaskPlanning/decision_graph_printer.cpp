@@ -187,20 +187,20 @@ void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & no
   }
 }
 
-void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & node,
-                                 const MCTSDecisionTree::GraphNodeType::ptr & c,
+void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & from,
+                                 const MCTSDecisionTree::GraphNodeType::ptr & to,
                                  const MCTSDecisionTree & graph)
 {
   std::stringstream ss;
   std::string label;
 
-  const auto p = transitionProbability( graph.beliefStates_.at(node->data().beliefState_h),
-                                        graph.beliefStates_.at(c->data().beliefState_h)
+  const auto p = transitionProbability( graph.beliefStates_.at(from->data().beliefState_h),
+                                        graph.beliefStates_.at(to->data().beliefState_h)
                                        );
 
-  if( node->data().nodeType == MCTSNodeData::NodeType::ACTION )
+  if( from->data().nodeType == MCTSNodeData::NodeType::ACTION )
   {
-    auto actionLabel = graph.actions_.at(c->data().leadingAction_h);
+    auto actionLabel = graph.actions_.at( to->data().leadingAction_h);
 
     boost::replace_all(actionLabel, "(", "");
     boost::replace_all(actionLabel, ")", "");
@@ -212,17 +212,13 @@ void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & no
   }
   else
   {
-//    const auto& observation = graph.observations_.at(c->data().leadingObservation_h);
-//    if( ! observation.empty() )
-//    {
-//      ss << concatenateFacts(observation) << std::endl;
-//    }
-//    ss << p;
+    ss << getObservation( from, to, graph );
+    ss << p;
 
-//    label = ss.str();
+    label = ss.str();
   }
 
-  ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
+  ss_ << from->id() << "->" << to->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
 }
 
 void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node,
@@ -247,5 +243,70 @@ void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr &
     saveTreeFrom( c , graph, printFromNode ? depth + 1 : depth, printFromNode );
   }
 }
+
+std::string getObservation( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph )
+{
+  std::set< std::string > factIntersection;
+
+  auto siblings = to->siblings();
+  siblings.push_back( to );
+
+  if( siblings.size() <= 1 )
+  {
+    return ""; // we consider that an observation is seen only where there are at least two possible outcomes
+  }
+
+  // compute the fact intersection between siblings
+  bool firstFactSet{true};
+  for( const auto& s: siblings )
+  {
+    const auto& beliefState = graph.beliefStates_.at( s->data().beliefState_h );
+    for(auto w=0; w < beliefState.size(); ++w)
+    {
+      if( beliefState[w] > 0.0 )
+      {
+        const auto& facts = graph.states_.at( s->data().states_h[w] );
+
+        if( firstFactSet )
+        {
+          factIntersection = facts;
+        }
+        else
+        {
+          auto currentIntersection = factIntersection;
+          factIntersection.clear();
+          std::set_intersection( facts.begin(), facts.end(), currentIntersection.begin(), currentIntersection.end(),
+                                 std::inserter( factIntersection, factIntersection.begin() ) );
+        }
+
+        firstFactSet = false;
+      }
+    }
+  }
+
+  std::vector< std::set<std::string> > emergingFactsPerWorld;
+
+  const auto& beliefState = graph.beliefStates_.at( to->data().beliefState_h );
+  for( std::size_t w=0; w < beliefState.size(); ++w )
+  {
+    if( beliefState[w] > 0.0 )
+    {
+      const auto& facts = graph.states_.at( to->data().states_h[w] );
+      emergingFactsPerWorld.push_back( getEmergingFacts( factIntersection, facts ) );
+    }
+  }
+
+  std::set< std::string > observationIntersection = emergingFactsPerWorld.front();
+  for( const auto& emergingFacts: emergingFactsPerWorld )
+  {
+    auto currentIntersection = observationIntersection;
+    observationIntersection.clear();
+    std::set_intersection( emergingFacts.begin(), emergingFacts.end(), currentIntersection.begin(), currentIntersection.end(),
+                           std::inserter( observationIntersection, observationIntersection.begin() ) );
+  }
+
+  return concatenateFactsWithNewLine( observationIntersection );
+}
+
 
 }

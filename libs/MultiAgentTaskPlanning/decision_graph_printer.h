@@ -45,7 +45,7 @@ public:
 
 private:
   void printNode( const MCTSDecisionTree::GraphNodeType::ptr & node, const MCTSDecisionTree & graph );
-  void printEdge( const MCTSDecisionTree::GraphNodeType::ptr & node, const MCTSDecisionTree::GraphNodeType::ptr & c, const MCTSDecisionTree & graph );
+  void printEdge( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph );
 
   void saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node, const MCTSDecisionTree & graph, std::size_t depth, bool printedUpToNode );
 
@@ -55,5 +55,8 @@ private:
   std::size_t maxDepth_;
   std::size_t fromNodeId_;
 };
+
+std::string getObservation( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph );
+
 
 }
