@@ -53,7 +53,7 @@ TEST_F(MCTSPlannerTest, MCTS)
   tp.solve();
   const auto policy = tp.getPolicy();
 
-  //tp.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
+  tp.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
   savePolicyToFile( policy, "-mcts" );
 
   EXPECT_EQ( policy.leaves().size(), 2 );

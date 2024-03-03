@@ -1,4 +1,5 @@
 #include <graph_planner.h>
+#include <queue>
 
 #include <algorithm>    // std::random_shuffle
 #include <boost/filesystem.hpp>
@@ -199,316 +200,84 @@ std::vector< double > ValueIterationAlgorithm::process( const DecisionGraph & gr
   std::cout << "valueIteration.. end" << std::endl;
 
   return values;
+}
 
-  //  std::cout << "GraphPlanner::valueIteration.. start" << std::endl;
+std::vector< double > ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Rewards & rewards )
+{
+  auto fromToIndex = [] ( uint from, uint to )->uint
+  {
+    return from << 10 + to;
+  };
 
-  //  using NodeTypePtr = std::shared_ptr< DecisionGraph::GraphNodeType >;
+  // Dijkstra like
+  using NodeTypePtr = std::weak_ptr< MCTSDecisionTree::GraphNodeType >;
 
-  //  double alpha = 0.5;
-  //  const double initValue = 100 * maxDepth_ * r0_;
+  auto cmp = []( const NodeTypePtr & _lhs, const NodeTypePtr & _rhs )
+  {
+    const auto& lhs = _lhs.lock();
+    const auto& rhs = _rhs.lock();
 
-  //  values_ = std::vector< double >( graph_.size(), initValue ); // magic value!! distance from root to vertex[i]
+    return lhs->data().vi_value < rhs->data().vi_value;
+  };
 
-  //  auto comp = [ & ]( const NodeTypePtr & a, const NodeTypePtr & b ) -> bool
-  //  {
-  //    return values_[ a->id() ] < values_[ b->id() ];
-  //  };
+  std::priority_queue< NodeTypePtr, std::vector< NodeTypePtr >,  decltype(cmp) > Q(cmp);
 
-  //  auto diff_func = []( double a, double b ) -> double
-  //  {
-  //    const double gentle_m_inf = -10e8;
-  //    if( a < gentle_m_inf && b < gentle_m_inf )
-  //    {
-  //      return 0;
-  //    }
-  //    else if( a >= gentle_m_inf && b >= gentle_m_inf )
-  //    {
-  //      return fabs( a -b );
-  //    }
-  //    else
-  //    {
-  //      return std::numeric_limits< double >::infinity();
-  //    }
-  //  };
+  // put initial terminal nodes
+  for( const auto & m: tree.terminalNodes_ )
+  {
+    auto n = m.lock();
+    n->data().vi_value = 0.0;
+    Q.push( n );
+  }
 
-  //  // go from leafs to root
-  //  const auto nodes = graph_.nodes();
-  //  auto terminals = graph_.terminalNodes();
-  //  for( auto weakV : terminals )
-  //  {
-  //    auto v = weakV.lock();
+  while( ! Q.empty() )
+  {
+    const auto& m = Q.top();
+    Q.pop();
+    const auto& n = m.lock();
 
-  //    values_[ v->id() ] = 0; // all rewards negative
-  //  }
+    CHECK( n->data().nodeType == MCTSDecisionTree::GraphNodeDataType::NodeType::ACTION, "Value iteration performed on action nodes only!" );
 
-  //  // expected reward up to terminal nodes
-  //  // add terminal nodes to Q
-  //  uint totalUpdates = 0;
-  //  constexpr double eps = 10e-4;
-  //  bool stable = false;
-  //  for( auto i = 0; i < 100; ++i )
-  //  {
-  //    double maxDiff = 0;
+    // compute value of observation parent
+    double value = 0.0;
+    auto siblings = n->siblings();
+    siblings.push_back( n );
+    for( const auto& s: siblings )
+    {
+      value += s->data().leadingProbability * s->data().vi_value;
+    }
 
-  //    std::vector< bool > updated( graph_.size(), false ); // magic value!! distance from root to vertex[i]
-  //    std::queue< std::weak_ptr< DecisionGraph::GraphNodeType > > Q;
-  //    for( auto weakV : terminals )
-  //    {
-  //      Q.push( weakV );
-  //    }
+    // get action parent
+    CHECK( n->parents().size() == 1, "Data structure should be a tree, so the nodes should have only one parent" );
+    CHECK( n->parents().front().lock()->parents().size() == 1, "Data structure should be a tree, so the nodes should have only one parent" );
+    const auto observationParent = n->parents().front().lock();
+    const auto actionParent = observationParent->parents().front().lock();
 
-  //    while( ! Q.empty() )
-  //    {
-  //      auto u = Q.front().lock();
-  //      Q.pop();
+    if( value < -1000.0 ) // change
+    {
+      // if value is minus inf, no need to update parent
+      continue;
+    }
 
-  //      if( u->data().nodeType == NodeData::NodeType::ACTION )
-  //      {
-  //        if( u->data().agentId == 0 )
-  //        {
-  //          if( ! u->data().terminal )
-  //          {
-  //            double newTargetValue = m_inf(); // if no children and not terminal, it means that it is infeasible hence m_inf
+    if( value > observationParent->data().vi_value )
+    {
+      observationParent->data().vi_value = value;
+    }
 
-  //            // max operation, choose the best child
-  //            for( auto v : u->children() )
-  //            {
-  //              const auto r = rewards_[ v->id() ];
+    const auto potentialNewValue = rewards.get( fromToIndex( actionParent->id(), n->id() ) ) + value;
 
-  //              if( values_[ v->id() ] + r > newTargetValue )
-  //              {
-  //                newTargetValue = values_[ v->id() ] + r;
-  //              }
-  //            }
+    if( potentialNewValue > actionParent->data().vi_value )
+    {
+      actionParent->data().vi_value = potentialNewValue;
 
-  //            if( newTargetValue == m_inf() ) // there were no children so unfeasible
-  //            {
-  //              const auto diff = diff_func( values_[ u->id() ], m_inf() );
-  //              maxDiff = std::max( maxDiff, diff );
+      if( ! actionParent->parents().empty() )
+      {
+        Q.push( actionParent );
+      }
+    }
+  }
 
-  //              //std::cout << "A update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << m_inf() << std::endl;
-  //              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //              values_[ u->id() ] = m_inf();
-  //            }
-  //            else
-  //            {
-  //              const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //              const auto diff = diff_func( values_[ u->id() ], newValue );
-  //              maxDiff = std::max( maxDiff, diff );
-
-  //              //std::cout << "B update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //              values_[ u->id() ] = newValue;
-  //            }
-  //          }
-  //        }
-  //        else // other agent
-  //        {
-  //          double newTargetValue = 0;
-
-  //          uint n = u->children().size();
-  //          for( auto v : u->children() )
-  //          {
-  //            newTargetValue += 1.0 / n * values_[ v->id() ] ; // average
-  //          }
-
-  //          const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //          const auto diff = diff_func( values_[ u->id() ], newValue );
-  //          maxDiff = std::max( maxDiff, diff );
-
-  //          //std::cout << "C update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //          //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //          values_[ u->id() ] = newValue;
-  //        }
-  //      }
-  //      else if( u->data().nodeType == NodeData::NodeType::OBSERVATION )
-  //      {
-  //        double newTargetValue = 0;
-
-  //        for( auto v : u->children() )
-  //        {
-  //          newTargetValue += v->data().p * values_[ v->id() ] ;
-  //        }
-
-  //        const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //        const auto diff = diff_func( values_[ u->id() ], newValue );
-  //        maxDiff = std::max( maxDiff, diff );
-
-  //        //std::cout << "D update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //        //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //        values_[ u->id() ] = newValue;
-  //      }
-
-  //      updated[ u->id() ] = true;
-
-  //      //
-  //      for( auto p : u->parents() )
-  //      {
-  //        if( ! updated[ p.lock()->id() ] )
-  //        {
-  //          Q.push( p );
-  //        }
-  //      }
-  //    }
-
-  //    stable = maxDiff < eps;
-
-  //    std::cout << "it: " << i << " maxDiff: " << maxDiff << std::endl;
-  //  }
-
-  //  std::cout << "GraphPlanner::valueIteration.. end" << std::endl;
-
-    ///////////////////////////////////////////////////////////////////////
-
-  //  std::cout << "GraphPlanner::valueIteration.. start" << std::endl;
-
-  //  using NodeTypePtr = std::shared_ptr< DecisionGraph::GraphNodeType >;
-
-  //  double alpha = 0.5;
-  //  const double initValue = 100 * maxDepth_ * r0_;
-
-  //  values_ = std::vector< double >( graph_.size(), initValue ); // magic value!! distance from root to vertex[i]
-
-  //  auto comp = [ & ]( const NodeTypePtr & a, const NodeTypePtr & b ) -> bool
-  //  {
-  //    return values_[ a->id() ] < values_[ b->id() ];
-  //  };
-
-  //  auto diff_func = []( double a, double b ) -> double
-  //  {
-  //    const double gentle_m_inf = -10e8;
-  //    if( a < gentle_m_inf && b < gentle_m_inf )
-  //    {
-  //      return 0;
-  //    }
-  //    else if( a >= gentle_m_inf && b >= gentle_m_inf )
-  //    {
-  //      return fabs( a -b );
-  //    }
-  //    else
-  //    {
-  //      return std::numeric_limits< double >::infinity();
-  //    }
-  //  };
-
-  //  // go from leafs to root
-  //  const auto nodes = graph_.nodes();
-  //  auto terminals = graph_.terminalNodes();
-  //  for( auto weakV : terminals )
-  //  {
-  //    auto v = weakV.lock();
-
-  //    values_[ v->id() ] = 0; // all rewards negative
-  //  }
-
-  //  // expected reward up to terminal nodes
-  //  // add terminal nodes to Q
-  //  uint totalUpdates = 0;
-  //  constexpr double eps = 10e-4;
-  //  bool stable = false;
-  //  for( auto i = 0; ! stable && i < 1000; ++i )
-  //  {
-  //    double maxDiff = 0;
-
-  //    auto itNodes = nodes;
-  //    std::random_shuffle ( itNodes.begin(), itNodes.end() );
-
-  //    for( auto weakU : itNodes )
-  //    {
-  //      auto u = weakU.lock();
-
-  //      if( u->data().nodeType == NodeData::NodeType::ACTION )
-  //      {
-  //        if( u->data().agentId == 0 )
-  //        {
-  //          if( ! u->data().terminal )
-  //          {
-  //            double newTargetValue = m_inf(); // if no children and not terminal, it means that it is infeasible hence m_inf
-
-  //            // max operation, choose the best child
-  //            for( auto v : u->children() )
-  //            {
-  //              const auto r = rewards_[ v->id() ];
-
-  //              if( values_[ v->id() ] + r > newTargetValue )
-  //              {
-  //                newTargetValue = values_[ v->id() ] + r;
-  //              }
-  //            }
-
-  //            if( newTargetValue == m_inf() ) // there were no children so unfeasible
-  //            {
-  //              const auto diff = diff_func( values_[ u->id() ], m_inf() );
-  //              maxDiff = std::max( maxDiff, diff );
-
-  //              //std::cout << "A update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << m_inf() << std::endl;
-  //              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //              values_[ u->id() ] = m_inf();
-  //            }
-  //            else
-  //            {
-  //              const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //              const auto diff = diff_func( values_[ u->id() ], newValue );
-  //              maxDiff = std::max( maxDiff, diff );
-
-  //              //std::cout << "B update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //              //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //              values_[ u->id() ] = newValue;
-  //            }
-  //          }
-  //        }
-  //        else // other agent
-  //        {
-  //          double newTargetValue = 0;
-
-  //          uint n = u->children().size();
-  //          for( auto v : u->children() )
-  //          {
-  //            newTargetValue += 1.0 / n * values_[ v->id() ] ; // average
-  //          }
-
-  //          const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //          const auto diff = diff_func( values_[ u->id() ], newValue );
-  //          maxDiff = std::max( maxDiff, diff );
-
-  //          //std::cout << "C update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //          //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //          values_[ u->id() ] = newValue;
-  //        }
-  //      }
-  //      else if( u->data().nodeType == NodeData::NodeType::OBSERVATION )
-  //      {
-  //        double newTargetValue = 0;
-
-  //        for( auto v : u->children() )
-  //        {
-  //          newTargetValue += v->data().p * values_[ v->id() ] ;
-  //        }
-
-  //        const auto newValue = values_[ u->id() ] * ( 1 - alpha ) + alpha * newTargetValue;
-  //        const auto diff = diff_func( values_[ u->id() ], newValue );
-  //        maxDiff = std::max( maxDiff, diff );
-
-  //        //std::cout << "D update " << u->id() << " old value:" << values_[ u->id() ] << " new value:" << newValue << std::endl;
-  //        //std::cout << "diff:" << diff << " maxDiff:" << maxDiff << std::endl;
-
-  //        values_[ u->id() ] = newValue;
-  //      }
-  //    }
-
-  //    stable = maxDiff < eps;
-
-  //    std::cout << "it: " << i << " maxDiff: " << maxDiff << std::endl;
-  //  }
-
-  //  std::cout << "GraphPlanner::valueIteration.. end" << std::endl;
+  return std::vector< double >();
 }
 
 }

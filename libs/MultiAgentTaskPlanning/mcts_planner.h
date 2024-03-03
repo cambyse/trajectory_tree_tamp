@@ -47,6 +47,7 @@ public:
 
 private:
   void buildPolicy();
+  void valueIteration();
 
 private:
   LogicParser parser_;
@@ -54,7 +55,8 @@ private:
   Policy policy_;
 
   // value iteration
-  mutable Rewards rewards_;// current state of rewards
+  Rewards rewards_;// current state of rewards
+  std::vector< double > values_;
 
   // MCTS parameters
   std::size_t nIterMin_{0};

@@ -14,12 +14,12 @@ namespace matp
 namespace{
 double getPolicyNodePriority( const MCTSDecisionTree::GraphNodeType::ptr& node )
 {
-  if( !node->data().isPotentialSymbolicSolution )
+  if( ! node->data().isPotentialSymbolicSolution )
   {
     return std::numeric_limits<double>::lowest();
   }
 
-  return node->data().value;
+  return node->data().vi_value;
 }
 }
 
@@ -38,6 +38,7 @@ void MCTSPlanner::solve()
     expandMCTS();
   }
 
+  valueIteration();
   buildPolicy();
 }
 
@@ -111,10 +112,6 @@ void MCTSPlanner::buildPolicy()
     data.p = transitionProbability( uSke->data().beliefState, data.beliefState );
     auto vSke = uSke->makeChild( data );
     //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
-//    if( vSke->id() == 18 )
-//    {
-//      int a = 0;
-//    }
 
     if( v->children().empty() )
     {
@@ -134,6 +131,11 @@ void MCTSPlanner::buildPolicy()
   //CHECK(policy_.value() > std::numeric_limits<double>::lowest(), "extracted policy seems to be infeasible (infinite costs)!");
 
   std::cout << "MCTSPlanner::buildPolicy.. end (value=" << policy_.value() << ")" << std::endl;
+}
+
+void MCTSPlanner::valueIteration()
+{
+  values_ = ValueIterationOnTreeAlgorithm::process( tree_, rewards_ );
 }
 
 }

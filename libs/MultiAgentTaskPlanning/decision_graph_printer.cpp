@@ -139,59 +139,9 @@ void MCTSTreePrinter::print( const MCTSDecisionTree & graph )
   ss_ << "{" << std::endl;
   ss_ << graph.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
 
-//  for( auto weakN : graph.nodes() )
-//  {
-//    auto n = weakN.lock();
-
-//    if( n )
-//    {
-//      if( n->data().agentId == 0 )
-//      {
-//        ss_ << n->id() << " [shape=square, style=filled, fillcolor=" << ( n->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
-//      }
-//      else
-//      {
-//        ss_ << n->id() << " [shape=circle]" << std::endl;
-//      }
-
-//      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
-//      {
-//        ss_ << n->id() << " [shape=diamond]" << std::endl;
-//      }
-
-//      std::stringstream ss;
-//      ss << std::fixed;
-//      ss << std::setprecision(2);
-//      ss << "id: " << n->id() << std::endl;
-//      ss << n->data().n_rollouts << std::endl;
-
-//      if( n->data().nodeType == NodeData::NodeType::OBSERVATION )
-//      {
-//        if( n->data().expectedRewardToGoal >= -1000 ) // TODO change that
-//        {
-//          ss << n->data().expectedRewardToGoal;
-//        }
-//        else
-//        {
-//          ss << "-inf";
-//        }
-//      }
-
-//      ss_ << n->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
-//    }
-//  }
-//  for( auto weakN : graph.terminalNodes() )
-//  {
-//    auto n = weakN.lock();
-
-//    if( n )
-//    {
-//      ss_ << n->id() << " [style=filled, fillcolor=green]" << std::endl;
-//    }
-//  }
   ss_ << "}" << std::endl;
 
-  saveTreeFrom( graph.root(), graph );
+  saveTreeFrom( graph.root(), graph, 0, false );
 
   ss_ << "}" << std::endl;
 }
@@ -212,15 +162,20 @@ void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & no
   ss << "id: " << node->id() << std::endl;
   ss << node->data().n_rollouts << std::endl;
 
-  if( node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION )
+  if( true/*node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION*/ )
   {
-    if( node->data().value >= -1000 ) // TODO change that
+    for(const auto& value: {node->data().mcts_value, node->data().vi_value})
     {
-      ss << node->data().value;
-    }
-    else
-    {
-      ss << "-inf";
+      if( value >= -1000 ) // TODO change that
+      {
+        ss << value;
+      }
+      else
+      {
+        ss << "-inf";
+      }
+
+      ss << std::endl;
     }
   }
 
@@ -239,9 +194,8 @@ void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & no
   std::stringstream ss;
   std::string label;
 
-
-  const auto p = transitionProbability(graph.beliefStates_.at(node->data().beliefState_h),
-                                       graph.beliefStates_.at(c->data().beliefState_h)
+  const auto p = transitionProbability( graph.beliefStates_.at(node->data().beliefState_h),
+                                        graph.beliefStates_.at(c->data().beliefState_h)
                                        );
 
   if( node->data().nodeType == MCTSNodeData::NodeType::ACTION )
@@ -258,30 +212,39 @@ void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & no
   }
   else
   {
-    const auto& observation = graph.observations_.at(c->data().leadingObservation_h);
-    if( ! observation.empty() )
-    {
-      ss << concatenateFacts(observation) << std::endl;
-    }
-    ss << p;
+//    const auto& observation = graph.observations_.at(c->data().leadingObservation_h);
+//    if( ! observation.empty() )
+//    {
+//      ss << concatenateFacts(observation) << std::endl;
+//    }
+//    ss << p;
 
-    label = ss.str();
+//    label = ss.str();
   }
 
   ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
 }
 
 void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node,
-                                    const MCTSDecisionTree & graph )
+                                    const MCTSDecisionTree & graph,
+                                    const std::size_t depth,
+                                    bool printedUpToNode )
 {
-  printNode( node, graph );
+  if( depth > maxDepth_ )
+  {
+    return;
+  }
+
+  const auto printFromNode = printedUpToNode || ( node->id() == fromNodeId_ );
+
+  if( printFromNode ) printNode( node, graph );
 
   // print edge
   for( const auto& c : node->children() )
   {
-    printEdge( node, c, graph );
+    if( printFromNode ) printEdge( node, c, graph );
 
-    saveTreeFrom( c , graph );
+    saveTreeFrom( c , graph, printFromNode ? depth + 1 : depth, printFromNode );
   }
 }
 

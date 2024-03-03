@@ -27,11 +27,12 @@ struct MCTSNodeData
     , terminal( false )
     , nodeType( NodeType::ACTION )
     , leadingAction_h( 0 )
-    , leadingObservation_h( 0 )
     , leadingProbability( 0.0 )
-    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+    , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
+    , vi_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+
   {
   }
 
@@ -41,7 +42,6 @@ struct MCTSNodeData
                 bool terminal,
                 NodeType nodeType,
                 const std::size_t leadingAction_h,
-                const std::size_t leadingObservation_h,
                 const double leadingProbability)
     : states_h( states_h )
     , beliefState_h( beliefState_h )
@@ -49,11 +49,11 @@ struct MCTSNodeData
     , terminal( terminal )
     , nodeType( nodeType )
     , leadingAction_h( leadingAction_h )
-    , leadingObservation_h( leadingObservation_h )
     , leadingProbability( leadingProbability )
-    , value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+    , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
+    , vi_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
   {
   }
   std::vector< std::size_t > states_h;
@@ -61,14 +61,17 @@ struct MCTSNodeData
   std::size_t node_h;
   bool terminal;
   NodeType nodeType;
+  // non-markovian -> shouldn't be cached!
   std::size_t leadingAction_h;
-  std::size_t leadingObservation_h;
   double leadingProbability;
 
   // mcts
-  double value;
+  double mcts_value;
   std::size_t n_rollouts;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
+
+  // value iteration
+  double vi_value;
 };
 
 double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, bool verbose );
@@ -152,7 +155,6 @@ public:
   // basic states, actions, observations
   mutable std::unordered_map< std::size_t, std::set<std::string> > states_;                        // state_h -> states  (storage optimization, tree has ids only)
   mutable std::unordered_map< std::size_t, std::string > actions_;                                 // action_h -> action (storage optimization, tree has ids only)
-  mutable std::unordered_map< std::size_t, std::set<std::string> > observations_;                  // observation_h -> observation (storage optimization, tree has ids only)
   mutable std::unordered_map< std::size_t, std::vector< double > > beliefStates_;                  // belief_h -> belief ((storage optimization, tree has ids only))
   mutable std::unordered_map< std::size_t, GraphNodeDataType > nodesData_;                         // node_h -> node data (only action nodes)
 

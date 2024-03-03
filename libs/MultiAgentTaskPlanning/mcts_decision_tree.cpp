@@ -1,11 +1,11 @@
 #include <mcts_decision_tree.h>
 
 #include <set>
-#include <queue>
 #include <algorithm>
 #include <unordered_set>
 #include <numeric>
 #include <decision_graph_printer.h>
+#include <belief_state.h>
 
 namespace matp
 {
@@ -66,7 +66,7 @@ double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, 
     return std::numeric_limits<double>::infinity();
   }
 
-  const double priority = node_data.value + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) );
+  const double priority = node_data.mcts_value + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) );
 
   if( verbose ) std::cout << "[priority] of " << node->id() << " = " << priority << std::endl;
 
@@ -217,7 +217,7 @@ MCTSDecisionTree::MCTSDecisionTree( const LogicEngine & engine, const std::vecto
 
     const auto node_h = getHash( states_h, bs_h );
 
-    root_ = GraphNode< MCTSNodeData >::root( GraphNodeDataType( states_h, bs_h, node_h, false, MCTSNodeData::NodeType::ACTION, 0, 0, 1.0 ) );
+    root_ = GraphNode< MCTSNodeData >::root( GraphNodeDataType( states_h, bs_h, node_h, false, MCTSNodeData::NodeType::ACTION, 0, 1.0 ) );
 
     nodesData_[ node_h ] = root_->data();
 }
@@ -230,14 +230,14 @@ void MCTSDecisionTree::expandMCTS( const double r0,
                                 const double c,
                                 const bool verbose )
 {
-  // reference https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf Alg 1.
+  // See Alg 1. in https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf
   CHECK( engine_.agentNumber() == 1, "MCTS works here only for one agent" );
 
   std::size_t n_iter{0};
 
   std::unordered_set< uint > expandedNodesIds;
 
-  while( (  !root_->data().isPotentialSymbolicSolution || n_iter < n_iter_min ) && n_iter < n_iter_max )
+  while( ( ! root_->data().isPotentialSymbolicSolution || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
     std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
@@ -279,8 +279,6 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
   {
     if(verbose) std::cout << "[simulate] Already terminal! no costs" << std::endl;
 
-    //std::cout << "stateIndex:" << stateIndex << " node:" << node->id() << std::endl;
-
     return 0.0;
   }
 
@@ -299,7 +297,7 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
     for( const auto& action_h : actions_h )
     {
       // node after action, will receive one or several observations
-      const auto child = node->makeChild( GraphNodeDataType( states_h, beliefState_h, node_h, false, MCTSNodeData::NodeType::OBSERVATION, action_h, 0, 1.0 ) );
+      const auto child = node->makeChild( GraphNodeDataType( states_h, beliefState_h, node_h, false, MCTSNodeData::NodeType::OBSERVATION, action_h, 1.0 ) );
 
       if(verbose) std::cout << "[simulate] created " << child->id() << std::endl;
     }
@@ -333,7 +331,8 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
     CHECK( best_uct_child->children().empty(), "A non-expanded node should not have children!" );
     // expand observations - we expand just once
-    // check outcomes after taking best action
+    // check outcomes after taking best actionbeliefStates_
+
     const auto outcomes_h = getPossibleOutcomes( node->data().node_h, best_uct_child->data().leadingAction_h );
 
     for( const auto& outcome_h: outcomes_h )
@@ -341,7 +340,13 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
       const auto& outcome = nodesData_.at( outcome_h );
       const auto childChild = best_uct_child->makeChild( outcome );
 
-      if(verbose) std::cout << "[simulate] create " << childChild->id() << " (observation: " << concatenateFacts(observations_.at( outcome.leadingObservation_h )) << ")" << std::endl;
+      // assign non-markovian fields
+      childChild->data().leadingProbability = transitionProbability( beliefStates_.at( node->data().beliefState_h ),
+                                                                     beliefStates_.at( childChild->data().beliefState_h ) );
+      childChild->data().leadingAction_h = best_uct_child->data().leadingAction_h;
+      //
+
+      if( verbose ) std::cout << "[simulate] create " << childChild->id() << std::endl; //<< " (observation: " << concatenateFacts( observations_.at( outcome.leadingObservation_h )) << ")" << std::endl;
 
       if( outcome.terminal )
       {
@@ -399,16 +404,16 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
   if(best_uct_child->data().n_rollouts == 1)
   {
-    best_uct_child->data().value = reward;
+    best_uct_child->data().mcts_value = reward;
   }
   else
   {
-    best_uct_child->data().value = best_uct_child->data().value + (reward - best_uct_child->data().value) / best_uct_child->data().n_rollouts;
+    best_uct_child->data().mcts_value = best_uct_child->data().mcts_value + (reward - best_uct_child->data().mcts_value) / best_uct_child->data().n_rollouts;
   }
 
   if(verbose) std::cout << "[simulation] simulation counter of " << node->id() << ": " << node->data().n_rollouts << std::endl;
   if(verbose) std::cout << "[simulation] simulation counter of " << best_uct_child->id() << ": " << best_uct_child->data().n_rollouts << std::endl;
-  if(verbose) std::cout << "[simulation] reward of " << best_uct_child->id() << ": " << best_uct_child->data().value << std::endl;
+  if(verbose) std::cout << "[simulation] reward of " << best_uct_child->id() << ": " << best_uct_child->data().mcts_value << std::endl;
 
   return reward;
 }
@@ -477,7 +482,7 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
 
 std::vector< std::size_t > MCTSDecisionTree::getCommonPossibleActions( const std::size_t node_h ) const
 {
-  CHECK(nodesData_.find( node_h ) != nodesData_.end(), "");
+  CHECK( nodesData_.find( node_h ) != nodesData_.end(), "" );
 
   // if in cache we return cahce content
   const auto node_cache_it = nodeHToActions_.find( node_h );
@@ -548,7 +553,7 @@ std::vector< std::size_t > MCTSDecisionTree::getCommonPossibleActions( const std
 }
 
 std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::size_t node_h,
-                                                                   const std::size_t action_h ) const
+                                                                  const std::size_t action_h ) const
 {
   std::vector< std::size_t > outcomes;
 
@@ -646,28 +651,18 @@ std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::siz
     std::vector< double > newBs( beliefState.size(), 0 );
 
     const auto & worldToOutcomes = observableResultPair.second;
-    const auto observation = getEmergingFacts( factIntersection, observableResultPair.first );
-    const auto terminal         = terminalOutcome[ observableResultPair.first ];
+    const auto terminal          = terminalOutcome[ observableResultPair.first ];
 
-    double p = 0;
     for( const auto & worldOutcome :  worldToOutcomes )
     {
       auto w = worldOutcome.first;
       auto state = worldOutcome.second;
 
-      p += beliefState[ w ];
       states_h[ w ] = state;
       newBs[ w ] = beliefState[ w ];
     }
 
     newBs = normalizeBs( newBs );
-
-    const auto observation_h = getHash( observation );
-
-    if( observations_.find( observation_h ) == observations_.end() )
-    {
-      observations_[ observation_h ] = observation;
-    }
 
     const auto beliefState_h = getHash( newBs );
     const auto node_h = getHash( states_h, beliefState_h );
@@ -679,7 +674,7 @@ std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::siz
 
     if( nodesData_.find( node_h ) == nodesData_.end() )
     {
-      MCTSNodeData nodeData( states_h, beliefState_h, node_h, terminal, MCTSNodeData::NodeType::ACTION, 0,  observation_h, p );
+      MCTSNodeData nodeData( states_h, beliefState_h, node_h, terminal, MCTSNodeData::NodeType::ACTION, 0, 0.0 ); // default action and leading probabilities (since non cachable)!
       nodesData_[ node_h ] = nodeData;
     }
 
@@ -787,7 +782,7 @@ void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename, const s
   std::ofstream file;
   file.open( filename );
 
-  MCTSTreePrinter printer( file, mctsState );
+  MCTSTreePrinter printer( file, mctsState, 10, 27 );
   printer.print( *this );
 
   file.close();
