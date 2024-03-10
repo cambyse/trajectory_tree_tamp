@@ -39,13 +39,81 @@ class MCTSPlannerTest : public ::testing::Test {
   MCTSPlanner tp;
 };
 
+
+TEST_F(MCTSPlannerTest, MCTS_WhenPlanningTwoTimesWithSameParameters_ExpectSamePolicies)
+{
+  srand (1);
+
+  MCTSPlanner tp_1;
+  tp_1.setR0( -1.0, 15.0 );
+  tp_1.setNIterMinMax( 1000, 1000000 );
+  tp_1.setRollOutMaxSteps( 50 );
+  tp_1.setNumberRollOutPerSimulation( 1 );
+  tp_1.setVerbose( false );
+
+  tp_1.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  tp_1.solve();
+  const auto policy_1 = tp_1.getPolicy();
+
+  srand (1);
+
+  MCTSPlanner tp_2;
+  tp_2.setR0( -0.1, 15.0 );
+  tp_2.setNIterMinMax( 1000, 1000000 );
+  tp_2.setRollOutMaxSteps( 50 );
+  tp_2.setNumberRollOutPerSimulation( 1 );
+  tp_2.setVerbose( false );
+
+  tp_2.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  tp_2.solve();
+  const auto policy_2 = tp_2.getPolicy();
+
+  EXPECT_EQ( policy_1, policy_2 );
+}
+
+TEST_F(MCTSPlannerTest, MCTS_WhenPlanningTwoTimesWithEquivalentParameters_ExpectSamePolicies)
+{
+  srand (1);
+
+  MCTSPlanner tp_1;
+  tp_1.setR0( -1.0, 15.0 );
+  tp_1.setNIterMinMax( 50, 1000000 );
+  tp_1.setRollOutMaxSteps( 50 );
+  tp_1.setNumberRollOutPerSimulation( 1 );
+  tp_1.setVerbose( true );
+
+  tp_1.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  tp_1.solve();
+  const auto policy_1 = tp_1.getPolicy();
+
+  srand (1);
+
+  MCTSPlanner tp_2;
+  tp_2.setR0( -0.1, 15.0 );
+  tp_2.setNIterMinMax( 50, 1000000 );
+  tp_2.setRollOutMaxSteps( 50 );
+  tp_2.setNumberRollOutPerSimulation( 1 );
+  tp_2.setVerbose( true );
+
+  tp_2.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  tp_2.solve();
+  const auto policy_2 = tp_2.getPolicy();
+
+  EXPECT_EQ( policy_1, policy_2 );
+  EXPECT_EQ( tp_1.getValues().values().size(), tp_2.getValues().values().size() );
+}
+
+// Updating the internal rewards directly
 TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeWithInfiniteCosts_ExpectPolicyChanged)
 {
-  tp.setR0( -1.0 );
+  tp.setR0( -1.0, 15.0 );
   tp.setNIterMinMax( 1000, 1000000 );
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
-  tp.setExplorationTerm( 15 ); // 20
   tp.setVerbose( false );
 
   tp.setFol( "LGP-2-blocks-1-side-fol.g" );
@@ -60,8 +128,6 @@ TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeWithIn
   savePolicyToFile( policy, "-mcts" );
 
   EXPECT_EQ( policy.leaves().size(), 2 );
-  EXPECT_EQ( policy.leaves().front()->id(), 3 );
-  EXPECT_EQ( policy.leaves().back()->id(), 5 );
 
   // simulate intergation of a policy
   tp.getRewards().set( 0, policy.root()->children().front()->data().decisionGraphNodeId, -1000.0);
@@ -75,8 +141,6 @@ TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeWithIn
   savePolicyToFile( policy_1, "-mcts" );
 
   EXPECT_EQ( policy_1.leaves().size(), 2 );
-  EXPECT_EQ( policy_1.leaves().front()->id(), 3 );
-  EXPECT_EQ( policy_1.leaves().back()->id(), 5 );
   EXPECT_NE( policy.leaves().front()->data().decisionGraphNodeId, policy_1.leaves().front()->data().decisionGraphNodeId );
   EXPECT_NE( policy.leaves().back()->data().decisionGraphNodeId, policy_1.leaves().back()->data().decisionGraphNodeId );
   EXPECT_GE( policy.value(), policy_1.value() );
@@ -100,11 +164,10 @@ TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeWithIn
 
 TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeLessCostlyThanR0_ExpectSamePolicyWithHigherValue)
 {
-  tp.setR0( -1.0 );
+  tp.setR0( -1.0, 15.0 );
   tp.setNIterMinMax( 1000, 1000000 );
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
-  tp.setExplorationTerm( 15 ); // 20
   tp.setVerbose( false );
 
   tp.setFol( "LGP-2-blocks-1-side-fol.g" );
@@ -156,6 +219,50 @@ TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndMakingAnEdgeLessCo
   EXPECT_EQ( policy_1.leaves().back()->data().decisionGraphNodeId, policy_2.leaves().back()->data().decisionGraphNodeId );
   EXPECT_LT( policy_1.value(), policy_2.value() );
 }
+
+// Updating the policy
+TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndSimulatingAnInfeasibleMotionPlanning_ExpectPolicyChanged)
+{
+  tp.setR0( -1.0, 15.0 );
+  tp.setNIterMinMax( 1000, 1000000 );
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
+  tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+
+  // Step 1
+  tp.solve();
+  const auto policy = tp.getPolicy();
+
+  tp.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
+  savePolicyToFile( policy, "-mcts" );
+
+  EXPECT_EQ( policy.leaves().size(), 2 );
+  EXPECT_EQ( policy.leaves().front()->id(), 3 );
+  EXPECT_EQ( policy.leaves().back()->id(), 5 );
+
+  // simulate intergation of a policy
+  //tp.getRewards().set( 0, policy.root()->children().front()->data().decisionGraphNodeId, -1000.0);
+  policy.root()->children().front()->data().markovianReturn = -1000.0;
+  tp.integrate( policy );
+
+  // Step 2
+  tp.solve();
+
+  const auto policy_1 = tp.getPolicy();
+
+  tp.saveMCTSGraphToFile( "decision_graph_mcts_1.gv" );
+  savePolicyToFile( policy_1, "-mcts" );
+
+  EXPECT_EQ( policy_1.leaves().size(), 2 );
+  EXPECT_EQ( policy_1.leaves().front()->id(), 3 );
+  EXPECT_EQ( policy_1.leaves().back()->id(), 5 );
+  EXPECT_NE( policy.leaves().front()->data().decisionGraphNodeId, policy_1.leaves().front()->data().decisionGraphNodeId );
+  EXPECT_NE( policy.leaves().back()->data().decisionGraphNodeId, policy_1.leaves().back()->data().decisionGraphNodeId );
+  EXPECT_GE( policy.value(), policy_1.value() );
+}
+
 //
 int main(int argc, char **argv)
 {

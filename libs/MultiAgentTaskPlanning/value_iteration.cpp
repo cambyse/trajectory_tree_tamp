@@ -229,9 +229,14 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
 
   while( ! Q.empty() )
   {
-    const auto& m = Q.top();
+    const auto m = Q.top();
     Q.pop();
     const auto& n = m.lock();
+
+    if( n->id() == 730 )
+    {
+      int a=0;
+    }
 
     CHECK( n->data().nodeType == MCTSDecisionTree::GraphNodeDataType::NodeType::ACTION, "Value iteration performed on action nodes only!" );
 
@@ -261,7 +266,12 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
       continue;
     }
 
-    if( actionParent->id() == 0 && actionParent->id() == 2 )
+    if( actionParent->id() == 730 )
+    {
+      int a=0;
+    }
+
+    if( actionParent->id() == 447 )
     {
       int a=0;
     }
@@ -272,10 +282,12 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
     }
 
     const auto potentialNewValue = rewards.get( actionParent->id(), observationParent->id() ) + value;
-
-    if( potentialNewValue > values.getOrDefault( actionParent->id() ) )
+    const auto previousValue = values.getOrDefault( actionParent->id() );
+    if( potentialNewValue > previousValue )
     {
       values.set( actionParent->id(), potentialNewValue );
+
+      CHECK_EQ( values.get( actionParent->id() ), potentialNewValue, "" );
 
       if( ! actionParent->parents().empty() )
       {
@@ -283,6 +295,8 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
       }
     }
   }
+
+  CHECK( values.values().find( 0 ) != values.values().end(), "No solution found for root!" ); //
 
   return values;
 }

@@ -2,9 +2,9 @@
 
 #include <boost/algorithm/string/replace.hpp>
 
-void PolicyPrinter::print( const Policy & Policy )
+void PolicyPrinter::print( const Policy & policy )
 {
-  if( ! Policy.root() )
+  if( ! policy.root() )
   {
     return;
   }
@@ -12,7 +12,7 @@ void PolicyPrinter::print( const Policy & Policy )
   ss_ << "digraph g{" << std::endl;
   ss_ << "bgcolor=\"transparent\"";
   ss_ << "{" << std::endl;
-  ss_ << Policy.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
+  ss_ << policy.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
 
 //  for( auto n : Policy.leaves() )
 //  {
@@ -23,12 +23,12 @@ void PolicyPrinter::print( const Policy & Policy )
 //  }
   ss_ << "}" << std::endl;
 
-  saveGraphFrom( Policy.root() );
+  saveGraphFrom( policy, policy.root() );
 
   ss_ << "}" << std::endl;
 }
 
-void PolicyPrinter::saveGraphFrom( const Policy::GraphNodeType::ptr & node )
+void PolicyPrinter::saveGraphFrom( const Policy & policy, const Policy::GraphNodeType::ptr & node )
 {
   if( node->data().terminal )
   {
@@ -65,11 +65,13 @@ void PolicyPrinter::saveGraphFrom( const Policy::GraphNodeType::ptr & node )
     //std::cout << "print return to " << c->data().decisionGraphNodeId << " = " << c->data().markovianReturn << std::endl;
     ss << "r=" << c->data().markovianReturn << std::endl;
 
+    if( node->id() == 0 ) ss << "v=" << policy.value() << std::endl;
+
     label = ss.str();
     boost::replace_all(label, "{", "");
 
     ss_ << node->id() << "->" << c->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
 
-    saveGraphFrom( c );
+    saveGraphFrom( policy, c );
   }
 }

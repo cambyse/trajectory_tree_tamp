@@ -16,7 +16,7 @@ public:
   void print( const Policy & policy );
 
 private:
-  void saveGraphFrom( const Policy::GraphNodeType::ptr & node );
+  void saveGraphFrom( const Policy & policy, const Policy::GraphNodeType::ptr & node );
 
 private:
   std::ostream & ss_;

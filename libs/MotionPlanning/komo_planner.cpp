@@ -549,7 +549,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
     // apply correct prefix
     if(!node->isRoot())
     {
-      std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
+      //std::cout << node->parent()->data().decisionGraphNodeId << "->" << node->data().decisionGraphNodeId << std::endl;
 
       const auto& parent_path_piece = markovianPaths_.find( node->parent()->data().decisionGraphNodeId )->second;
 
@@ -591,10 +591,10 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
 
     //const double cost2 = getCost(komo);
 
-    std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
+    //std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
 
-    markovianPathCosts_      [ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * cost;
-    markovianPathConstraints_[ node->data().decisionGraphNodeId ] += node->data().beliefState[ w ] * constraints;
+    markovianPathCosts_      [ node->data().decisionGraphNodeId ] += /*node->data().beliefState[ w ] **/ cost;
+    markovianPathConstraints_[ node->data().decisionGraphNodeId ] += /*node->data().beliefState[ w ] **/ constraints;
 
     // what to do with the cost and constraints here??
     if( constraints >= config_.maxConstraint_ )

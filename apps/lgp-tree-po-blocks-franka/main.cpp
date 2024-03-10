@@ -77,33 +77,18 @@ void display_robot()
 
 void plan()
 {
-  if(1)
-  {
-    matp::MCTSPlanner tp;
+  srand(1);
 
-    tp.setR0( -1.0 );
-    tp.setNIterMinMax( 5000, 1000000 ); //10 000
-    tp.setRollOutMaxSteps( 50 );
-    tp.setNumberRollOutPerSimulation( 1 );
-    tp.setExplorationTerm( 15 ); // 20
-    tp.setVerbose( false );
-
-    tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-    tp.solve();
-    //tp.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
-
-    const auto policy = tp.getPolicy();
-    savePolicyToFile( policy, "-mcts" );
-
-    return;
-  }
-  //
-  matp::GraphPlanner tp;
+  matp::MCTSPlanner tp;
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -1.0 ); //-1.0, -0.5
-  tp.setMaxDepth( 8 );
+  tp.setR0( -0.1, 15.0 );
+  tp.setNIterMinMax( 50000, 1000000 ); //10 000
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );
@@ -127,7 +112,6 @@ void plan()
   mp.registerTask( "unstack"      , groundTreeUnStack );
 
   /// BUILD DECISION GRAPH
-  tp.buildGraph(false);
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
@@ -144,7 +128,7 @@ void plan()
   {
     nIt++;
 
-    savePolicyToFile( policy );
+    savePolicyToFile( policy, "-candidate" );
 
     lastPolicy = policy;
 
@@ -153,9 +137,12 @@ void plan()
     po.setParam( "type", "markovJointPath" );
     mp.solveAndInform( po, policy );
 
+    savePolicyToFile( policy, "-informed" );
+
     /// TASK PLANNING
     tp.integrate( policy );
     tp.solve();
+
     policy = tp.getPolicy();
   }
   while( lastPolicy != policy && nIt != maxIt );
@@ -184,6 +171,94 @@ void plan()
     po.setParam( "nJobs", "8" );
     mp.solveAndInform( po, policy ); // it displays
   }
+
+//  //
+//  matp::GraphPlanner tp;
+//  mp::KOMOPlanner mp;
+
+//  // set planning parameters
+//  tp.setR0( -1.0 ); //-1.0, -0.5
+//  tp.setMaxDepth( 8 );
+//  mp.setNSteps( 20 );
+//  mp.setMinMarkovianCost( 0.00 );
+//  mp.setMaxConstraint( 15.0 );
+
+//  // set problem
+//  //tp.setFol( "LGP-1-block-1-side-fol.g" );
+//  //mp.setKin( "LGP-1-block-1-side-kin.g" );
+
+//  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
+//  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
+
+//  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+//  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+
+//  // register symbols
+//  mp.registerInit( groundTreeInit );
+//  mp.registerTask( "pick-up"      , groundTreePickUp );
+//  mp.registerTask( "put-down"     , groundTreePutDown );
+//  mp.registerTask( "check"        , groundTreeCheck );
+//  mp.registerTask( "stack"        , groundTreeStack );
+//  mp.registerTask( "unstack"      , groundTreeUnStack );
+
+//  /// BUILD DECISION GRAPH
+//  tp.buildGraph(false);
+//  //tp.saveGraphToFile( "decision_graph.gv" );
+//  //generatePngImage( "decision_graph.gv" );
+
+//#if 1
+//  /// POLICY SEARCH
+//  Policy policy, lastPolicy;
+
+//  tp.solve();
+//  policy = tp.getPolicy();
+
+//  uint nIt = 0;
+//  const uint maxIt = 1000;
+//  do
+//  {
+//    nIt++;
+
+//    savePolicyToFile( policy );
+
+//    lastPolicy = policy;
+
+//    /// MOTION PLANNING
+//    auto po     = MotionPlanningParameters( policy.id() );
+//    po.setParam( "type", "markovJointPath" );
+//    mp.solveAndInform( po, policy );
+
+//    /// TASK PLANNING
+//    tp.integrate( policy );
+//    tp.solve();
+//    policy = tp.getPolicy();
+//  }
+//  while( lastPolicy != policy && nIt != maxIt );
+
+//  savePolicyToFile( policy, "-final" );
+//#else
+//  Policy policy;
+//  policy.load("policy-0-3-blocks");
+//  //policy.load("policy-0");
+//#endif
+//  // default method
+//  //mp.display(policy, 200);
+
+//  {
+//    auto po     = MotionPlanningParameters( policy.id() );
+//    po.setParam( "type", "EvaluateMarkovianCosts" );
+//    mp.solveAndInform( po, policy );
+//  }
+
+//  /// DECOMPOSED SPARSE OPTIMIZATION
+//  // adsm
+//  {
+//    auto po     = MotionPlanningParameters( policy.id() );
+//    po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
+//    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
+//    po.setParam( "nJobs", "8" );
+//    mp.solveAndInform( po, policy ); // it displays
+//  }
 }
 
 //===========================================================================

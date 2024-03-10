@@ -81,6 +81,8 @@ public:
     values_[nodeId] = v;
   }
 
+  const std::unordered_map< uint, double >& values() const { return values_; }
+
 private:
   double v0_{std::numeric_limits< double >::lowest()};
   std::unordered_map< uint, double > values_;
