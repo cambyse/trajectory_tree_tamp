@@ -263,6 +263,93 @@ TEST_F(MCTSPlannerTest, MCTS_WhenBuildingMCTSDecisionGraph_AndSimulatingAnInfeas
   EXPECT_GE( policy.value(), policy_1.value() );
 }
 
+// simulate full tamp with mocked motion planning
+
+struct MCTSPlannerTestWithMockedMotionPlanning : public ::testing::Test {
+  void solveAndInform(Policy& policy)
+  {
+    std::queue< Policy::GraphNodeTypePtr > Q;
+    Q.push( policy.root() );
+
+    while( ! Q.empty() )
+    {
+      auto n = Q.front();
+      Q.pop();
+
+      // find parents in tree_
+      if( n->id() % 3 == 0 ) n->data().markovianReturn = -10.0;
+      if( n->id() % 3 == 1 ) n->data().markovianReturn = -1.0;
+      if( n->id() % 3 == 2 ) n->data().markovianReturn = -0.1;
+
+      // push children on queue
+      for( const auto & c : n->children() )
+      {
+        Q.push( c );
+      }
+    }
+  }
+
+  std::tuple<Policy, std::size_t> doTamp( const double r0 )
+  {
+    srand (1);
+
+    tp = MCTSPlanner{};
+    tp.setR0( r0, 30.0 );
+    tp.setNIterMinMax( 50000, 1000000 );
+    tp.setRollOutMaxSteps( 50 );
+    tp.setNumberRollOutPerSimulation( 1 );
+    tp.setVerbose( false );
+
+    tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+
+    Policy policy, lastPolicy;
+
+    tp.solve();
+    policy = tp.getPolicy();
+
+    uint nIt = 0;
+    const uint maxIt = 1000;
+    do
+    {
+      nIt++;
+
+      savePolicyToFile( policy, "-candidate" );
+
+      lastPolicy = policy;
+
+      /// MOTION PLANNING
+      solveAndInform( policy );
+      savePolicyToFile( policy, "-informed" );
+
+      /// TASK PLANNING
+      tp.integrate( policy );
+      tp.solve();
+
+      policy = tp.getPolicy();
+    }
+    while( lastPolicy != policy && nIt != maxIt );
+
+    savePolicyToFile( policy, "-final" );
+
+    return std::make_tuple( policy, nIt );
+  }
+
+  MCTSPlanner tp;
+};
+
+TEST_F(MCTSPlannerTestWithMockedMotionPlanning, MCTS_WhenBuildingMCTSDecisionGraph_AndSimulatingAnInfeasibleMotionPlanning_ExpectPolicyChanged)
+{
+  const auto policy_and_it_0 = doTamp(-20.0);
+  const auto policy_and_it_1 = doTamp(-1.0);
+  const auto policy_and_it_2 = doTamp(-0.05);
+
+  EXPECT_LE( std::get<0>(policy_and_it_0).value(), std::get<0>(policy_and_it_1).value() );
+  EXPECT_LE( std::get<0>(policy_and_it_1).value(), std::get<0>(policy_and_it_2).value() );
+
+  EXPECT_LE( std::get<1>(policy_and_it_0), std::get<1>(policy_and_it_1) );
+  EXPECT_LE( std::get<1>(policy_and_it_1), std::get<1>(policy_and_it_2) );
+}
+
 //
 int main(int argc, char **argv)
 {

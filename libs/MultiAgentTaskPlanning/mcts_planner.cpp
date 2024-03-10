@@ -69,61 +69,6 @@ void MCTSPlanner::integrate( const Policy & policy )
       Q.push( c );
     }
   }
-//  while( ! Q.empty() )
-//  {
-//    auto n = Q.front();
-//    Q.pop();
-
-//    if( n->id() == 0 )
-//    {
-//      CHECK_EQ( n->children().size(), 1, "wrong Policy" );
-
-//      for( const auto & c : n->children() )
-//      {
-//        //std::cout << "integrate from " << n->data().decisionGraphNodeId << " to " << c->data().decisionGraphNodeId << " = " << c->data().markovianReturn << std::endl;
-//        if( c->data().status == PolicyNodeData::INFORMED )
-//        {
-//          //rewards_[ fromToIndex( n->data().decisionGraphNodeId, c->data().decisionGraphNodeId ) ] = c->data().markovianReturn;
-//          rewards_.set( n->data().decisionGraphNodeId, c->data().decisionGraphNodeId, c->data().markovianReturn );
-//        }
-//        Q.push( c );
-//      }
-//    }
-//    else
-//    {
-//      // we have to skip the observation node
-//      for( const auto& c : n->children() )
-//      {
-//        // find correct parent in decision graph
-//        // 1 - get similar node in graph
-//        const auto& c_g = decisionGraphNodes[ c->data().decisionGraphNodeId ];
-
-//        auto id_right_parent = -1;
-//        for( const auto& p_g : c_g.lock()->parents() )
-//        {
-//          for( const auto& p_p_g : p_g.lock()->parents() )
-//          {
-//            if( p_p_g.lock()->id() == n->data().decisionGraphNodeId )
-//            {
-//              id_right_parent = p_g.lock()->id();
-
-//              //std::cout << "integrate from " << id_right_parent << " to " << c->data().decisionGraphNodeId << " = " << c->data().markovianReturn << std::endl;
-
-//              //auto prev = rewards_.find(fromToIndex( id_right_parent, c->data().decisionGraphNodeId ));
-//              std::cout << "integrate from " << n->data().decisionGraphNodeId << " to " << c->data().decisionGraphNodeId << ", new value = " << c->data().markovianReturn << ", old value = " << rewards_.get( fromToIndex( id_right_parent, c->data().decisionGraphNodeId ) ) << std::endl;
-
-//              //rewards_[ fromToIndex( id_right_parent, c->data().decisionGraphNodeId ) ] = c->data().markovianReturn;
-//              rewards_.set( fromToIndex( id_right_parent, c->data().decisionGraphNodeId ), c->data().markovianReturn);
-
-//              Q.push( c );
-
-//              break;
-//            }
-//          }
-//        }
-//      }
-//    }
-//  }
 }
 
 // getters

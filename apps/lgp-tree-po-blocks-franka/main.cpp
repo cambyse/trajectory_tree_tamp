@@ -83,7 +83,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -0.1, 15.0 );
+  tp.setR0( -0.5, 30.0 );
   tp.setNIterMinMax( 50000, 1000000 ); //10 000
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
@@ -91,7 +91,7 @@ void plan()
 
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
-  mp.setMaxConstraint( 15.0 );
+  mp.setMaxConstraint( 30.0 );
 
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
