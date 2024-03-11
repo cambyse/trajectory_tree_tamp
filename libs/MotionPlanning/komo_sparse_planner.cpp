@@ -235,11 +235,18 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
 
     double task_cost{0.0};
 
+    /// DEBUG
+    //const std::string task_name_str( task->name.p );
+    //bool verbose = (task_name_str.find("TargetPosition") != std::string::npos);
+    ///
+
+    const double global_scale = 1.0; //task->map->scale.N ? task->map->scale(0) : 1.0; already applied by phi!
+
     for(uint t=0;t<task->vars.d0;t++)
     {
       CHECK(task->map->order + 1 == task->vars.d1, "inconsistent tm order!");
 
-      for(uint s=0; s<task->vars.d1; ++s)
+      for( uint s=0; s < task->vars.d1; ++s )
       {
         const auto global = task->vars(t, s) + komo->k_order;
 
@@ -254,8 +261,6 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
       task->map->__phi(y, J, Ktuple);
       CHECK(y.d0 == d, "wrong tm dimensionality");
 
-      const double global_scale = task->map->scale.N ? task->map->scale(0) : 1.0;
-
       CHECK(t < task->scales.d0, "");
 
       const double scale = task->scales(t) * global_scale;
@@ -266,8 +271,9 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
 
       if(task->type==OT_sos)
       {
-        report.slices[global_task_time].objectivesResults[std::string(task->name.p)] = scale * sumOfSqr(y);
-        task_cost += scale * sumOfSqr(y);
+        const auto slice_cost = scale * sumOfSqr(y);
+        report.slices[global_task_time].objectivesResults[std::string(task->name.p)] = slice_cost;
+        task_cost += slice_cost;
       }
       else if(task->type==OT_eq)
       {
@@ -282,6 +288,8 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
     if(!isTaskIrrelevant(task->name, config_.taskIrrelevantForPolicyCost))
     {
       report.totalCost += task_cost;
+
+      //std::cerr << task->name << " scale:" << global_scale * task->scales(0) << " from:" << task->vars(0, -1) + komo->k_order << " to: " << task->vars(-1, 0) + komo->k_order  << " cost:" << task_cost << std::endl;
     }
     else
     {

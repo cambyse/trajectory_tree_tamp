@@ -568,7 +568,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
       cout << "KOMO FAILED: " << msg <<endl;
     }
 
-    if( node->id() == 4 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
+    if( node->id() == 1 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
     {
 //          for(const auto& f: komo->world.frames)
 //          {
@@ -579,19 +579,15 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
       //komo->configurations.last()->watch(true);
       //komo->displayTrajectory();
 
-        //komo->saveTrajectory( std::to_string( node->id() ) );
-        //komo->plotVelocity( std::to_string( node->id() ) );
-       //rai::wait();
+      //komo->saveTrajectory( std::to_string( node->id() ) );
+      //komo->plotVelocity( std::to_string( node->id() ) );
+      //rai::wait();
     }
 
     const Graph result = komo->getReport();
 
     const double cost = GetCost(result, config_.taskIrrelevantForPolicyCost);
     const double constraints = result.get<double>( { "total", "constraints" } );
-
-    //const double cost2 = getCost(komo);
-
-    //std::cout << "node id:" << node->data().decisionGraphNodeId << " " << node->id() << " costs: " << cost << " constraints: " << constraints << std::endl;
 
     markovianPathCosts_      [ node->data().decisionGraphNodeId ] += /*node->data().beliefState[ w ] **/ cost;
     markovianPathConstraints_[ node->data().decisionGraphNodeId ] += /*node->data().beliefState[ w ] **/ constraints;
@@ -646,8 +642,8 @@ void KOMOPlanner::saveMarkovianPathOptimizationResults( Policy & policy ) const
     auto node = fifo.back();
     fifo.pop_back();
 
-    auto kIt = markovianPathConstraints_.find(node->data().decisionGraphNodeId);
-    auto cIt = markovianPathCosts_.find(node->data().decisionGraphNodeId);
+    const auto kIt = markovianPathConstraints_.find(node->data().decisionGraphNodeId);
+    const auto cIt = markovianPathCosts_.find(node->data().decisionGraphNodeId);
     CHECK(kIt != markovianPathConstraints_.end(), "map should contain optimization results");
     CHECK(cIt != markovianPathCosts_.end(), "map should contain optimization results");
 

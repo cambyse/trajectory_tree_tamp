@@ -83,7 +83,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -0.5, 30.0 );
+  tp.setR0( -1.0, 30.0 );
   tp.setNIterMinMax( 50000, 1000000 ); //10 000
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );

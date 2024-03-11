@@ -165,8 +165,6 @@ def onpick(event):
   legline = event.artist
   origline = lined[legline]
 
-  print("HERE")
-
   vis = not origline.get_visible()
   origline.set_visible(vis)
   # Change the alpha on the line in the legend so we can see what lines
