@@ -116,7 +116,7 @@ GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeD
   {
     const auto prio = priorityUCT( child, c, verbose );
 
-    if( prio > max_prio )
+    if( prio > max_prio + 1.0e-5 ) // epsilon added to break tie and have fuly reproducilb esearch also when scaling r0
     {
       max_prio = prio;
       best_uct_child = child;
@@ -428,8 +428,9 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
   double maxRewards = std::numeric_limits<double>::lowest();
   for(std::size_t i{0}; i < nRolloutsPerSimulation; ++i)
   {
+    std::set<std::size_t> visitedStates;
     maxRewards = std::max(maxRewards,
-                          rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose ));
+                          rollOutOneWorld( state_h, r0, steps, visitedStates, rolloutMaxSteps, verbose ));
   }
 
   return maxRewards;
@@ -438,6 +439,7 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
 double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
                         const double r0,
                         const std::size_t steps,
+                        const std::set<std::size_t>& visitedStates,
                         const std::size_t rolloutMaxSteps,
                         const bool verbose ) const
 {
@@ -446,34 +448,51 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
     return 0.0; // TODO, find some heuristic here?
   }
 
-  const auto& actions_h = getPossibleActions( state_h );
+  auto actions_h = getPossibleActions( state_h );
 
   if( actions_h.size() == 0 )
   {
-    return 0.0;
+    CHECK(false, "node should be identified as terminal before, so that we don't end up here");
+    return 0.0; // should be terminal before?
   }
 
-  // choose action
-  const auto action_i = rand() %  actions_h.size();
-  const auto action_h = actions_h[ action_i ];
-
-  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, choosing: " << action_i << " : " << actions_.at( action_h ) << std::endl;
-
-  const auto outcome = getOutcome( state_h, action_h );
-
-  double simulatedReward{ r0 };
-
-  const auto& next_h = std::get<0>(outcome);
-  const auto terminal = std::get<1>(outcome);
-
-  if(!terminal)
+  std::size_t next_h{0};
+  bool terminal{false};
+  while( actions_h.size() > 0 )
   {
-    simulatedReward += rollOutOneWorld( next_h, r0, steps + 1, rolloutMaxSteps, verbose );
+    // choose action
+    const auto action_i = rand() %  actions_h.size();
+    const auto action_h = actions_h[ action_i ];
+
+    if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, trying: " << action_i << " : " << actions_.at( action_h ) << std::endl;
+
+    const auto outcome = getOutcome( state_h, action_h );
+
+    next_h = std::get<0>(outcome);;
+    terminal = std::get<1>(outcome);
+
+    if( visitedStates.find(next_h) == visitedStates.end() )
+    {
+      break; // we keep a next state if it is non visited
+    }
+    else
+    {
+      // if the action leads to a state already visited, another action will be tried
+      actions_h.erase(std::remove_if(actions_h.begin(), actions_h.end(), [action_h](std::size_t h) { return h == action_h; }),
+              actions_h.end());
+    }
   }
-  else
+
+  if( terminal )
   {
     if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
+    return r0;
   }
+
+  auto nextVisitedStates = visitedStates;
+  nextVisitedStates.insert(next_h);
+
+  const double simulatedReward = r0 + rollOutOneWorld( next_h, r0, steps + 1, nextVisitedStates, rolloutMaxSteps, verbose );
 
   if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
 

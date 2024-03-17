@@ -76,7 +76,7 @@ std::string getNotObservableFact( const std::string& fullState );
 GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeData >::ptr& node, const double c, const bool verbose );
 std::size_t getHash( const std::set<std::string>& facts );
 std::size_t getHash( const std::vector< std::size_t >& beliefState );
-std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size_t beliefState_h );
+std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size_t beliefState_h ); // node_h
 
 void backtrackIsPotentialSymbolicSolution( const GraphNode< MCTSNodeData >::ptr& node );
 
@@ -124,6 +124,7 @@ public:
   double rollOutOneWorld( const std::size_t state_h,
                           const double r0,
                           const std::size_t steps,
+                          const std::set<std::size_t>& visitedStates,
                           const std::size_t rolloutMaxSteps,
                           const bool verbose ) const;
 

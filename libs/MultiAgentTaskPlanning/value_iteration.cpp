@@ -266,16 +266,6 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
       continue;
     }
 
-    if( actionParent->id() == 730 )
-    {
-      int a=0;
-    }
-
-    if( actionParent->id() == 447 )
-    {
-      int a=0;
-    }
-
     if( value > values.getOrDefault( observationParent->id() ) )
     {
       values.set( observationParent->id(), value );

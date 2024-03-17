@@ -46,7 +46,7 @@ TEST_F(MCTSPlannerTest, MCTS_WhenPlanningTwoTimesWithSameParameters_ExpectSamePo
 
   MCTSPlanner tp_1;
   tp_1.setR0( -1.0, 15.0 );
-  tp_1.setNIterMinMax( 1000, 1000000 );
+  tp_1.setNIterMinMax( 200, 1000 );
   tp_1.setRollOutMaxSteps( 50 );
   tp_1.setNumberRollOutPerSimulation( 1 );
   tp_1.setVerbose( false );
@@ -54,13 +54,16 @@ TEST_F(MCTSPlannerTest, MCTS_WhenPlanningTwoTimesWithSameParameters_ExpectSamePo
   tp_1.setFol( "LGP-2-blocks-1-side-fol.g" );
 
   tp_1.solve();
+  tp_1.saveMCTSGraphToFile( "decision_graph_mcts.gv" );
+  generatePngImage( "decision_graph_mcts.gv" );
+
   const auto policy_1 = tp_1.getPolicy();
 
   srand (1);
 
   MCTSPlanner tp_2;
-  tp_2.setR0( -0.1, 15.0 );
-  tp_2.setNIterMinMax( 1000, 1000000 );
+  tp_2.setR0( -1.0, 15.0 );
+  tp_2.setNIterMinMax( 200, 1000 );
   tp_2.setRollOutMaxSteps( 50 );
   tp_2.setNumberRollOutPerSimulation( 1 );
   tp_2.setVerbose( false );
@@ -278,7 +281,7 @@ struct MCTSPlannerTestWithMockedMotionPlanning : public ::testing::Test {
 
       // find parents in tree_
       if( n->id() % 3 == 0 ) n->data().markovianReturn = -10.0;
-      if( n->id() % 3 == 1 ) n->data().markovianReturn = -1.0;
+      if( n->id() % 3 == 1 ) n->data().markovianReturn = -1.0; // n->data().decisionGraphNodeId
       if( n->id() % 3 == 2 ) n->data().markovianReturn = -0.1;
 
       // push children on queue
