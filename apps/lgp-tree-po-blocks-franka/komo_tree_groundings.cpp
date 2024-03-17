@@ -110,7 +110,7 @@ void groundTreeCheck(const mp::Interval& it, const mp::TreeBuilder& tb, const st
 {
   mp::Interval end{{it.time.to - 0.2, it.time.to}, it.edge};
   if(activateObjectives) W(komo).addObjective(end, tb, new SensorAimAtObjectCenter( "franka_hand", facts[0].c_str(), ARR( 0, 0, -1 ) ), OT_eq, NoArr, 1e2, 0 );
-  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( "franka_hand", facts[0].c_str(), ARR( 0, -0.05, 0.0 ), 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
+  if(activateObjectives) W(komo).addObjective(end, tb, new SensorAlignsWithPivot( "franka_hand", facts[0].c_str(), ARR( 0, 0.05, 0.0 ), 45.0 * 3.1415 / 180.0 ), OT_ineq, NoArr, 1e2, 0 );
   if(activateObjectives) W(komo).addObjective(end, tb, new SensorDistanceToObject( "franka_hand", facts[0].c_str(), 0.2, 0.0 ), OT_sos, NoArr, 1e2, 0 );
 
   if(verbose > 0)
