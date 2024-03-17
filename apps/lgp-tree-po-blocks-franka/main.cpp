@@ -83,9 +83,9 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -1.0, 30.0 );
-  tp.setNIterMinMax( 50000, 1000000 ); //10 000
-  tp.setRollOutMaxSteps( 50 );
+  tp.setR0( -1.0, 30.0 ); //only up to ~5.0 for 4 blocs! 30.0; (for 3 blocs)
+  tp.setNIterMinMax( 50000, 1000000 );
+  tp.setRollOutMaxSteps( 50 ); // 100 for 4 blocs
   tp.setNumberRollOutPerSimulation( 1 );
   tp.setVerbose( false );
 
@@ -102,6 +102,9 @@ void plan()
 
   tp.setFol( "LGP-3-blocks-1-side-fol.g" );
   mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+
+  //tp.setFol( "LGP-4-blocks-1-side-fol.g" );
+  //mp.setKin( "LGP-3-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );

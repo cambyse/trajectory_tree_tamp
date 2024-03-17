@@ -27,7 +27,7 @@ std::vector < double > normalizeBs( const std::vector < double > & bs )
 
   const auto sum = sumfunc( bs );
 
-  for( auto w = 0; w < bs.size(); ++w )
+  for( std::size_t w = 0; w < bs.size(); ++w )
   {
     newBs[ w ] = bs[ w ] / sum;
   }
@@ -53,11 +53,6 @@ double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, 
 
     parent_n_rollouts = parent_node_data.n_rollouts;
   }
-
-//  if( node_data.terminal ) // not a good idea, better to let the traversal go down to leaf nodes again and again and update the MC counter
-//  {
-//    return std::numeric_limits<double>::lowest();
-//  }
 
   if( node_data.n_rollouts == 0 )
   {
@@ -237,13 +232,14 @@ void MCTSDecisionTree::expandMCTS( const double r0,
 
   std::unordered_set< uint > expandedNodesIds;
 
+  const auto& beliefState = beliefStates_.at( root_->data().beliefState_h );
+
   while( ( ! root_->data().isPotentialSymbolicSolution || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
-    std::cout << "\n-------" << n_iter << "-------" << std::endl;
-
     // sample state
-    const auto& beliefState = beliefStates_.at( root_->data().beliefState_h );
     const auto stateIndex = sampleStateIndex( beliefState );
+
+    if(n_iter % 10 == 0) std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
 
     simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
 
@@ -308,10 +304,14 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
     expandedNodesIds.insert( node->id() );
 
-    if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << std::endl;
+    if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << " depth: " << depth << std::endl;
 
     const auto& rollOutState_h = node->data().states_h[ stateIndex ];
-    return rollOutOneWorld( rollOutState_h, r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
+    const auto rolloutResult = rollOutOneWorld( rollOutState_h, r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
+
+    if(verbose) std::cout << "[simulate] received rolloutResult: " << rolloutResult << std::endl;
+
+    return rolloutResult;
   }
 
   if( node->children().empty() )
@@ -337,6 +337,27 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
     for( const auto& outcome_h: outcomes_h )
     {
+      // check if we repeat the outcome!
+//      {
+//        bool found = false;
+//        auto current = node;
+
+//        while(current->parents().size() > 0)
+//        {
+//          current = current->parents().front().lock();
+//          if(current->data().node_h == outcome_h)
+//          {
+//            found = true;
+//            break;
+//          }
+//        }
+
+//        if(found == true)
+//        {
+//          std::cerr << "Here!" << std::endl;
+//        }
+//      }
+
       const auto& outcome = nodesData_.at( outcome_h );
       const auto childChild = best_uct_child->makeChild( outcome );
 
@@ -430,7 +451,7 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
   {
     std::set<std::size_t> visitedStates;
     maxRewards = std::max(maxRewards,
-                          rollOutOneWorld( state_h, r0, steps, visitedStates, rolloutMaxSteps, verbose ));
+                          rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose ));
   }
 
   return maxRewards;
@@ -439,10 +460,11 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
 double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
                         const double r0,
                         const std::size_t steps,
-                        const std::set<std::size_t>& visitedStates,
                         const std::size_t rolloutMaxSteps,
                         const bool verbose ) const
 {
+  // Note: might be interesting to have an heuristic, but this didn't prove very efficient.
+  // Preventing double states is too consraining, and doesn't allow the rollouts to be informative
   if( steps == rolloutMaxSteps )
   {
     return 0.0; // TODO, find some heuristic here?
@@ -456,32 +478,16 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
     return 0.0; // should be terminal before?
   }
 
-  std::size_t next_h{0};
-  bool terminal{false};
-  while( actions_h.size() > 0 )
-  {
-    // choose action
-    const auto action_i = rand() %  actions_h.size();
-    const auto action_h = actions_h[ action_i ];
+  // choose action
+  const auto action_i = rand() %  actions_h.size();
+  const auto action_h = actions_h[ action_i ];
 
-    if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, trying: " << action_i << " : " << actions_.at( action_h ) << std::endl;
+  if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, trying: " << action_i << " : " << actions_.at( action_h ) << std::endl;
 
-    const auto outcome = getOutcome( state_h, action_h );
+  const auto outcome = getOutcome( state_h, action_h );
 
-    next_h = std::get<0>(outcome);;
-    terminal = std::get<1>(outcome);
-
-    if( visitedStates.find(next_h) == visitedStates.end() )
-    {
-      break; // we keep a next state if it is non visited
-    }
-    else
-    {
-      // if the action leads to a state already visited, another action will be tried
-      actions_h.erase(std::remove_if(actions_h.begin(), actions_h.end(), [action_h](std::size_t h) { return h == action_h; }),
-              actions_h.end());
-    }
-  }
+  const std::size_t next_h = std::get<0>(outcome);;
+  const bool terminal = std::get<1>(outcome);
 
   if( terminal )
   {
@@ -489,10 +495,7 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
     return r0;
   }
 
-  auto nextVisitedStates = visitedStates;
-  nextVisitedStates.insert(next_h);
-
-  const double simulatedReward = r0 + rollOutOneWorld( next_h, r0, steps + 1, nextVisitedStates, rolloutMaxSteps, verbose );
+  const double simulatedReward = r0 + rollOutOneWorld( next_h, r0, steps + 1, rolloutMaxSteps, verbose );
 
   if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
 

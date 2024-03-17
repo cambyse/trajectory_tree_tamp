@@ -124,7 +124,6 @@ public:
   double rollOutOneWorld( const std::size_t state_h,
                           const double r0,
                           const std::size_t steps,
-                          const std::set<std::size_t>& visitedStates,
                           const std::size_t rolloutMaxSteps,
                           const bool verbose ) const;
 

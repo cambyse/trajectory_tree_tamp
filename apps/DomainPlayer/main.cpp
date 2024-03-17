@@ -69,7 +69,7 @@ void testWithLogicParserManual()
 {
   matp::LogicParser w;
 
-  w.parse( "LGP-3-blocks-1-side-fol.g" );
+  w.parse( "LGP-4-blocks-1-side-fol.g" );
 
   std::cout << "Possible start states:" << std::endl;
 
@@ -157,7 +157,7 @@ void testWithLogicParserRandomized(const std::size_t n)
 
   matp::LogicParser w;
 
-  w.parse( "LGP-3-blocks-1-side-fol.g" );
+  w.parse( "LGP-4-blocks-1-side-fol.g" );
 
   std::cout << "Possible start states:" << std::endl;
 
