@@ -83,9 +83,9 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -1.0, 30.0 ); //only up to ~5.0 for 4 blocs! 30.0; (for 3 blocs)
-  tp.setNIterMinMax( 50000, 1000000 );
-  tp.setRollOutMaxSteps( 50 ); // 100 for 4 blocs
+  tp.setR0( -1.0, 15.0 ); // 30.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
+  tp.setNIterMinMax( 500000, 1000000 ); // 50 000 for 3 blocks
+  tp.setRollOutMaxSteps( 100 ); // 50 for 4 blocks
   tp.setNumberRollOutPerSimulation( 1 );
   tp.setVerbose( false );
 
@@ -100,11 +100,11 @@ void plan()
   //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
   //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
 
-  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
-
-  //tp.setFol( "LGP-4-blocks-1-side-fol.g" );
+  //tp.setFol( "LGP-3-blocks-1-side-fol.g" );
   //mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+
+  tp.setFol( "LGP-4-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-4-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );
@@ -153,8 +153,10 @@ void plan()
   savePolicyToFile( policy, "-final" );
 #else
   Policy policy;
-  policy.load("policy-0-3-blocks");
-  //policy.load("policy-0");
+  policy.load("policy-0-candidate");
+  auto po     = MotionPlanningParameters( policy.id() );
+  po.setParam( "type", "markovJointPath" );
+  mp.solveAndInform( po, policy );
 #endif
   // default method
   //mp.display(policy, 200);
@@ -175,7 +177,7 @@ void plan()
     mp.solveAndInform( po, policy ); // it displays
   }
 
-//  //
+//
 //  matp::GraphPlanner tp;
 //  mp::KOMOPlanner mp;
 

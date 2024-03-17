@@ -470,7 +470,7 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
     return 0.0; // TODO, find some heuristic here?
   }
 
-  auto actions_h = getPossibleActions( state_h );
+  const auto& actions_h = getPossibleActions( state_h );
 
   if( actions_h.size() == 0 )
   {

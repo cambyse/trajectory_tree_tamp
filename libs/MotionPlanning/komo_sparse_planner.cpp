@@ -671,7 +671,7 @@ void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared
   komo->set_x( x_ );
 
   const auto report = getOptimizationReport(komo, allVars);
-  report.save(reportFile_);
+  report.save( reportFile_ );
   watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
 }
 }

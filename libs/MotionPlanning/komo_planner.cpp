@@ -37,7 +37,7 @@ double GetCost(const Graph& result, const StringA& filtered_tasks)
 
     const auto& attributes = node->getValue<Graph>();
 
-    if(attributes) // no attributes indicate here that the node doesn'nt correspond to a task
+    if(attributes) // no attributes indicate here that the node doesn't correspond to a task
     {
       const auto& type = attributes->get<rai::String>({ "type" });
 
@@ -568,16 +568,17 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
       cout << "KOMO FAILED: " << msg <<endl;
     }
 
-    if( node->id() == 1 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
+    if( node->id() == 64 || node->id() == 221 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
     {
+      int a{0};
 //          for(const auto& f: komo->world.frames)
 //          {
 //            std::cout << f->name << "--->---" << (f->parent ? f->parent->name : "" ) << std::endl;
 //          }
 
-      //komo->getReport(true);
+//      komo->getReport(true);
       //komo->configurations.last()->watch(true);
-      //komo->displayTrajectory();
+//      komo->displayTrajectory();
 
       //komo->saveTrajectory( std::to_string( node->id() ) );
       //komo->plotVelocity( std::to_string( node->id() ) );
@@ -598,6 +599,7 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
       feasible = false;
 
       //komo->getReport(true);
+      //komo->configurations.first()->watch(true);
       //komo->configurations.last()->watch(true);
       //komo->displayTrajectory();
     }
