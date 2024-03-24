@@ -47,7 +47,8 @@ struct PolicyNodeData
   };
 
   std::vector< double      > beliefState;
-  std::vector< std::string > leadingKomoArgs;
+  std::vector< std::string > leadingKomoArgs; // specify action
+  std::string leadingObservation;             // observation leading to node
   enum StatusType status = StatusType::UNPLANNED;
   double markovianReturn = 0;
   double p = 0; // probability to reach this node given the parent

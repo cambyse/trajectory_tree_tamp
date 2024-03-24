@@ -271,7 +271,7 @@ void planMCTS()
 
   auto policy = tp.getPolicy();
 
-  savePolicyToFile( policy, "-candidate" );
+  savePolicyToFile( policy, "-candidate-2-blocks" );
 }
 
 //===========================================================================

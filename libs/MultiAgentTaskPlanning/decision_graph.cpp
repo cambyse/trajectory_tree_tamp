@@ -8,7 +8,6 @@
 
 namespace matp
 {
-
 bool sameState ( const NodeData & a, const NodeData & b )
 {
   return a.hash() == b.hash();
@@ -29,32 +28,6 @@ std::ostream& operator<<(std::ostream& stream, NodeData const& data)
   }
 
   return stream;
-}
-
-std::vector < double > normalizeBs( const std::vector < double > & bs )
-{
-  std::vector < double > newBs = bs;
-
-  auto sumfunc = []( const std::vector < double > bs ) -> double
-  {
-    double sum = 0;
-    for( auto p : bs )
-    {
-      sum += p;
-    }
-    return sum;
-  };
-
-  const auto sum = sumfunc( bs );
-
-  for( auto w = 0; w < bs.size(); ++w )
-  {
-    newBs[ w ] = bs[ w ] / sum;
-  }
-
-  CHECK( fabs( sumfunc( newBs ) - 1.0 ) < 0.00001, "" );
-
-  return newBs;
 }
 
 void DecisionGraph::reset()

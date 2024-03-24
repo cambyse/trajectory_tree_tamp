@@ -67,7 +67,4 @@ private:
   Rewards rewards_;
 };
 
-std::string getObservation( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph );
-
-
 }

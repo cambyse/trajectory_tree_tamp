@@ -41,6 +41,12 @@ void PolicyPrinter::saveGraphFrom( const Policy & policy, const Policy::GraphNod
     std::string label;
 
     uint argIndex = 0;
+
+    if( !c->data().leadingObservation.empty() )
+    {
+      ss << c->data().leadingObservation << "-" << std::endl;
+    }
+
     for( auto arg : c->data().leadingKomoArgs )
     {
       ss << arg;

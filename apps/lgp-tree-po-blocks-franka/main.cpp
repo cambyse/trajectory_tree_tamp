@@ -83,7 +83,7 @@ void plan()
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -1.0, 15.0 ); // 30.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
+  tp.setR0( -1.0, 5.0 ); // 15.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
   tp.setNIterMinMax( 500000, 1000000 ); // 50 000 for 3 blocks
   tp.setRollOutMaxSteps( 100 ); // 50 for 4 blocks
   tp.setNumberRollOutPerSimulation( 1 );

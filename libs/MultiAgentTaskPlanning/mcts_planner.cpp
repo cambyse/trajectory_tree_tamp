@@ -139,6 +139,11 @@ void MCTSPlanner::buildPolicy()
     data.markovianReturn = rewards_.get( u->id(), v->id() );
     data.decisionGraphNodeId = v->id();
     data.leadingKomoArgs = decisionArtifactToKomoArgs( tree_.actions_.at( v->data().leadingAction_h ) );
+    if(!u->parents().empty() && !u->parent()->parents().empty())
+    {
+      //CHECK( u->parent()->data().nodeType == MCTSNodeData::NodeType::ACTION, "wrong node type!" );
+      data.leadingObservation = getObservation( u->parent()->parent(), u, tree_ );
+    }
     data.p = transitionProbability( uSke->data().beliefState, data.beliefState );
     auto vSke = uSke->makeChild( data );
     //std::cout << "build ske from " << uSke->id() << "(" << u->id() << ") to " << vSke->id()<< " (" << v->id() << ") , p = " << data.p << std::endl;
