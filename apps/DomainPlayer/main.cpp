@@ -69,7 +69,8 @@ void testWithLogicParserManual()
 {
   matp::LogicParser w;
 
-  w.parse( "LGP-4-blocks-1-side-fol.g" );
+  //w.parse( "LGP-4-blocks-1-side-fol.g" );
+  w.parse( "LGP-2-blocks-6-sides-fol.g" );
 
   std::cout << "Possible start states:" << std::endl;
 

@@ -233,14 +233,9 @@ Values ValueIterationOnTreeAlgorithm::process( const MCTSDecisionTree & tree, Re
     Q.pop();
     const auto& n = m.lock();
 
-    if( n->id() == 730 )
-    {
-      int a=0;
-    }
-
     CHECK( n->data().nodeType == MCTSDecisionTree::GraphNodeDataType::NodeType::ACTION, "Value iteration performed on action nodes only!" );
 
-    // compute value of observation parent
+    // compute value of observation parent, compute value of parent taking different potenial observations into accound
     double value = 0.0;
     auto siblings = n->siblings();
     siblings.push_back( n );

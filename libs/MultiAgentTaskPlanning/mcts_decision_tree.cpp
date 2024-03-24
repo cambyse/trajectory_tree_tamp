@@ -6,6 +6,7 @@
 #include <numeric>
 #include <decision_graph_printer.h>
 #include <belief_state.h>
+#include <boost/functional/hash.hpp>
 
 namespace matp
 {
@@ -61,7 +62,7 @@ double priorityUCT( const GraphNode< MCTSNodeData >::ptr& node, const double c, 
     return std::numeric_limits<double>::infinity();
   }
 
-  const double priority = node_data.mcts_value + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) );
+  const double priority = node_data.mcts_q_value + c * sqrt( log( ( parent_n_rollouts ) / ( node_data.n_rollouts ) ) );
 
   if( verbose ) std::cout << "[priority] of " << node->id() << " = " << priority << std::endl;
 
@@ -86,21 +87,6 @@ std::size_t sampleStateIndex( const std::vector< double >& bs )
   const auto s_it = std::lower_bound( integratedBs.begin(), integratedBs.end(), v );
 
   return std::distance( integratedBs.begin(), s_it );
-}
-
-std::string getNotObservableFact( const std::string& fullState )
-{
-  std::istringstream ss( fullState );
-  std::string chunk;
-
-  while( std::getline(ss, chunk, ',' ) )
-  {
-    if( chunk.find("NOT_OBSERVABLE") != std::string::npos )
-    {
-      return chunk;
-    }
-  }
-  return "";
 }
 
 GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeData >::ptr& node, const double c, const bool verbose )
@@ -138,7 +124,7 @@ std::size_t getHash( const std::vector< double >& beliefState )
 
   for( auto w{0}; w < beliefState.size(); ++w )
   {
-    hash += std::hash<double>()(beliefState[w]) << w;
+    boost::hash_combine(hash, beliefState[w]);
   }
 
   return hash;
@@ -150,10 +136,12 @@ std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size
 
   for( auto w{0}; w < states_h.size(); ++w )
   {
-    hash += states_h[w] << w;
+    boost::hash_combine(hash, states_h[w]);
   }
 
-  return hash + beliefState_h;
+  boost::hash_combine(hash, beliefState_h);
+
+  return hash;
 }
 
 void backtrackIsPotentialSymbolicSolution( const GraphNode< MCTSNodeData >::ptr& node )
@@ -215,6 +203,8 @@ MCTSDecisionTree::MCTSDecisionTree( const LogicEngine & engine, const std::vecto
     root_ = GraphNode< MCTSNodeData >::root( GraphNodeDataType( states_h, bs_h, node_h, false, MCTSNodeData::NodeType::ACTION, 0, 1.0 ) );
 
     nodesData_[ node_h ] = root_->data();
+
+    terminality_ = std::vector<bool>(egoBeliefState.size(), false);
 }
 
 void MCTSDecisionTree::expandMCTS( const double r0,
@@ -225,6 +215,17 @@ void MCTSDecisionTree::expandMCTS( const double r0,
                                 const double c,
                                 const bool verbose )
 {
+  const auto log = [this](std::size_t n_iter, std::size_t stateIndex)
+  {
+    std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
+
+    for(std::size_t w = 0; w < terminality_.size(); ++w)
+    {
+      std::cout << (terminality_[w] == true ? "x" : "-");
+    }
+    std::cout << std::endl;
+  };
+
   // See Alg 1. in https://papers.nips.cc/paper_files/paper/2010/file/edfbe1afcf9246bb0d40eb4d8027d90f-Paper.pdf
   CHECK( engine_.agentNumber() == 1, "MCTS works here only for one agent" );
 
@@ -239,7 +240,7 @@ void MCTSDecisionTree::expandMCTS( const double r0,
     // sample state
     const auto stateIndex = sampleStateIndex( beliefState );
 
-    if(n_iter % 10 == 0) std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
+    if(n_iter % 10 == 0) log(n_iter, stateIndex);//std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
 
     simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
 
@@ -337,29 +338,14 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
     for( const auto& outcome_h: outcomes_h )
     {
-      // check if we repeat the outcome!
-//      {
-//        bool found = false;
-//        auto current = node;
-
-//        while(current->parents().size() > 0)
-//        {
-//          current = current->parents().front().lock();
-//          if(current->data().node_h == outcome_h)
-//          {
-//            found = true;
-//            break;
-//          }
-//        }
-
-//        if(found == true)
-//        {
-//          std::cerr << "Here!" << std::endl;
-//        }
-//      }
-
       const auto& outcome = nodesData_.at( outcome_h );
       const auto childChild = best_uct_child->makeChild( outcome );
+
+      if(childChild->id() == 2544)
+      {
+        const auto& bs = beliefStates_.at( childChild->data().beliefState_h );
+        int a=0;
+      }
 
       // assign non-markovian fields
       childChild->data().leadingProbability = transitionProbability( beliefStates_.at( node->data().beliefState_h ),
@@ -373,6 +359,12 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
       {
         terminalNodes_.push_back( childChild );
         childChild->data().isPotentialSymbolicSolution = true;
+
+        const auto& bs = beliefStates_.at(childChild->data().beliefState_h);
+        for(std::size_t w = 0; w < bs.size(); ++w)
+        {
+          terminality_[w] = terminality_[w] || (bs[w] > 0.0);
+        }
       }
     }
 
@@ -409,7 +401,7 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
   // 5. Rollout after from chosen action + received observation
   if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
-  const double reward = r0 + simulate( action_node_after_observation,
+  const double q_value = r0 + simulate( action_node_after_observation,
                                        stateIndex,
                                        depth + 1,
                                        r0,
@@ -425,18 +417,18 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
 
   if(best_uct_child->data().n_rollouts == 1)
   {
-    best_uct_child->data().mcts_value = reward;
+    best_uct_child->data().mcts_q_value = q_value;
   }
   else
   {
-    best_uct_child->data().mcts_value = best_uct_child->data().mcts_value + (reward - best_uct_child->data().mcts_value) / best_uct_child->data().n_rollouts;
+    best_uct_child->data().mcts_q_value = best_uct_child->data().mcts_q_value + (q_value - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
   }
 
   if(verbose) std::cout << "[simulation] simulation counter of " << node->id() << ": " << node->data().n_rollouts << std::endl;
   if(verbose) std::cout << "[simulation] simulation counter of " << best_uct_child->id() << ": " << best_uct_child->data().n_rollouts << std::endl;
-  if(verbose) std::cout << "[simulation] reward of " << best_uct_child->id() << ": " << best_uct_child->data().mcts_value << std::endl;
+  if(verbose) std::cout << "[simulation] q value of " << best_uct_child->id() << ": " << best_uct_child->data().mcts_q_value << std::endl;
 
-  return reward;
+  return q_value;
 }
 
 double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
@@ -517,11 +509,12 @@ std::vector< std::size_t > MCTSDecisionTree::getCommonPossibleActions( const std
   }
 
   const auto& nodeData = nodesData_.at( node_h );
+  const auto& beliefState = beliefStates_.at( nodeData.beliefState_h );
 
   std::vector< std::size_t > actions_h;
   for( auto w{0}; w < nodeData.states_h.size(); w++ )
   {
-    const auto p = beliefStates_.at( nodeData.beliefState_h )[w];
+    const auto p = beliefState[w];
 
     if(p < 1.0e-6)
     {
@@ -599,7 +592,7 @@ std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::siz
 
   for( auto w = 0; w < beliefState.size(); ++w )
   {
-    if( beliefState[ w ] > 0 )
+    if( beliefState[ w ] > 1.0e-6 )
     {
       const auto state_h = nodeData.states_h[w];
 
@@ -807,7 +800,7 @@ void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename,
   std::ofstream file;
   file.open( filename );
 
-  MCTSTreePrinter printer( file, mctsState, rewards, values, 5, 0 );
+  MCTSTreePrinter printer( file, mctsState, rewards, values, 3, 0 );
   printer.print( *this );
 
   file.close();

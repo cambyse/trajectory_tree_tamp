@@ -29,7 +29,7 @@ struct MCTSNodeData
     , nodeType( NodeType::ACTION )
     , leadingAction_h( 0 )
     , leadingProbability( 0.0 )
-    , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+    , mcts_q_value{ std::numeric_limits<double>::lowest()} // expected reward to goal given preceding action, this is a Q-Value!
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
   {
@@ -49,7 +49,7 @@ struct MCTSNodeData
     , nodeType( nodeType )
     , leadingAction_h( leadingAction_h )
     , leadingProbability( leadingProbability )
-    , mcts_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
+    , mcts_q_value{ std::numeric_limits<double>::lowest()} // expected reward to goal
     , n_rollouts( 0 )
     , isPotentialSymbolicSolution{false}
   {
@@ -65,7 +65,7 @@ struct MCTSNodeData
   double leadingProbability;
 
   // mcts
-  double mcts_value;
+  double mcts_q_value;
   std::size_t n_rollouts;
   bool isPotentialSymbolicSolution; // indicates if node is on skeleton solving the pb
 };
@@ -75,7 +75,7 @@ std::size_t sampleStateIndex( const std::vector< double >& bs );
 std::string getNotObservableFact( const std::string& fullState );
 GraphNode< MCTSNodeData >::ptr getMostPromisingChild( const GraphNode< MCTSNodeData >::ptr& node, const double c, const bool verbose );
 std::size_t getHash( const std::set<std::string>& facts );
-std::size_t getHash( const std::vector< std::size_t >& beliefState );
+std::size_t getHash( const std::vector< double >& beliefState );
 std::size_t getHash( const std::vector< std::size_t >& states_h, const std::size_t beliefState_h ); // node_h
 
 void backtrackIsPotentialSymbolicSolution( const GraphNode< MCTSNodeData >::ptr& node );
@@ -149,6 +149,7 @@ public:
   mutable LogicEngine engine_;
   MCTSDecisionTree::GraphNodeType::ptr root_;
   std::list< std::weak_ptr< MCTSDecisionTree::GraphNodeType > > terminalNodes_;
+  std::vector<bool> terminality_; // false as long as the world indicated by the index has not been solved
 
   // upper level caching
   // basic states, actions, observations

@@ -250,17 +250,28 @@ void plan()
 
 void planMCTS()
 {
+  srand(1);
+
   // content of this function is now merged with the main plan()
   matp::MCTSPlanner tp;
 
-  tp.setR0( -1.0, 15.0 ); // 30.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
-  tp.setNIterMinMax( 5000, 1000000 ); // 50 000 for 3 blocks
-  tp.setRollOutMaxSteps( 50 ); // 50 for 4 blocks
+  tp.setR0( -1.0, 0.1 * 15.0 );
+  tp.setNIterMinMax( 500, 100000 );
+  tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
   tp.setVerbose( false );
 
-  tp.setFol( "LGP-1-block-6-sides-fol.g" );
+//  tp.setFol( "LGP-1-block-6-sides-fol.g" );
+  tp.setFol( "LGP-2-blocks-6-sides-fol.g" );
+
   tp.solve();
+
+  //tp.saveMCTSGraphToFile( "decision_graph.gv" );
+  //generatePngImage( "decision_graph.gv" );
+
+  auto policy = tp.getPolicy();
+
+  savePolicyToFile( policy, "-candidate" );
 }
 
 //===========================================================================
@@ -273,9 +284,9 @@ int main(int argc,char **argv)
 
   //display_robot();
 
-  plan();
+  //plan();
 
-  //planMCTS();
+  planMCTS();
 
   return 0;
 }

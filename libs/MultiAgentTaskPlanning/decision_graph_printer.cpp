@@ -164,7 +164,7 @@ void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & no
 
   if( true/*node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION*/ )
   {
-    for(const auto& value: {node->data().mcts_value, values_.getOrDefault(node->id())})
+    for(const auto& value: {node->data().mcts_q_value, values_.getOrDefault(node->id())})
     {
       if( value >= -1000 ) // TODO change that
       {
@@ -184,6 +184,10 @@ void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & no
   if(node->data().terminal)
   {
     ss_ << node->id() << " [style=filled, fillcolor=green]" << std::endl;
+  }
+  else if(node->data().isPotentialSymbolicSolution)
+  {
+    ss_ << node->id() << " [style=filled, fillcolor=aquamarine]" << std::endl;
   }
 }
 
