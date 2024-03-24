@@ -98,12 +98,20 @@ void plan()
   boost::accumulators::accumulator_set<double, ba::features< ba::tag::variance, ba::tag::mean, ba::tag::min, ba::tag::max > > acc_acc_cost;
   ///
 
-  matp::GraphPlanner tp;
+
+  matp::MCTSPlanner tp;
+  //matp::GraphPlanner tp;
   mp::KOMOPlanner mp;
 
   // set planning parameters
-  tp.setR0( -500. ); //-0.25//-0.1//-0.015 ); for blocks one side
-  tp.setMaxDepth( 10 );
+  //tp.setR0( -500. ); //-0.25//-0.1//-0.015 ); for blocks one side
+  //tp.setMaxDepth( 10 );
+  tp.setR0( -1.0, 15.0 );
+  tp.setNIterMinMax( 5000, 1000000 );
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
   mp.setNSteps( 20 );
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 15.0 );
@@ -129,13 +137,13 @@ void plan()
   mp.registerTask( "unstack"      , groundTreeUnStack );
 
   /// BUILD DECISION GRAPH
-  {
-    auto start = std::chrono::high_resolution_clock::now();
-    /// TASK TREE BUILDING
-    tp.buildGraph(false);
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
-    graph_building_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
-  }
+//  {
+//    auto start = std::chrono::high_resolution_clock::now();
+//    /// TASK TREE BUILDING
+//    tp.buildGraph(false);
+//    auto elapsed = std::chrono::high_resolution_clock::now() - start;
+//    graph_building_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+//  }
   //tp.saveGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
@@ -160,7 +168,7 @@ void plan()
 
     ///
     std::cout << "\nPlanning for policy: " << policy.id()<< std::endl;
-    savePolicyToFile( policy );
+    savePolicyToFile( policy, "-candidate" );
     candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
     ///
 
@@ -174,6 +182,8 @@ void plan()
       mp.solveAndInform( po, policy );
       auto elapsed = std::chrono::high_resolution_clock::now() - start;
       motion_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+
+      savePolicyToFile( policy, "-informed" );
 
       ///
       best_value = std::max(policy.value(), best_value);
@@ -240,7 +250,15 @@ void plan()
 
 void planMCTS()
 {
+  // content of this function is now merged with the main plan()
   matp::MCTSPlanner tp;
+
+  tp.setR0( -1.0, 15.0 ); // 30.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
+  tp.setNIterMinMax( 5000, 1000000 ); // 50 000 for 3 blocks
+  tp.setRollOutMaxSteps( 50 ); // 50 for 4 blocks
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
   tp.setFol( "LGP-1-block-6-sides-fol.g" );
   tp.solve();
 }
@@ -255,9 +273,9 @@ int main(int argc,char **argv)
 
   //display_robot();
 
-  //plan();
+  plan();
 
-  planMCTS();
+  //planMCTS();
 
   return 0;
 }
