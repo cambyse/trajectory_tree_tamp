@@ -1,5 +1,8 @@
 #include <decision_graph_printer.h>
 #include <belief_state.h>
+#include <decision_graph.h>
+#include <mcts_decision_tree.h>
+#include <decision_graph.h>
 
 #include <boost/algorithm/string/replace.hpp>
 
@@ -123,130 +126,130 @@ std::string GraphPrinter::extractActionLabel( const std::string & leadingArtifac
 }
 
 
-void MCTSTreePrinter::print( const MCTSDecisionTree & graph )
-{
-  if( ! graph.root() )
-  {
-    return;
-  }
+//void MCTSTreePrinter::print( const MCTSDecisionTree & graph )
+//{
+//  if( ! graph.root() )
+//  {
+//    return;
+//  }
 
-  //edges_ = graph.edges();
+//  //edges_ = graph.edges();
 
-  ss_ << "digraph g{" << std::endl;
-  ss_ << "labelloc=\"t\"" << std::endl;
-  ss_ << "label=\"" << mctsState_ << "\"" << std::endl;
-  ss_ << "bgcolor=\"transparent\"";
-  ss_ << "{" << std::endl;
-  ss_ << graph.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
+//  ss_ << "digraph g{" << std::endl;
+//  ss_ << "labelloc=\"t\"" << std::endl;
+//  ss_ << "label=\"" << mctsState_ << "\"" << std::endl;
+//  ss_ << "bgcolor=\"transparent\"";
+//  ss_ << "{" << std::endl;
+//  ss_ << graph.root()->id() << " [style=filled, fillcolor=blue]" << std::endl;
 
-  ss_ << "}" << std::endl;
+//  ss_ << "}" << std::endl;
 
-  saveTreeFrom( graph.root(), graph, 0, false );
+//  saveTreeFrom( graph.root(), graph, 0, false );
 
-  ss_ << "}" << std::endl;
-}
+//  ss_ << "}" << std::endl;
+//}
 
-void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & node,
-                                 const MCTSDecisionTree & graph )
-{
-  ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
+//void MCTSTreePrinter::printNode( const MCTSDecisionTree::GraphNodeType::ptr & node,
+//                                 const MCTSDecisionTree & graph )
+//{
+//  ss_ << node->id() << " [shape=square, style=filled, fillcolor=" << ( node->id() == 0 ? "blue" : "cyan" ) << "]" << std::endl;
 
-  if( node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION )
-  {
-    ss_ << node->id() << " [shape=diamond]" << std::endl;
-  }
+//  if( node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION )
+//  {
+//    ss_ << node->id() << " [shape=diamond]" << std::endl;
+//  }
 
-  std::stringstream ss;
-  ss << std::fixed;
-  ss << std::setprecision(2);
-  ss << "id: " << node->id() << std::endl;
-  ss << node->data().n_rollouts << std::endl;
+//  std::stringstream ss;
+//  ss << std::fixed;
+//  ss << std::setprecision(2);
+//  ss << "id: " << node->id() << std::endl;
+//  ss << node->data().n_rollouts << std::endl;
 
-  if( true/*node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION*/ )
-  {
-    for(const auto& value: {node->data().mcts_q_value, values_.getOrDefault(node->id())})
-    {
-      if( value >= -1000 ) // TODO change that
-      {
-        ss << value;
-      }
-      else
-      {
-        ss << "-inf";
-      }
+//  if( true/*node->data().nodeType == MCTSNodeData::NodeType::OBSERVATION*/ )
+//  {
+//    for(const auto& value: {node->data().mcts_q_value, values_.getOrDefault(node->id())})
+//    {
+//      if( value >= -1000 ) // TODO change that
+//      {
+//        ss << value;
+//      }
+//      else
+//      {
+//        ss << "-inf";
+//      }
 
-      ss << std::endl;
-    }
-  }
+//      ss << std::endl;
+//    }
+//  }
 
-  ss_ << node->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
+//  ss_ << node->id() << " [label=\"" << ss.str() << "\"" << "]" << std::endl;
 
-  if(node->data().terminal)
-  {
-    ss_ << node->id() << " [style=filled, fillcolor=green]" << std::endl;
-  }
-  else if(node->data().isPotentialSymbolicSolution)
-  {
-    ss_ << node->id() << " [style=filled, fillcolor=aquamarine]" << std::endl;
-  }
-}
+//  if(node->data().terminal)
+//  {
+//    ss_ << node->id() << " [style=filled, fillcolor=green]" << std::endl;
+//  }
+//  else if(node->data().isPotentialSymbolicSolution)
+//  {
+//    ss_ << node->id() << " [style=filled, fillcolor=aquamarine]" << std::endl;
+//  }
+//}
 
-void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & from,
-                                 const MCTSDecisionTree::GraphNodeType::ptr & to,
-                                 const MCTSDecisionTree & graph)
-{
-  std::stringstream ss;
-  std::string label;
+//void MCTSTreePrinter::printEdge( const MCTSDecisionTree::GraphNodeType::ptr & from,
+//                                 const MCTSDecisionTree::GraphNodeType::ptr & to,
+//                                 const MCTSDecisionTree & graph)
+//{
+//  std::stringstream ss;
+//  std::string label;
 
-  const auto p = transitionProbability( graph.beliefStates_.at(from->data().beliefState_h),
-                                        graph.beliefStates_.at(to->data().beliefState_h)
-                                       );
+//  const auto p = transitionProbability( graph.beliefStates_.at(from->data().beliefState_h),
+//                                        graph.beliefStates_.at(to->data().beliefState_h)
+//                                       );
 
-  if( from->data().nodeType == MCTSNodeData::NodeType::ACTION )
-  {
-    auto actionLabel = graph.actions_.at( to->data().leadingAction_h);
+//  if( from->data().nodeType == MCTSNodeData::NodeType::ACTION )
+//  {
+//    auto actionLabel = graph.actions_.at( to->data().leadingAction_h);
 
-    boost::replace_all(actionLabel, "(", "");
-    boost::replace_all(actionLabel, ")", "");
+//    boost::replace_all(actionLabel, "(", "");
+//    boost::replace_all(actionLabel, ")", "");
 
-    ss << actionLabel << std::endl;
-    ss << rewards_.get( from->id(), to->id() );
+//    ss << actionLabel << std::endl;
+//    ss << rewards_.get( from->id(), to->id() );
 
-    label = ss.str();
-    boost::replace_all(label, "{", "");
-  }
-  else
-  {
-    ss << getObservation( from, to, graph );
-    ss << p;
+//    label = ss.str();
+//    boost::replace_all(label, "{", "");
+//  }
+//  else
+//  {
+//    ss << getObservation( from, to, graph );
+//    ss << p;
 
-    label = ss.str();
-  }
+//    label = ss.str();
+//  }
 
-  ss_ << from->id() << "->" << to->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
-}
+//  ss_ << from->id() << "->" << to->id() << " [ label=\"" << label << "\" ]" << ";" << std::endl;
+//}
 
-void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node,
-                                    const MCTSDecisionTree & graph,
-                                    const std::size_t depth,
-                                    bool printedUpToNode )
-{
-  if( depth > maxDepth_ )
-  {
-    return;
-  }
+//void MCTSTreePrinter::saveTreeFrom( const MCTSDecisionTree::GraphNodeType::ptr & node,
+//                                    const MCTSDecisionTree & graph,
+//                                    const std::size_t depth,
+//                                    bool printedUpToNode )
+//{
+//  if( depth > maxDepth_ )
+//  {
+//    return;
+//  }
 
-  const auto printFromNode = printedUpToNode || ( node->id() == fromNodeId_ );
+//  const auto printFromNode = printedUpToNode || ( node->id() == fromNodeId_ );
 
-  if( printFromNode ) printNode( node, graph );
+//  if( printFromNode ) printNode( node, graph );
 
-  // print edge
-  for( const auto& c : node->children() )
-  {
-    if( printFromNode ) printEdge( node, c, graph );
+//  // print edge
+//  for( const auto& c : node->children() )
+//  {
+//    if( printFromNode ) printEdge( node, c, graph );
 
-    saveTreeFrom( c , graph, printFromNode ? depth + 1 : depth, printFromNode );
-  }
-}
+//    saveTreeFrom( c , graph, printFromNode ? depth + 1 : depth, printFromNode );
+//  }
+//}
 
 }

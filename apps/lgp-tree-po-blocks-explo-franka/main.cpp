@@ -255,7 +255,7 @@ void planMCTS()
   // content of this function is now merged with the main plan()
   matp::MCTSPlanner tp;
 
-  tp.setR0( -1.0, 0.1 * 15.0 );
+  tp.setR0( -1.0, 1.0 );
   tp.setNIterMinMax( 500, 100000 );
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );

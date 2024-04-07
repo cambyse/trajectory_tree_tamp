@@ -1,4 +1,4 @@
-#include <mcts_decision_tree.h>
+#include <mcts_decision_tree_bs.h>
 
 #include <set>
 #include <algorithm>
@@ -10,7 +10,7 @@
 namespace matp
 {
 
-MCTSDecisionTree::MCTSDecisionTree( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
+MCTSDecisionTreeBs::MCTSDecisionTreeBs( const LogicEngine & engine, const std::vector< std::string > & startStates, const std::vector< double > & egoBeliefState )
   : engine_( engine )
   , root_()
   , lastSetStateEngine_(0)
@@ -39,7 +39,7 @@ MCTSDecisionTree::MCTSDecisionTree( const LogicEngine & engine, const std::vecto
     terminality_ = std::vector<bool>(egoBeliefState.size(), false);
 }
 
-void MCTSDecisionTree::expandMCTS( const double r0,
+void MCTSDecisionTreeBs::expandMCTS( const double r0,
                                 const std::size_t n_iter_min,
                                 const std::size_t n_iter_max,
                                 const std::size_t rolloutMaxSteps,
@@ -47,9 +47,9 @@ void MCTSDecisionTree::expandMCTS( const double r0,
                                 const double c,
                                 const bool verbose )
 {
-  const auto log = [this](std::size_t n_iter, std::size_t stateIndex)
+  const auto log = [this](std::size_t n_iter)
   {
-    std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
+    std::cout << "\n-------" << n_iter << "-------" << std::endl;
 
     for(std::size_t w = 0; w < terminality_.size(); ++w)
     {
@@ -69,12 +69,9 @@ void MCTSDecisionTree::expandMCTS( const double r0,
 
   while( ( ! root_->data().isPotentialSymbolicSolution || n_iter < n_iter_min ) && n_iter < n_iter_max )
   {
-    // sample state
-    const auto stateIndex = sampleStateIndex( beliefState );
+    if(n_iter % 10 == 0) log(n_iter);
 
-    if(n_iter % 10 == 0) log(n_iter, stateIndex);//std::cout << "\n-------" << n_iter << "-------(stateIndex=" << stateIndex << ")" << std::endl;
-
-    simulate( root_, stateIndex, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
+    simulate( root_, 0, r0, rolloutMaxSteps, nRolloutsPerSimulation, c, expandedNodesIds, verbose );
 
     // save current MCTS tree
     //std::stringstream ss;
@@ -89,8 +86,7 @@ void MCTSDecisionTree::expandMCTS( const double r0,
   //saveMCTSTreeToFile( ss.str(), "" );
 }
 
-double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& node,
-                                    const std::size_t stateIndex,
+double MCTSDecisionTreeBs::simulate( const MCTSDecisionTree::GraphNodeType::ptr& node,
                                     const std::size_t depth,
                                     const double r0,
                                     const std::size_t rolloutMaxSteps,
@@ -131,16 +127,16 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
       if(verbose) std::cout << "[simulate] created " << child->id() << std::endl;
     }
 
-    std::vector<double> rollOutBeliefState;
-    rollOutBeliefState.resize( beliefStates_.at( beliefState_h ).size() );
-    rollOutBeliefState[ stateIndex ] = 1.0;
+//    std::vector<double> rollOutBeliefState;
+//    rollOutBeliefState.resize( beliefStates_.at( beliefState_h ).size() );
+//    rollOutBeliefState[ stateIndex ] = 1.0;
 
     expandedNodesIds.insert( node->id() );
 
     if(verbose) std::cout << "[simulate] compute rollout from " << node->id() << " depth: " << depth << std::endl;
 
-    const auto& rollOutState_h = node->data().states_h[ stateIndex ];
-    const auto rolloutResult = rollOutOneWorld( rollOutState_h, r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
+//    const auto& rollOutState_h = node->data().states_h[ stateIndex ];
+    const auto rolloutResult = rollOutBs( node_h, r0, 0, rolloutMaxSteps, nRolloutsPerSimulation, verbose );
 
     if(verbose) std::cout << "[simulate] received rolloutResult: " << rolloutResult << std::endl;
 
@@ -213,41 +209,48 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
   for( auto& child_after_observation : best_uct_child->children() )
   {
     const auto& childBeliefState = beliefStates_.at( child_after_observation->data().beliefState_h );
-    double p = childBeliefState[stateIndex];
+    double p = transitionProbability( beliefStates_.at( node->data().beliefState_h ),
+                                      beliefStates_.at( child_after_observation->data().beliefState_h ) ); //childBeliefState[stateIndex];
 
     if( p > 0.0 )
     {
       candidates.push_back( std::make_pair( child_after_observation, p ) );
     }
   }
-  CHECK( candidates.size() == 1, "We don't have a probabilistic observation model!" );
-
-  auto& action_node_after_observation = candidates.front().first;
+  //CHECK( candidates.size() == 1, "We don't have a probabilistic observation model!" );
 
   // 5. Rollout after from chosen action + received observation
-  if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
+  double q_value{r0};
+  for( auto & action_node_after_observation_pair: candidates )
+  {
+    const auto& action_node_after_observation = action_node_after_observation_pair.first;
+    const auto& p = action_node_after_observation_pair.second;
 
-  const double q_value = r0 + simulate( action_node_after_observation, // TODO: Add probability!
-                                       stateIndex,
-                                       depth + 1,
-                                       r0,
-                                       rolloutMaxSteps,
-                                       nRolloutsPerSimulation,
-                                       c,
-                                       expandedNodesIds,
-                                       verbose );
+    if(verbose) std::cout << "[simulation] from child: " << action_node_after_observation->id() << std::endl;
+
+    q_value += p * simulate( action_node_after_observation,
+                                         depth + 1,
+                                         r0,
+                                         rolloutMaxSteps,
+                                         nRolloutsPerSimulation,
+                                         c,
+                                         expandedNodesIds,
+                                         verbose );
+  }
 
   // increments mc counters
   node->data().n_rollouts++;
   best_uct_child->data().n_rollouts++;
 
-  if(best_uct_child->data().n_rollouts == 1)
+  if( best_uct_child->data().n_rollouts == 1 )
   {
     best_uct_child->data().mcts_q_value = q_value;
   }
   else
   {
-    best_uct_child->data().mcts_q_value = best_uct_child->data().mcts_q_value + (q_value - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
+    best_uct_child->data().mcts_q_value = std::max( best_uct_child->data().mcts_q_value, q_value ); //( - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
+
+    //best_uct_child->data().mcts_q_value = best_uct_child->data().mcts_q_value + (q_value - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
   }
 
   if(verbose) std::cout << "[simulation] simulation counter of " << node->id() << ": " << node->data().n_rollouts << std::endl;
@@ -257,7 +260,7 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
   return q_value;
 }
 
-double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
+double MCTSDecisionTreeBs::rollOutBs( const std::size_t node_h,
                                            const double r0,
                                            const std::size_t steps,
                                            const std::size_t rolloutMaxSteps,
@@ -267,15 +270,14 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
   double maxRewards = std::numeric_limits<double>::lowest();
   for(std::size_t i{0}; i < nRolloutsPerSimulation; ++i)
   {
-    std::set<std::size_t> visitedStates;
     maxRewards = std::max(maxRewards,
-                          rollOutOneWorld( state_h, r0, steps, rolloutMaxSteps, verbose ));
+                          rollOutBs( node_h, r0, steps, rolloutMaxSteps, verbose ));
   }
 
   return maxRewards;
 }
 
-double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
+double MCTSDecisionTreeBs::rollOutBs( const std::size_t node_h,
                         const double r0,
                         const std::size_t steps,
                         const std::size_t rolloutMaxSteps,
@@ -288,7 +290,9 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
     return 0.0; // TODO, find some heuristic here?
   }
 
-  const auto& actions_h = getPossibleActions( state_h );
+  const auto& node = nodesData_.at( node_h );
+
+  const auto& actions_h = getCommonPossibleActions( node_h );
 
   if( actions_h.size() == 0 )
   {
@@ -302,25 +306,35 @@ double MCTSDecisionTree::rollOutOneWorld( const std::size_t state_h,
 
   if(verbose) std::cout << "  [rollOut] depth: " << steps << ", " << actions_h.size() << " possible actions, trying: " << action_i << " : " << actions_.at( action_h ) << std::endl;
 
-  const auto outcome = getOutcome( state_h, action_h );
+  const auto outcomes = getPossibleOutcomes( node_h, action_h );
 
-  const std::size_t next_h = std::get<0>(outcome);;
-  const bool terminal = std::get<1>(outcome);
-
-  if( terminal )
+  double simulatedReward{r0};
+  for( const auto& outcome_h: outcomes )
   {
-    if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
-    return r0;
+    const auto& outcome = nodesData_.at( outcome_h );
+
+    const bool terminal = outcome.terminal;
+
+    const double p = transitionProbability( beliefStates_.at( node.beliefState_h ),
+                                            beliefStates_.at( outcome.beliefState_h ) );
+
+    if( terminal )
+    {
+      if(verbose) std::cout << "  [rollOut] depth: " << steps << " reached a TERMINAL STATE!" << std::endl;
+      continue;
+    }
+
+    const auto rewardFromRollOut = rollOutBs( outcome_h, r0, steps + 1, rolloutMaxSteps, verbose );
+
+    simulatedReward += p * rewardFromRollOut;
+
+    if(verbose) std::cout << "  [rollOut] depth: " << steps << " rewardFromRollOut: " << rewardFromRollOut << std::endl;
   }
-
-  const double simulatedReward = r0 + rollOutOneWorld( next_h, r0, steps + 1, rolloutMaxSteps, verbose );
-
-  if(verbose) std::cout << "  [rollOut] depth: " << steps << " simulatedReward: " << simulatedReward << std::endl;
 
   return simulatedReward;
 }
 
-std::vector< std::size_t > MCTSDecisionTree::getCommonPossibleActions( const std::size_t node_h ) const
+std::vector< std::size_t > MCTSDecisionTreeBs::getCommonPossibleActions( const std::size_t node_h ) const
 {
   CHECK( nodesData_.find( node_h ) != nodesData_.end(), "" );
 
@@ -393,7 +407,7 @@ std::vector< std::size_t > MCTSDecisionTree::getCommonPossibleActions( const std
   return actions_h;
 }
 
-std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::size_t node_h,
+std::vector< std::size_t > MCTSDecisionTreeBs::getPossibleOutcomes( const std::size_t node_h,
                                                                   const std::size_t action_h ) const
 {
   std::vector< std::size_t > outcomes;
@@ -528,7 +542,7 @@ std::vector< std::size_t > MCTSDecisionTree::getPossibleOutcomes( const std::siz
   return outcomes;
 }
 
-const std::vector< std::size_t >& MCTSDecisionTree::getPossibleActions( const std::size_t state_h ) const
+const std::vector< std::size_t >& MCTSDecisionTreeBs::getPossibleActions( const std::size_t state_h ) const
 {
   const auto actions_it = stateToActionsH_.find( state_h );
   stateToActionsH_details_.nQueries++;
@@ -559,7 +573,7 @@ const std::vector< std::size_t >& MCTSDecisionTree::getPossibleActions( const st
   return stateToActionsH_.at( state_h );
 }
 
-std::vector< std::string > MCTSDecisionTree::getPossibleActions( const std::set<std::string> & state, const std::size_t state_h ) const
+std::vector< std::string > MCTSDecisionTreeBs::getPossibleActions( const std::set<std::string> & state, const std::size_t state_h ) const
 {
   engine_.setFacts( state );
   lastSetStateEngine_ = state_h;
@@ -567,7 +581,7 @@ std::vector< std::string > MCTSDecisionTree::getPossibleActions( const std::set<
   return engine_.getPossibleActions( 0 );
 }
 
-std::tuple< std::size_t, bool > MCTSDecisionTree::getOutcome( const std::size_t state_h, const std::size_t action_h ) const
+std::tuple< std::size_t, bool > MCTSDecisionTreeBs::getOutcome( const std::size_t state_h, const std::size_t action_h ) const
 {
   const auto stateActionKey = std::make_pair( state_h, action_h );
 
@@ -600,7 +614,7 @@ std::tuple< std::size_t, bool > MCTSDecisionTree::getOutcome( const std::size_t 
                         );
 }
 
-std::tuple< std::set<std::string>, bool > MCTSDecisionTree::getOutcome( const std::set<std::string> & state, const std::size_t state_h, const std::string& action ) const
+std::tuple< std::set<std::string>, bool > MCTSDecisionTreeBs::getOutcome( const std::set<std::string> & state, const std::size_t state_h, const std::string& action ) const
 {
   LogicEngine & engine = engine_;
 
@@ -613,7 +627,7 @@ std::tuple< std::set<std::string>, bool > MCTSDecisionTree::getOutcome( const st
   return std::make_tuple( engine.getFacts(), engine.isTerminal() );
 }
 
-void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename,
+void MCTSDecisionTreeBs::saveMCTSTreeToFile( const std::string & filename,
                                            const std::string & mctsState,
                                            const Rewards& rewards,
                                            const Values& values ) const
@@ -626,7 +640,7 @@ void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename,
   std::ofstream file;
   file.open( filename );
 
-  MCTSTreePrinter<MCTSDecisionTree> printer( file, mctsState, rewards, values, 3, 0 );
+  MCTSTreePrinter<MCTSDecisionTreeBs> printer( file, mctsState, rewards, values, 3, 0 );
   printer.print( *this );
 
   file.close();
@@ -647,7 +661,7 @@ void MCTSDecisionTree::saveMCTSTreeToFile( const std::string & filename,
 }
 
 
-std::string getObservation( const MCTSDecisionTree::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTree & graph )
+std::string getObservation( const MCTSDecisionTreeBs::GraphNodeType::ptr & from, const MCTSDecisionTree::GraphNodeType::ptr & to, const MCTSDecisionTreeBs & graph )
 {
   std::set< std::string > factIntersection;
 
