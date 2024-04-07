@@ -14,6 +14,7 @@
 
 #include <graph_planner.h>
 #include <mcts_planner.h>
+#include <mcts_planner_bs.h>
 
 #include <komo_planner.h>
 #include <approx_shape_to_sphere.h>
@@ -254,6 +255,7 @@ void planMCTS()
 
   // content of this function is now merged with the main plan()
   matp::MCTSPlanner tp;
+  //matp::MCTSPlannerBs tp;
 
   tp.setR0( -1.0, 1.0 );
   tp.setNIterMinMax( 500, 100000 );
@@ -264,11 +266,17 @@ void planMCTS()
 //  tp.setFol( "LGP-1-block-6-sides-fol.g" );
   tp.setFol( "LGP-2-blocks-6-sides-fol.g" );
 
+  // SOLVE
+  auto start = std::chrono::high_resolution_clock::now();
+
   tp.solve();
 
+  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  std::cout << "planning time (ms): " << std::chrono::duration_cast< std::chrono::milliseconds >(elapsed).count() << std::endl;
   //tp.saveMCTSGraphToFile( "decision_graph.gv" );
   //generatePngImage( "decision_graph.gv" );
 
+  // BUILD POLICY
   auto policy = tp.getPolicy();
 
   savePolicyToFile( policy, "-candidate-2-blocks" );

@@ -227,7 +227,7 @@ double MCTSDecisionTree::simulate( const MCTSDecisionTree::GraphNodeType::ptr& n
   // 5. Rollout after from chosen action + received observation
   if(verbose) std::cout << "[simulation] based on sample world(" << stateIndex << "), the corresponding child is:" << action_node_after_observation->id() << std::endl;
 
-  const double q_value = r0 + simulate( action_node_after_observation, // TODO: Add probability!
+  const double q_value = r0 + simulate( action_node_after_observation, // TODO: Add probability! or sample states according to bs
                                        stateIndex,
                                        depth + 1,
                                        r0,

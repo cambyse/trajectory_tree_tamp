@@ -56,7 +56,7 @@ Policy JointPathTAMPController::plan(  const TAMPlanningConfiguration & config )
   std::sort( jointPolicies.begin(), jointPolicies.end(), skeletonComp );
   policy = *jointPolicies.begin();
 
-  /// DIPSLAY
+  /// DISPLAY
   if( config.saveFinalPolicy ) policy.saveAll( ".", "-final" );
 
   if( config.showFinalPolicy )

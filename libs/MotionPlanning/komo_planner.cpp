@@ -202,7 +202,7 @@ std::vector< double > KOMOPlanner::drawRandomVector( const std::vector< double >
 
 void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & policy )
 {
-  CHECK( startKinematics_.d0 == policy.N(), "consitency problem, the belief state size of the policy differs from the belief state size of the kinematics" );
+  CHECK( startKinematics_.d0 == policy.N(), "consistency problem, the belief state size of the policy differs from the belief state size of the kinematics" );
   CHECK( po.policyId() == policy.id(), "id of the policy and the planning orders are not consistent" );
 
   //po.getParam( "type" );
@@ -239,7 +239,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   }
   else if( po.getParam( "type" ) == "ADMMCompressed" )
   {
-    ADMMCompressedPlanner planner(config_, komoFactory_, getMarkovianPathTree(policy)); // NoArr); //
+    ADMMCompressedPlanner planner(config_, komoFactory_, getMarkovianPathTree(policy));
     planner.setDecompositionStrategy(po.getParam("decompositionStrategy"), po.getParam("nJobs"));
     planner.optimize(policy, startKinematics_);
   }
@@ -250,7 +250,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   }
   else if( po.getParam( "type" ) == "EvaluateMarkovianCosts" )
   {
-    EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy), "optimizationReportMarkovianPathTree.re");
+    EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy), "results/optimizationReportMarkovianPathTree.re");
     evaluation.optimize(policy, startKinematics_);
   }
   else

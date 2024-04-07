@@ -342,6 +342,7 @@ struct MCTSPlannerBsTestWithMockedMotionPlanning : public ::testing::Test {
 
 TEST_F(MCTSPlannerBsTestWithMockedMotionPlanning, MCTS_WhenBuildingMCTSDecisionGraph_AndSimulatingAnInfeasibleMotionPlanning_ExpectPolicyChanged)
 {
+  // Note:
   const auto policy_and_it_0 = doTamp(-20.0);
   const auto policy_and_it_1 = doTamp(-1.0);
   const auto policy_and_it_2 = doTamp(-0.05);

@@ -7,11 +7,12 @@
 
 #include <graph_planner.h>
 #include <mcts_planner.h>
-#include <mcts_planner.h>
+#include <mcts_planner_bs.h>
 
 #include <komo_planner.h>
 #include <approx_shape_to_sphere.h>
 #include <observation_tasks.h>
+#include <object_manipulation_tamp_controller.h>
 
 #include "komo_tree_groundings.h"
 
@@ -75,13 +76,82 @@ void display_robot()
 //    rai::wait( 300, true );
 }
 
-void plan()
+void plan_4_blocks()
 {
   srand(1);
 
+  // build planner
   matp::MCTSPlanner tp;
   mp::KOMOPlanner mp;
 
+  tp.setR0( -1.0, 5.0 );
+  tp.setNIterMinMax( 500000, 1000000 );
+  tp.setRollOutMaxSteps( 100 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
+  // set problem
+  tp.setFol( "LGP-4-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-4-blocks-1-side-kin.g" );
+
+  // register symbols
+  mp.registerInit( groundTreeInit );
+  mp.registerTask( "pick-up"      , groundTreePickUp );
+  mp.registerTask( "put-down"     , groundTreePutDown );
+  mp.registerTask( "check"        , groundTreeCheck );
+  mp.registerTask( "stack"        , groundTreeStack );
+  mp.registerTask( "unstack"      , groundTreeUnStack );
+
+  // build and run tamp controller
+  ObjectManipulationTAMPController tamp(tp, mp);
+  TAMPlanningConfiguration config;
+  tamp.plan(config);
+}
+
+void plan_3_blocks()
+{
+  srand(1);
+
+  // build planner
+  matp::MCTSPlanner tp;
+  mp::KOMOPlanner mp;
+
+  tp.setR0( -1.0, 15.0 );
+  tp.setNIterMinMax( 50000, 1000000 );
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
+
+  // set problem
+  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+
+  // register symbols
+  mp.registerInit( groundTreeInit );
+  mp.registerTask( "pick-up"      , groundTreePickUp );
+  mp.registerTask( "put-down"     , groundTreePutDown );
+  mp.registerTask( "check"        , groundTreeCheck );
+  mp.registerTask( "stack"        , groundTreeStack );
+  mp.registerTask( "unstack"      , groundTreeUnStack );
+
+  // build and run tamp controller
+  ObjectManipulationTAMPController tamp( tp, mp );
+  TAMPlanningConfiguration config;
+  tamp.plan( config );
+}
+
+
+/*void plan_()
+{
+  //
+  srand(1);
+
+  matp::MCTSPlanner tp;
+  //matp::MCTSPlannerBs tp;
+
+  mp::KOMOPlanner mp;
+
+  // MCTS NO BS
   // set planning parameters
   tp.setR0( -1.0, 5.0 ); // 15.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
   tp.setNIterMinMax( 500000, 1000000 ); // 50 000 for 3 blocks
@@ -93,6 +163,18 @@ void plan()
   mp.setMinMarkovianCost( 0.00 );
   mp.setMaxConstraint( 30.0 );
 
+  // MCTS BS
+  // set planning parameters
+//  tp.setR0( -1.0, 5.0 );
+//  tp.setNIterMinMax( 5000, 1000000 );
+//  tp.setRollOutMaxSteps( 50 );
+//  tp.setNumberRollOutPerSimulation( 1 );
+//  tp.setVerbose( false );
+
+//  mp.setNSteps( 20 );
+//  mp.setMinMarkovianCost( 0.00 );
+//  mp.setMaxConstraint( 30.0 );
+
   // set problem
   //tp.setFol( "LGP-1-block-1-side-fol.g" );
   //mp.setKin( "LGP-1-block-1-side-kin.g" );
@@ -100,11 +182,11 @@ void plan()
   //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
   //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
 
-  //tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-  //mp.setKin( "LGP-3-blocks-1-side-kin.g" );
+  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
+  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
 
-  tp.setFol( "LGP-4-blocks-1-side-fol.g" );
-  mp.setKin( "LGP-4-blocks-1-side-kin.g" );
+  //tp.setFol( "LGP-4-blocks-1-side-fol.g" );
+  //mp.setKin( "LGP-4-blocks-1-side-kin.g" );
 
   // register symbols
   mp.registerInit( groundTreeInit );
@@ -122,7 +204,14 @@ void plan()
   /// POLICY SEARCH
   Policy policy, lastPolicy;
 
+  // FIRST POLICY SEARCH
+  auto start = std::chrono::high_resolution_clock::now();
+
   tp.solve();
+
+  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
+  std::cout << "planning time (ms): " << std::chrono::duration_cast< std::chrono::milliseconds >(elapsed).count() << std::endl;
+
   policy = tp.getPolicy();
 
   uint nIt = 0;
@@ -264,7 +353,7 @@ void plan()
 //    po.setParam( "nJobs", "8" );
 //    mp.solveAndInform( po, policy ); // it displays
 //  }
-}
+}*/
 
 //===========================================================================
 
@@ -274,9 +363,7 @@ int main(int argc,char **argv)
 
   rnd.clockSeed();
 
-  //display_robot();
-
-  plan();
+  plan_3_blocks();
 
   return 0;
 }

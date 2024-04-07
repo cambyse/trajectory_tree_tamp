@@ -204,12 +204,12 @@ double MCTSDecisionTreeBs::simulate( const MCTSDecisionTree::GraphNodeType::ptr&
 
   CHECK( !best_uct_child->children().empty(), "Should at least have one outcome!" );
 
-  // 4. Get observation based on sampled state. Since we sample one state only there should be one possible outcome only
-  std::vector< std::pair< GraphNodeType::ptr, double > > candidates; // node after observation and probability of bein in state indicated by stateIndex
+  // 4. Build outcomes after after observation branching
+  std::vector< std::pair< GraphNodeType::ptr, double > > candidates; // node after observation and probability of being in state indicated by stateIndex
   for( auto& child_after_observation : best_uct_child->children() )
   {
     const auto& childBeliefState = beliefStates_.at( child_after_observation->data().beliefState_h );
-    double p = transitionProbability( beliefStates_.at( node->data().beliefState_h ),
+    const double p = transitionProbability( beliefStates_.at( node->data().beliefState_h ),
                                       beliefStates_.at( child_after_observation->data().beliefState_h ) ); //childBeliefState[stateIndex];
 
     if( p > 0.0 )
@@ -219,7 +219,7 @@ double MCTSDecisionTreeBs::simulate( const MCTSDecisionTree::GraphNodeType::ptr&
   }
   //CHECK( candidates.size() == 1, "We don't have a probabilistic observation model!" );
 
-  // 5. Rollout after from chosen action + received observation
+  // 5. Rollout for each possible outcome
   double q_value{r0};
   for( auto & action_node_after_observation_pair: candidates )
   {
@@ -248,6 +248,12 @@ double MCTSDecisionTreeBs::simulate( const MCTSDecisionTree::GraphNodeType::ptr&
   }
   else
   {
+
+//    const auto update_max = std::max( best_uct_child->data().mcts_q_value, q_value ); //( - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
+//    const auto update_average = best_uct_child->data().mcts_q_value + (q_value - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
+//    std::cout << "update_max: " << update_max << " vs. " << update_average << std::endl;
+//    CHECK_GE(update_max, update_average, "");
+
     best_uct_child->data().mcts_q_value = std::max( best_uct_child->data().mcts_q_value, q_value ); //( - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
 
     //best_uct_child->data().mcts_q_value = best_uct_child->data().mcts_q_value + (q_value - best_uct_child->data().mcts_q_value) / best_uct_child->data().n_rollouts;
