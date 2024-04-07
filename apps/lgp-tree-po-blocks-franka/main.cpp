@@ -137,6 +137,8 @@ void plan_3_blocks()
   // build and run tamp controller
   ObjectManipulationTAMPController tamp( tp, mp );
   TAMPlanningConfiguration config;
+  config.watchMarkovianOptimizationResults = false;
+  config.watchJointOptimizationResults = false;
   tamp.plan( config );
 }
 

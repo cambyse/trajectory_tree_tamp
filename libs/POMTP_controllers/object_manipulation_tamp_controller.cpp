@@ -89,10 +89,10 @@ Policy ObjectManipulationTAMPController::plan( const TAMPlanningConfiguration & 
 
   savePolicyToFile( policy, "-final" );
 
-  // evaluate and display markovian -> output in optimizationReportMarkovianPathTree.re
-  { auto po     = MotionPlanningParameters( policy.id() );
+  { // evaluate and display markovian -> output in optimizationReportMarkovianPathTree.re
+    auto po     = MotionPlanningParameters( policy.id() );
     po.setParam( "type", "EvaluateMarkovianCosts" );
-    mp_.solveAndInform( po, policy );
+    mp_.solveAndInform( po, policy, config.watchMarkovianOptimizationResults );
   }
 
   /////////////////////////
@@ -108,7 +108,7 @@ Policy ObjectManipulationTAMPController::plan( const TAMPlanningConfiguration & 
     po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
     po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
     po.setParam( "nJobs", "8" );
-    mp_.solveAndInform( po, policy );   // optimize and displays joint optimization -> output in optimizationReportAdmmCompressed.re
+    mp_.solveAndInform( po, policy, config.watchJointOptimizationResults );   // optimize and displays joint optimization -> output in optimizationReportAdmmCompressed.re
 
     const auto elapsed = std::chrono::high_resolution_clock::now() - start;
     joint_motion_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;

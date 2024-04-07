@@ -28,7 +28,7 @@ public:
   std::vector< double > drawRandomVector( const std::vector< double > & override = std::vector< double >() );
 
   // informers
-  void solveAndInform( const MotionPlanningParameters &, Policy & ) override;
+  void solveAndInform( const MotionPlanningParameters &, Policy &, bool watch = false ) override;
 
   // display
   void display( const Policy & policy, double sec ) override;

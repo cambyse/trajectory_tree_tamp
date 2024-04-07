@@ -200,7 +200,7 @@ std::vector< double > KOMOPlanner::drawRandomVector( const std::vector< double >
   return randomVec_;
 }
 
-void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & policy )
+void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & policy, bool watch )
 {
   CHECK( startKinematics_.d0 == policy.N(), "consistency problem, the belief state size of the policy differs from the belief state size of the kinematics" );
   CHECK( po.policyId() == policy.id(), "id of the policy and the planning orders are not consistent" );
@@ -230,18 +230,18 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   else if( po.getParam( "type" ) == "jointSparse" )
   {
     JointPlanner planner(config_, komoFactory_);
-    planner.optimize(policy, startKinematics_);
+    planner.optimize(policy, startKinematics_, watch);
   }
   else if( po.getParam( "type" ) == "ADMMSparse" )
   {
     ADMMSParsePlanner planner(config_, komoFactory_);
-    planner.optimize(policy, startKinematics_);
+    planner.optimize(policy, startKinematics_, watch);
   }
   else if( po.getParam( "type" ) == "ADMMCompressed" )
   {
     ADMMCompressedPlanner planner(config_, komoFactory_, getMarkovianPathTree(policy));
     planner.setDecompositionStrategy(po.getParam("decompositionStrategy"), po.getParam("nJobs"));
-    planner.optimize(policy, startKinematics_);
+    planner.optimize(policy, startKinematics_, watch);
   }
   else if( po.getParam( "type" ) == "ADMMDecompose" )
   {
@@ -251,7 +251,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
   else if( po.getParam( "type" ) == "EvaluateMarkovianCosts" )
   {
     EvaluationPlanner evaluation(config_, komoFactory_, getMarkovianPathTree(policy), "results/optimizationReportMarkovianPathTree.re");
-    evaluation.optimize(policy, startKinematics_);
+    evaluation.optimize(policy, startKinematics_, watch);
   }
   else
   {
@@ -262,6 +262,7 @@ void KOMOPlanner::solveAndInform( const MotionPlanningParameters & po, Policy & 
 
 void KOMOPlanner::display( const Policy & policy, double sec )
 {
+  // deprecated
   Policy tmp( policy );
   MotionPlanningParameters po( policy.id() );
 
@@ -271,7 +272,7 @@ void KOMOPlanner::display( const Policy & policy, double sec )
   auto start = std::chrono::high_resolution_clock::now();
   //
 
-  solveAndInform( po, tmp );
+  solveAndInform( po, tmp, true );
 
   //
   const auto elapsed = std::chrono::high_resolution_clock::now() - start;

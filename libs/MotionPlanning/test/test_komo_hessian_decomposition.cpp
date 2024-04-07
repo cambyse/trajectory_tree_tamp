@@ -15,7 +15,7 @@ TEST_F(KomoPlannerSingleAgentFixture, DISABLED_PlanSingleAgent2WJointPath)
   MotionPlanningParameters po( policy.id() );
   po.setParam( "type", "jointSparse" );
 
-  EXPECT_NO_THROW( planner.solveAndInform( po, policy ) );
+  EXPECT_NO_THROW( planner.solveAndInform( po, policy, false ) );
   EXPECT_EQ( policy.status(), Policy::INFORMED );
 }
 

@@ -23,7 +23,7 @@ public:
     : KOMOSparsePlanner(config, factory) {};
 
   hessian_decomposition::Decomposition analyse(Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &);
-  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override{};
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool ) const override{};
 };
 
 // Subproblems set-up by a x mask, will adapt the objectives var, and komo time, to minimize computation time and memory

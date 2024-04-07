@@ -23,6 +23,6 @@ public:
 
 public:
     virtual void setKin( const std::string & kinDescription ) = 0; // specify start kinematics
-    virtual void solveAndInform( const MotionPlanningParameters &, Policy & ) = 0;
+    virtual void solveAndInform( const MotionPlanningParameters &, Policy &, bool watchResult = false ) = 0;
     virtual void display( const Policy &, double sec = 30 ) {};
 };

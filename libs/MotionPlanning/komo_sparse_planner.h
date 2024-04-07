@@ -42,7 +42,7 @@ public:
 
   OptimizationReport getOptimizationReport(const std::shared_ptr< ExtensibleKOMO > & komo, const std::vector<Vars>& allVars ) const; // use witness komo and task grounding inside it
 
-  virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const = 0;
+  virtual void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool watch ) const = 0;
 
 protected:
   using W = KomoWrapper;
@@ -57,7 +57,7 @@ public:
   JointPlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory)
     : KOMOSparsePlanner(config, factory)
   {};
-  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool ) const override;
 };
 
 // Ground all tasks, full opt variable, xmasks in ADMM-Graph-Problem reduce the pb
@@ -67,7 +67,7 @@ public:
   ADMMSParsePlanner(const KOMOPlannerConfig& config, const KOMOFactory& factory)
     : KOMOSparsePlanner(config, factory)
   {};
-  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool ) const override;
 };
 
 
@@ -86,7 +86,7 @@ public:
                                       const Mapping & mapping,
                                       Policy & policy,
                                       const std::shared_ptr< ExtensibleKOMO > & komo ) const;
-  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool ) const override;
 
 private:
   GeneratorFactory generatorFactory_;
@@ -107,7 +107,7 @@ public:
     , x_(x)
     , reportFile_(reportFile)
   {};
-  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & ) const override;
+  void optimize( Policy &, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > &, bool ) const override;
 
   arr x_;
   std::string reportFile_;

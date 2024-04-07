@@ -306,7 +306,7 @@ OptimizationReport KOMOSparsePlanner::getOptimizationReport(const std::shared_pt
 }
 
 /// JOINT
-void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
+void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics, bool watchResult ) const
 {
   using W = KomoWrapper;
 
@@ -360,12 +360,12 @@ void JointPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr<
 
   x = komo->x;
 
-  watch(komo, tree);
+  if(watchResult) watch(komo, tree);
   }
 }
 
 /// ADMM SPARSE
-void ADMMSParsePlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
+void ADMMSParsePlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics, bool watchResult ) const
 {
   // build tree
   auto tree = buildTree(policy);
@@ -436,9 +436,12 @@ void ADMMSParsePlanner::optimize( Policy & policy, const rai::Array< std::shared
          <<" setJointStateCount=" << rai::KinematicWorld::setJointStateCount <<endl;
   }
 
-  auto & komo = komos.back();
-  komo->set_x(x);
-  watch(komo, tree);
+  if(watchResult)
+  {
+    auto & komo = komos.back();
+    komo->set_x(x);
+    watch(komo, tree);
+  }
 }
 
 /// ADMM COMPRESSED
@@ -513,7 +516,7 @@ void ADMMCompressedPlanner::groundPolicyActionsCompressed( const TreeBuilder & f
   }
 }
 
-void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
+void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics, bool watchResult ) const
 {
   using W = KomoWrapper;
 
@@ -641,13 +644,13 @@ void ADMMCompressedPlanner::optimize( Policy & policy, const rai::Array< std::sh
   EvaluationPlanner(config_,
                     komoFactory_,
                     x,
-                    "results/optimizationReportAdmmCompressed.re").optimize(policy, startKinematics);
+                    "results/optimizationReportAdmmCompressed.re").optimize(policy, startKinematics, watchResult);
   //const auto report = getOptimizationReport(witness, std::get<0>(allVars));
   //report.save("optimizationReportAdmmCompressed.re");
   //watch( startKinematics, witness->switches, policy, tree, x, witness->stepsPerPhase, witness->k_order );
 }
 
-void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics ) const
+void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared_ptr< const rai::KinematicWorld > > & startKinematics, bool watchResult ) const
 {
   using W = KomoWrapper;
 
@@ -672,6 +675,7 @@ void EvaluationPlanner::optimize( Policy & policy, const rai::Array< std::shared
 
   const auto report = getOptimizationReport(komo, allVars);
   report.save( reportFile_ );
-  watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
+
+  if(watchResult) watch( startKinematics, komo->switches, policy, tree, x_, komo->stepsPerPhase, komo->k_order );
 }
 }

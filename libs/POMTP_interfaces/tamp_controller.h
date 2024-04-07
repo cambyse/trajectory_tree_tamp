@@ -24,6 +24,10 @@ struct TAMPlanningConfiguration
   bool saveFinalPolicy = false;
   bool showFinalPolicy = false;
   uint showDurationSecs = 0;
+
+  bool watchMarkovianOptimizationResults{false};
+  bool watchJointOptimizationResults{false};
+
 };
 
 class TAMPController
