@@ -105,6 +105,8 @@ void plan_4_blocks()
   // build and run tamp controller
   ObjectManipulationTAMPController tamp(tp, mp);
   TAMPlanningConfiguration config;
+  config.watchMarkovianOptimizationResults = false;
+  config.watchJointOptimizationResults = false;
   tamp.plan(config);
 }
 
@@ -142,221 +144,6 @@ void plan_3_blocks()
   tamp.plan( config );
 }
 
-
-/*void plan_()
-{
-  //
-  srand(1);
-
-  matp::MCTSPlanner tp;
-  //matp::MCTSPlannerBs tp;
-
-  mp::KOMOPlanner mp;
-
-  // MCTS NO BS
-  // set planning parameters
-  tp.setR0( -1.0, 5.0 ); // 15.0; (for 3 blocks), only up to ~5.0 for 4 blocks!
-  tp.setNIterMinMax( 500000, 1000000 ); // 50 000 for 3 blocks
-  tp.setRollOutMaxSteps( 100 ); // 50 for 4 blocks
-  tp.setNumberRollOutPerSimulation( 1 );
-  tp.setVerbose( false );
-
-  mp.setNSteps( 20 );
-  mp.setMinMarkovianCost( 0.00 );
-  mp.setMaxConstraint( 30.0 );
-
-  // MCTS BS
-  // set planning parameters
-//  tp.setR0( -1.0, 5.0 );
-//  tp.setNIterMinMax( 5000, 1000000 );
-//  tp.setRollOutMaxSteps( 50 );
-//  tp.setNumberRollOutPerSimulation( 1 );
-//  tp.setVerbose( false );
-
-//  mp.setNSteps( 20 );
-//  mp.setMinMarkovianCost( 0.00 );
-//  mp.setMaxConstraint( 30.0 );
-
-  // set problem
-  //tp.setFol( "LGP-1-block-1-side-fol.g" );
-  //mp.setKin( "LGP-1-block-1-side-kin.g" );
-
-  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
-
-  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
-
-  //tp.setFol( "LGP-4-blocks-1-side-fol.g" );
-  //mp.setKin( "LGP-4-blocks-1-side-kin.g" );
-
-  // register symbols
-  mp.registerInit( groundTreeInit );
-  mp.registerTask( "pick-up"      , groundTreePickUp );
-  mp.registerTask( "put-down"     , groundTreePutDown );
-  mp.registerTask( "check"        , groundTreeCheck );
-  mp.registerTask( "stack"        , groundTreeStack );
-  mp.registerTask( "unstack"      , groundTreeUnStack );
-
-  /// BUILD DECISION GRAPH
-  //tp.saveGraphToFile( "decision_graph.gv" );
-  //generatePngImage( "decision_graph.gv" );
-
-#if 1
-  /// POLICY SEARCH
-  Policy policy, lastPolicy;
-
-  // FIRST POLICY SEARCH
-  auto start = std::chrono::high_resolution_clock::now();
-
-  tp.solve();
-
-  const auto elapsed = std::chrono::high_resolution_clock::now() - start;
-  std::cout << "planning time (ms): " << std::chrono::duration_cast< std::chrono::milliseconds >(elapsed).count() << std::endl;
-
-  policy = tp.getPolicy();
-
-  uint nIt = 0;
-  const uint maxIt = 1000;
-  do
-  {
-    nIt++;
-
-    savePolicyToFile( policy, "-candidate" );
-
-    lastPolicy = policy;
-
-    /// MOTION PLANNING
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "markovJointPath" );
-    mp.solveAndInform( po, policy );
-
-    savePolicyToFile( policy, "-informed" );
-
-    /// TASK PLANNING
-    tp.integrate( policy );
-    tp.solve();
-
-    policy = tp.getPolicy();
-  }
-  while( lastPolicy != policy && nIt != maxIt );
-
-  savePolicyToFile( policy, "-final" );
-#else
-  Policy policy;
-  policy.load("policy-0-candidate");
-  auto po     = MotionPlanningParameters( policy.id() );
-  po.setParam( "type", "markovJointPath" );
-  mp.solveAndInform( po, policy );
-#endif
-  // default method
-  //mp.display(policy, 200);
-
-  {
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "EvaluateMarkovianCosts" );
-    mp.solveAndInform( po, policy );
-  }
-
-  /// DECOMPOSED SPARSE OPTIMIZATION
-  // adsm
-  {
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
-    po.setParam( "nJobs", "8" );
-    mp.solveAndInform( po, policy ); // it displays
-  }
-
-//
-//  matp::GraphPlanner tp;
-//  mp::KOMOPlanner mp;
-
-//  // set planning parameters
-//  tp.setR0( -1.0 ); //-1.0, -0.5
-//  tp.setMaxDepth( 8 );
-//  mp.setNSteps( 20 );
-//  mp.setMinMarkovianCost( 0.00 );
-//  mp.setMaxConstraint( 15.0 );
-
-//  // set problem
-//  //tp.setFol( "LGP-1-block-1-side-fol.g" );
-//  //mp.setKin( "LGP-1-block-1-side-kin.g" );
-
-//  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-//  //mp.setKin( "LGP-2-blocks-1-side-kin.g" );
-
-//  tp.setFol( "LGP-3-blocks-1-side-fol.g" );
-//  mp.setKin( "LGP-3-blocks-1-side-kin.g" );
-
-//  // register symbols
-//  mp.registerInit( groundTreeInit );
-//  mp.registerTask( "pick-up"      , groundTreePickUp );
-//  mp.registerTask( "put-down"     , groundTreePutDown );
-//  mp.registerTask( "check"        , groundTreeCheck );
-//  mp.registerTask( "stack"        , groundTreeStack );
-//  mp.registerTask( "unstack"      , groundTreeUnStack );
-
-//  /// BUILD DECISION GRAPH
-//  tp.buildGraph(false);
-//  //tp.saveGraphToFile( "decision_graph.gv" );
-//  //generatePngImage( "decision_graph.gv" );
-
-//#if 1
-//  /// POLICY SEARCH
-//  Policy policy, lastPolicy;
-
-//  tp.solve();
-//  policy = tp.getPolicy();
-
-//  uint nIt = 0;
-//  const uint maxIt = 1000;
-//  do
-//  {
-//    nIt++;
-
-//    savePolicyToFile( policy );
-
-//    lastPolicy = policy;
-
-//    /// MOTION PLANNING
-//    auto po     = MotionPlanningParameters( policy.id() );
-//    po.setParam( "type", "markovJointPath" );
-//    mp.solveAndInform( po, policy );
-
-//    /// TASK PLANNING
-//    tp.integrate( policy );
-//    tp.solve();
-//    policy = tp.getPolicy();
-//  }
-//  while( lastPolicy != policy && nIt != maxIt );
-
-//  savePolicyToFile( policy, "-final" );
-//#else
-//  Policy policy;
-//  policy.load("policy-0-3-blocks");
-//  //policy.load("policy-0");
-//#endif
-//  // default method
-//  //mp.display(policy, 200);
-
-//  {
-//    auto po     = MotionPlanningParameters( policy.id() );
-//    po.setParam( "type", "EvaluateMarkovianCosts" );
-//    mp.solveAndInform( po, policy );
-//  }
-
-//  /// DECOMPOSED SPARSE OPTIMIZATION
-//  // adsm
-//  {
-//    auto po     = MotionPlanningParameters( policy.id() );
-//    po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-//    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
-//    po.setParam( "nJobs", "8" );
-//    mp.solveAndInform( po, policy ); // it displays
-//  }
-}*/
-
 //===========================================================================
 
 int main(int argc,char **argv)
@@ -365,7 +152,8 @@ int main(int argc,char **argv)
 
   rnd.clockSeed();
 
-  plan_3_blocks();
+  //plan_3_blocks();
+  plan_4_blocks();
 
   return 0;
 }

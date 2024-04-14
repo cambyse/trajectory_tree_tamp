@@ -19,6 +19,7 @@
 #include <komo_planner.h>
 #include <approx_shape_to_sphere.h>
 #include <observation_tasks.h>
+#include <object_manipulation_tamp_controller.h>
 
 #include "komo_tree_groundings.h"
 
@@ -82,33 +83,16 @@ void display_robot()
 //    rai::wait( 300, true );
 }
 
-void plan()
+void plan_1_block()
 {
-  ///
-  std::ofstream candidate, results, best_policy;
-  candidate.open( "policy-candidates.data" );
-  results.open( "policy-results.data" );
-  best_policy.open( "policy-best_policy.data" );
-  double graph_building_s = 0;
-  double task_planning_s = 0;
-  double motion_planning_s = 0;
-  double joint_motion_planning_s = 0;
+  srand(1);
 
-  namespace ba = boost::accumulators;
-  boost::accumulators::accumulator_set<double, ba::features< ba::tag::variance, ba::tag::mean, ba::tag::min, ba::tag::max > > acc_length;
-  boost::accumulators::accumulator_set<double, ba::features< ba::tag::variance, ba::tag::mean, ba::tag::min, ba::tag::max > > acc_acc_cost;
-  ///
-
-
+  // build planner
   matp::MCTSPlanner tp;
-  //matp::GraphPlanner tp;
   mp::KOMOPlanner mp;
 
-  // set planning parameters
-  //tp.setR0( -500. ); //-0.25//-0.1//-0.015 ); for blocks one side
-  //tp.setMaxDepth( 10 );
-  tp.setR0( -1.0, 15.0 );
-  tp.setNIterMinMax( 5000, 1000000 );
+  tp.setR0( -0.5, 15.0 );
+  tp.setNIterMinMax( 50000, 1000000 );
   tp.setRollOutMaxSteps( 50 );
   tp.setNumberRollOutPerSimulation( 1 );
   tp.setVerbose( false );
@@ -119,12 +103,6 @@ void plan()
   mp.addCostIrrelevantTask( "SensorDistanceToObject" );
 
   // set problem
-  //tp.setFol( "LGP-1-block-1-side-fol.g" );
-  //mp.setKin( "LGP-1-block-1-side-kin.g" );
-
-  //tp.setFol( "LGP-2-blocks-1-side-fol.g" );
-  //tp.setFol( "LGP-2-blocks-1-side-kin.g" );
-
   tp.setFol( "LGP-1-block-6-sides-fol.g" );
   mp.setKin( "LGP-1-block-6-sides-kin.g" );
 
@@ -137,116 +115,52 @@ void plan()
   mp.registerTask( "stack"        , groundTreeStack );
   mp.registerTask( "unstack"      , groundTreeUnStack );
 
-  /// BUILD DECISION GRAPH
-//  {
-//    auto start = std::chrono::high_resolution_clock::now();
-//    /// TASK TREE BUILDING
-//    tp.buildGraph(false);
-//    auto elapsed = std::chrono::high_resolution_clock::now() - start;
-//    graph_building_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
-//  }
-  //tp.saveGraphToFile( "decision_graph.gv" );
-  //generatePngImage( "decision_graph.gv" );
+  // build and run tamp controller
+  ObjectManipulationTAMPController tamp(tp, mp);
+  TAMPlanningConfiguration config;
+  config.watchMarkovianOptimizationResults = false;
+  config.watchJointOptimizationResults = false;
+  tamp.plan(config);
+}
 
-#if 1
-  /// POLICY SEARCH
-  Policy policy, lastPolicy;
-  double best_value{std::numeric_limits<double>::lowest()};
-  {
-    auto start = std::chrono::high_resolution_clock::now();
-    tp.solve();
-    auto elapsed = std::chrono::high_resolution_clock::now() - start;
-    task_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
-  }
+void plan_2_blocks()
+{
+  srand(1);
 
-  policy = tp.getPolicy();
+  // build planner
+  matp::MCTSPlanner tp;
+  mp::KOMOPlanner mp;
 
-  uint nIt = 0;
-  const uint maxIt = 1000;
-  do
-  {
-    nIt++;
+  tp.setR0( -1.0, 1.0 );
+  tp.setNIterMinMax( 500, 100000 );
+  tp.setRollOutMaxSteps( 50 );
+  tp.setNumberRollOutPerSimulation( 1 );
+  tp.setVerbose( false );
 
-    ///
-    std::cout << "\nPlanning for policy: " << policy.id()<< std::endl;
-    savePolicyToFile( policy, "-candidate" );
-    candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
-    ///
+  mp.setNSteps( 20 );
+  mp.setMinMarkovianCost( 0.00 );
+  mp.setMaxConstraint( 15.0 );
+  mp.addCostIrrelevantTask( "SensorDistanceToObject" );
 
-    lastPolicy = policy;
+  // set problem
+  tp.setFol( "LGP-2-blocks-6-sides-fol.g" );
+  mp.setKin( "LGP-2-block-6-sides-kin.g" );
 
-    {
-      /// MOTION PLANNING
-      auto start = std::chrono::high_resolution_clock::now();
-      auto po     = MotionPlanningParameters( policy.id() );
-      po.setParam( "type", "markovJointPath" );
-      mp.solveAndInform( po, policy );
-      auto elapsed = std::chrono::high_resolution_clock::now() - start;
-      motion_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
+  // register symbols
+  mp.registerInit( groundTreeInit );
+  mp.registerTask( "pick-up"      , groundTreePickUp );
+  mp.registerTask( "put-down"     , groundTreePutDown );
+  mp.registerTask( "put-down-flipped", groundTreePutDownFlipped );
+  mp.registerTask( "check"        , groundTreeCheck );
+  mp.registerTask( "stack"        , groundTreeStack );
+  mp.registerTask( "unstack"      , groundTreeUnStack );
 
-      savePolicyToFile( policy, "-informed" );
-
-      ///
-      best_value = std::max(policy.value(), best_value);
-      results << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
-      best_policy << policy.id() << "," << best_value << std::endl;
-      ///
-    }
-
-    {
-      /// TASK PLANNING
-      auto start = std::chrono::high_resolution_clock::now();
-      tp.integrate( policy );
-      tp.solve();
-      auto elapsed = std::chrono::high_resolution_clock::now() - start;
-      task_planning_s+=std::chrono::duration_cast<std::chrono::microseconds>(elapsed).count() / 1000000.0;
-    }
-    policy = tp.getPolicy();
-  }
-  while( lastPolicy != policy && nIt != maxIt );
-
-  savePolicyToFile( policy, "-final" );
-#else
-  Policy policy;
-  policy.load("policy-0");
-#endif
-  ///
-  savePolicyToFile( policy, "-final" );
-  candidate << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
-  results << policy.id() << "," << std::min( 10.0, -policy.value() ) << std::endl;
-
-  candidate.close();
-  results.close();
-  ///
-
-  // default method
-//  mp.display(policy, 200);
-
-  // markovian
-  //  mp.displayMarkovianPaths(policy, 200);
-  {
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "EvaluateMarkovianCosts" );
-    mp.solveAndInform( po, policy );
-  }
-
-  /// JOINT OPTIMIZATION
-  // single joint optimization
-//  {
-//    auto po     = MotionPlanningParameters( policy.id() );
-//    po.setParam( "type", "jointSparse" );
-//    mp.solveAndInform( po, policy ); // it displays
-//  }
-
-  /// DECOMPOSED SPARSE OPTIMIZATION
-  // adsm
-  {
-    auto po     = MotionPlanningParameters( policy.id() );
-    po.setParam( "type", "ADMMCompressed" ); //ADMMSparse, ADMMCompressed
-    po.setParam( "decompositionStrategy", "Identity" ); // SubTreesAfterFirstBranching, BranchGen, Identity
-    po.setParam( "nJobs", "8" );
-    mp.solveAndInform( po, policy ); // it displays
-  }
+  // build and run tamp controller
+  ObjectManipulationTAMPController tamp(tp, mp);
+  TAMPlanningConfiguration config;
+  config.watchMarkovianOptimizationResults = false;
+  config.watchJointOptimizationResults = false;
+  tamp.plan(config);
 }
 
 void planMCTS()
@@ -289,6 +203,9 @@ int main(int argc,char **argv)
   rai::initCmdLine(argc,argv);
 
   rnd.clockSeed();
+
+  //plan_1_block();
+  plan_2_blocks();
 
   //display_robot();
 

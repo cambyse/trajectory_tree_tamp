@@ -34,6 +34,7 @@ target_link_libraries(
  Logic
  KOMO
  POMTP_interfaces
+ POMTP_controllers
  ObservationTasks
  CollisionAvoidance
  MultiAgentTaskPlanning

@@ -569,22 +569,24 @@ void KOMOPlanner::optimizeMarkovianPathFrom( const Policy::GraphNodeTypePtr & no
       cout << "KOMO FAILED: " << msg <<endl;
     }
 
-    if( node->id() == 64 || node->id() == 221 /*|| node->id() == 5 /*|| node->id() == 4 || node->id() == 3 || node->id() == 2 */ /* || node->id() == 1 */ )
-    {
-      int a{0};
-//          for(const auto& f: komo->world.frames)
-//          {
-//            std::cout << f->name << "--->---" << (f->parent ? f->parent->name : "" ) << std::endl;
-//          }
+//    if( node->id() == 109 )
+//    {
+////      int a{0};
+////          for(const auto& f: komo->world.frames)
+////          {
+////            std::cout << f->name << "--->---" << (f->parent ? f->parent->name : "" ) << std::endl;
+////          }
 
 //      komo->getReport(true);
-      //komo->configurations.last()->watch(true);
-//      komo->displayTrajectory();
+//      komo->configurations.front()->watch(true);
+//      komo->configurations.last()->watch(true);
 
-      //komo->saveTrajectory( std::to_string( node->id() ) );
-      //komo->plotVelocity( std::to_string( node->id() ) );
-      //rai::wait();
-    }
+////      komo->displayTrajectory();
+
+//      //komo->saveTrajectory( std::to_string( node->id() ) );
+//      //komo->plotVelocity( std::to_string( node->id() ) );
+//      //rai::wait();
+//    }
 
     const Graph result = komo->getReport();
 
