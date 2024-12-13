@@ -1,6 +1,6 @@
 [submodule "share/projects/17-camille-obsTask"]
 	path = share/projects/17-camille-obsTask
-	url = git@github.com:cambyse/tamp.git
+	url = https://github.com/cambyse/tamp.git
 [submodule "rai"]
 	path = rai
-	url = git@github.com:cambyse/rai_for_tamp.git
+	url = https://github.com/cambyse/rai_for_tamp.git
