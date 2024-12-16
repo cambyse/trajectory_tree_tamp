@@ -2,7 +2,7 @@
 
 For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and macOS, we recommend using the Dockerized setup.
 
-Alternatively, a native system installation is possible but may require additional steps to build the examples successfully.
+Alternatively, a native system installation is possible but may require additional steps to have all correct dependencies necessary to compile the examples.
 
 ## Building using Docker
 1. Clone repository containing the Docker file (https://github.com/cambyse/trajectory_tree_tamp_deployment)
@@ -30,9 +30,9 @@ docker run --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it t
 
 The above command runs the docker image and opens a bash terminal. The options `--net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` are to forward the host display to the Docker container.
 
-## Building the examples of the native system
+## Building the examples on the native system
 
-To build the examples on the native system, one has to follow the same steps as in Dockerfile (https://github.com/cambyse/trajectory_tree_tamp_deployment). This is tested on `Ubuntu 20.04.6 LTS`.
+To build the examples on the native system, one has to follow the same steps as in Dockerfile (https://github.com/cambyse/trajectory_tree_tamp_deployment). ⚠️ This is tested only on `Ubuntu 20.04.6 LTS`.
 
 1. Install dependencies
 
@@ -54,6 +54,22 @@ sudo apt update && sudo apt install -y git build-essential \
  libboost-all-dev \
  cmake
 ```
+
+2. Clone repository and its submodules
+```bash
+git clone https://github.com/cambyse/trajectory_tree_tamp.git trajectory_tree_tamp && cd trajectory_tree_tamp
+git submodule update --init --recursive
+```
+
+3. Build Rai
+
+```bash
+cd rai
+make
+```
+
+4. Build TAMP libraries and examples
+
 
 # Run examples
 
