@@ -70,6 +70,12 @@ make
 
 4. Build TAMP libraries and examples
 
+```bash
+cd ../share/projects
+mkdir 17-camille-obsTask_build && cd 17-camille-obsTask_build
+cmake ../17-camille-obsTask -DMLR_LIBRARIES_DIR=../../../rai/lib -DMLR_INCLUDE_DIR=../../../rai/rai -DCMAKE_BUILD_TYPE=Release
+make
+```
 
 # Run examples
 
