@@ -1,9 +1,9 @@
 # Building the TAMP examples
 
-<p align="center">
-  <img src="doc/start-0.png" alt="Baxter" width="300">
-  <img src="doc/franka_init.png" alt="Franka" width="300">
-</p>
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <img src="doc/start-0.png" alt="Image 1" width="300">
+  <img src="doc/franka_init.png" alt="Image 2" width="300">
+</div>
 
 For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and macOS, we recommend using the Dockerized setup.
 
