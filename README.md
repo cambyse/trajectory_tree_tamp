@@ -5,7 +5,7 @@
   <img src="doc/franka_init.png" alt="Image 2" width="300">
 </div>
 
-For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and macOS, we recommend using the Dockerized setup.
+For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and MacOS, we recommend using the Dockerized setup. It might however lead to a slighty less fluid vizualization due to the lesser graphic performance inside Docker.
 
 Alternatively, a native system installation is possible but may require additional steps to have all correct dependencies necessary to compile the examples.
 
@@ -104,7 +104,7 @@ Each command line can be executed with an optional arugment, e.g. `-c0 1.0` whic
 
 When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
-By default the command lines will open windws to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-no-display`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
+By default the command lines will open windows to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-display 1`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
 
 ### Baxter-A
 ```bash
