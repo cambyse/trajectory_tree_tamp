@@ -78,11 +78,15 @@ make
 ```
 
 # Run examples
+The examples are placed in the `apps` folder .
 
 ### Baxter-A
 ```bash
+cd lgp-tree-po-blocks-baxter
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb A -c0 1.0
 ```
 
+The argument `c0` can be adjusted to allow more or less exploration. 
 ### Baxter-B
 ```bash
 ```
