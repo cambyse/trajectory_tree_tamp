@@ -102,7 +102,7 @@ The examples are placed in the `apps` folder.
 **Exploration vs. Exploitation:** Each command line can be executed with an optional arugment, e.g. `-c0 1.0` which adjusts the exploration parameter. When not specified, the parameter is set as '1.0'. Examples of values for `c0` can be found in Table 4. of the paper.
 
 
-**Binary execution within Docker:** When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
+**Binary execution inside Docker:** When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
 By default the command lines will open windows to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-display 1`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
 
@@ -148,9 +148,13 @@ By default the command lines will open windows to visualize the trajectory-tree 
 ```
 
 ### Franka-CxA'
-To plan Franka C, then Franka A', and visualize the combined result:
+To plan Franka C, then Franka A':
 ```bash
-./lgp-tree-po-blocks-baxter -pb CA
+./lgp-tree-po-blocks-franka-composition -pb CA
 ```
 
+To visualize a composed policy (composition done out of already planned paths):
+```bash
+./lgp-tree-po-blocks-franka-composition -pb play
+```
 
