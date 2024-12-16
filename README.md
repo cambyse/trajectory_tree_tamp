@@ -19,7 +19,7 @@ cd trajectory_tree_tamp_deployment
 docker build -t tamp .
 ```
 
-This creates a docker image called 'tamp'. The repositories are checked out and built in this step.
+This creates a docker image called `tamp`. It installs the dependencies, clones repositories and compiles the examples. 
 
 
 2. Run Docker image
@@ -28,11 +28,32 @@ This creates a docker image called 'tamp'. The repositories are checked out and 
 docker run --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it tamp /bin/bash
 ```
 
-The above command runs the docker image and opens a bash terminal. The options `--net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` are to forward the display.
+The above command runs the docker image and opens a bash terminal. The options `--net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` are to forward the host display to the Docker container.
 
 ## Building the examples of the native system
 
-To 
+To build the examples on the native system, one has to follow the same steps as in Dockerfile (https://github.com/cambyse/trajectory_tree_tamp_deployment). This is tested on `Ubuntu 20.04.6 LTS`.
+
+1. Install dependencies
+
+```bash
+sudo apt update && sudo apt install -y git build-essential \
+ liblapack-dev \
+ mesa-common-dev \
+ libeigen3-dev \
+ freeglut3-dev \
+ libf2c2-dev \
+ libjsoncpp-dev \
+ libqhull-dev \
+ libann-dev \
+ libassimp-dev \
+ libglew-dev \
+ libglfw3-dev \
+ libgtest-dev \
+ libopencv-dev \
+ libboost-all-dev \
+ cmake
+```
 
 # Run examples
 
