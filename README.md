@@ -82,59 +82,68 @@ The examples are placed in the `apps` folder.
 
 The command lines indicated below assume the user is already in the correct folder. The following table indicates the folder corresponding to each subproblem.
 
-| Example   | Binary Folder             |
-|-----------|---------------------------|
-| Baxter-A  | lgp-tree-po-blocks-baxter |
-| Baxter-B  | lgp-tree-po-blocks-baxter |
-| Baxter-C  | lgp-tree-po-blocks-baxter |
-| Baxter-D  | lgp-tree-po-blocks-baxter |
+| Example      | Binary Folder                         |
+|--------------|---------------------------------------|
+| Baxter-A     | lgp-tree-po-blocks-baxter             |
+| Baxter-B     | lgp-tree-po-blocks-baxter             |
+| Baxter-C     | lgp-tree-po-blocks-baxter             |
+| Baxter-D     | lgp-tree-po-blocks-baxter             |
+| Franka-A     | lgp-tree-po-blocks-baxter             |
+| Franka-B     | lgp-tree-po-blocks-baxter             |
+| Franka-C     | lgp-tree-po-blocks-franka-composition |
+| Franka-A'    | lgp-tree-po-blocks-franka-composition |
+| Franka-CxA'  | lgp-tree-po-blocks-franka-composition |
+
+Each command line can be executed with an optional arugment, e.g. `-c0 1.0` which adjusts the exploration parameter. When not specified, the parameter is set as '1.0'. Examples of values for `c0` can be found in Table 4. of the paper.
+
+
+When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
 ### Baxter-A
 ```bash
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb A -c0 1.0
+./lgp-tree-po-blocks-baxter -pb A
 ```
 
-The argument `c0` can be adjusted to allow more or less exploration. Examples of values for `c0` can be found in Table 4. of the paper.
+
 ### Baxter-B
 ```bash
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb B -c0 1.0 
+./lgp-tree-po-blocks-baxter -pb B
 ```
 
 ### Baxter-C
 ```bash
-cd lgp-tree-po-blocks-baxter
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb C -c0 1.0
+./lgp-tree-po-blocks-baxter -pb C
 ```
 
 ### Baxter-D
 ```bash
-cd lgp-tree-po-blocks-baxter
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb D -c0 1.0
+./lgp-tree-po-blocks-baxter -pb D
 ```
 
 ### Franka-A
 ```bash
-cd lgp-tree-po-blocks-explo-franka
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb A -c0 1.0
+./lgp-tree-po-blocks-explo-franka -pb A
 ```
 
 ### Franka-B
 ```bash
-cd lgp-tree-po-blocks-explo-franka
-LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb B -c0 1.0
+./lgp-tree-po-blocks-explo-franka -pb B
+```
+
+### Franka-C
+```bash
+./lgp-tree-po-blocks-franka-composition -pb C
+```
+
+### Franka-A'
+```bash
+./lgp-tree-po-blocks-franka-composition -pb A
 ```
 
 ### Franka-CxA'
-To plan for Franka-C (overarching policy):
+To plan Franka C, then Franka A', and visualize the combined result:
 ```bash
-```
-
-To plan for Franka-A' (exploration policy):
-```bash
-```
-
-To visualize the combined result:
-```bash
+./lgp-tree-po-blocks-baxter -pb CA
 ```
 
 
