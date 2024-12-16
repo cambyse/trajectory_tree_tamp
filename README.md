@@ -85,7 +85,7 @@ make
 # Run examples
 The examples are placed in the `apps` folder.
 
-The command lines indicated below assume the user is already in the correct folder. The following table indicates the folder corresponding to each subproblem.
+**Binary folder:** The command lines indicated below assume the user is already in the correct folder. The following table indicates the folder corresponding to each subproblem.
 
 | Example      | Binary Folder                         |
 |--------------|---------------------------------------|
@@ -99,10 +99,10 @@ The command lines indicated below assume the user is already in the correct fold
 | Franka-A'    | lgp-tree-po-blocks-franka-composition |
 | Franka-CxA'  | lgp-tree-po-blocks-franka-composition |
 
-Each command line can be executed with an optional arugment, e.g. `-c0 1.0` which adjusts the exploration parameter. When not specified, the parameter is set as '1.0'. Examples of values for `c0` can be found in Table 4. of the paper.
+**Exploration vs. Exploitation:** Each command line can be executed with an optional arugment, e.g. `-c0 1.0` which adjusts the exploration parameter. When not specified, the parameter is set as '1.0'. Examples of values for `c0` can be found in Table 4. of the paper.
 
 
-When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
+**Binary execution within Docker:** When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
 By default the command lines will open windows to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-display 1`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
 
