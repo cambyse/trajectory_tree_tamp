@@ -1,4 +1,4 @@
-# Building the TAMP examples
+# Running the TAMP examples
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <img src="doc/start-0.png" alt="Image 1" width="300">
@@ -10,14 +10,14 @@ For a straightforward installation that works seamlessly on most Ubuntu systems 
 Alternatively, a native system installation is possible but may require additional steps to have all correct dependencies necessary to compile the examples.
 
 ## Building using Docker
-1. Clone repository containing the Docker file (https://github.com/cambyse/trajectory_tree_tamp_deployment)
+#### Clone repository containing the Docker file (https://github.com/cambyse/trajectory_tree_tamp_deployment)
 
 ```bash
 git clone git@github.com:cambyse/trajectory_tree_tamp_deployment.git
 ```
 
 
-2. Build Docker image
+#### Build Docker image
 
 ```bash
 cd trajectory_tree_tamp_deployment
@@ -27,7 +27,7 @@ docker build -t tamp .
 This creates a docker image called `tamp`. It installs the dependencies, clones repositories and compiles the examples. 
 
 
-2. Run Docker image
+#### Run Docker image
 
 ```bash
 docker run --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it tamp /bin/bash
@@ -39,7 +39,7 @@ The above command runs the docker image and opens a bash terminal. The options `
 
 To build the examples on the native system, one has to follow the same steps as in Dockerfile (https://github.com/cambyse/trajectory_tree_tamp_deployment). ⚠️ This is tested only on `Ubuntu 20.04.6 LTS`.
 
-1. Install dependencies
+#### Install dependencies
 
 ```bash
 sudo apt update && sudo apt install -y git build-essential \
@@ -60,20 +60,20 @@ sudo apt update && sudo apt install -y git build-essential \
  cmake
 ```
 
-2. Clone repository and its submodules
+#### Clone repository and its submodules
 ```bash
 git clone https://github.com/cambyse/trajectory_tree_tamp.git trajectory_tree_tamp && cd trajectory_tree_tamp
 git submodule update --init --recursive
 ```
 
-3. Build Rai
+#### Build Rai
 
 ```bash
 cd rai
 make
 ```
 
-4. Build TAMP libraries and examples
+#### Build TAMP libraries and examples
 
 ```bash
 cd ../share/projects
