@@ -99,6 +99,8 @@ Each command line can be executed with an optional arugment, e.g. `-c0 1.0` whic
 
 When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
+By default the command lines will open windws to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-no-display`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
+
 ### Baxter-A
 ```bash
 ./lgp-tree-po-blocks-baxter -pb A
