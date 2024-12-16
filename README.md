@@ -78,32 +78,62 @@ make
 ```
 
 # Run examples
-The examples are placed in the `apps` folder .
+The examples are placed in the `apps` folder.
+
+The command lines indicated below assume the user is already in the correct folder. The following table indicates the folder corresponding to each subproblem.
+
+| Example   | Binary Folder             |
+|-----------|---------------------------|
+| Baxter-A  | lgp-tree-po-blocks-baxter |
+| Baxter-B  | lgp-tree-po-blocks-baxter |
+| Baxter-C  | lgp-tree-po-blocks-baxter |
+| Baxter-D  | lgp-tree-po-blocks-baxter |
 
 ### Baxter-A
 ```bash
-cd lgp-tree-po-blocks-baxter
 LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb A -c0 1.0
 ```
 
-The argument `c0` can be adjusted to allow more or less exploration. 
+The argument `c0` can be adjusted to allow more or less exploration. Examples of values for `c0` can be found in Table 4. of the paper.
 ### Baxter-B
 ```bash
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb B -c0 1.0 
 ```
 
 ### Baxter-C
 ```bash
+cd lgp-tree-po-blocks-baxter
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb C -c0 1.0
+```
+
+### Baxter-D
+```bash
+cd lgp-tree-po-blocks-baxter
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb D -c0 1.0
 ```
 
 ### Franka-A
 ```bash
+cd lgp-tree-po-blocks-explo-franka
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb A -c0 1.0
 ```
 
 ### Franka-B
 ```bash
+cd lgp-tree-po-blocks-explo-franka
+LIBGL_ALWAYS_SOFTWARE=1 ./lgp-tree-po-blocks-baxter -pb B -c0 1.0
 ```
 
 ### Franka-CxA'
+To plan for Franka-C (overarching policy):
+```bash
+```
+
+To plan for Franka-A' (exploration policy):
+```bash
+```
+
+To visualize the combined result:
 ```bash
 ```
 
