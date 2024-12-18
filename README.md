@@ -5,7 +5,7 @@
   <img src="doc/franka_init.png" alt="Image 2" width="300">
 </div>
 
-For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and MacOS, we recommend using the Dockerized setup. It might however lead to a slighty less fluid vizualization due to the lesser graphic performance inside Docker.
+For a straightforward installation that works seamlessly on most Ubuntu systems (20.04 and later) and MacOS, we recommend using the Dockerized setup. However, this may result in slightly reduced performance and less smooth visualization due to graphical performance limitations within Docker.
 
 Alternatively, a native system installation is possible but may require additional steps to have all correct dependencies necessary to compile the examples.
 
@@ -30,10 +30,10 @@ This creates a docker image called `tamp`. It installs the dependencies, clones 
 #### Run Docker image
 
 ```bash
-docker run --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it tamp /bin/bash
+docker run --privileged --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -it tamp /bin/bash
 ```
 
-The above command runs the docker image and opens a bash terminal. The options `--net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` are to forward the host display to the Docker container.
+The above command runs the docker image and opens a bash terminal. The options `--privileged --net=host -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix` are to forward the host display to the Docker container.
 
 ## Building the examples on the native system
 
@@ -102,7 +102,7 @@ The examples are placed in the `apps` folder.
 **Exploration vs. Exploitation:** Each command line can be executed with an optional arugment, e.g. `-c0 1.0` which adjusts the exploration parameter. When not specified, the parameter is set as '1.0'. Examples of values for `c0` can be found in Table 4. of the paper.
 
 
-**Binary execution inside Docker:** When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` may be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
+**Binary execution inside Docker:** When running the examples from the docker container, the following prefix `LIBGL_ALWAYS_SOFTWARE=1` might be needed, to emulate OpenGL rendering on CPU (Access to GPU may not work inside the Docker container).
 
 By default the command lines will open windows to visualize the trajectory-tree execution. It is also possible to disable the gui by adding the argument `-display 1`, in which case the prefix `LIBGL_ALWAYS_SOFTWARE=1` is not needed.
 
